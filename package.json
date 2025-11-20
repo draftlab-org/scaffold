@@ -1,5 +1,5 @@
 {
-  "name": "technological-tower",
+  "name": "draftlab-scaffold",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
@@ -19,8 +19,13 @@
     "@types/react-dom": "^19.2.3",
     "astro": "^5.15.9",
     "canvas-confetti": "^1.9.3",
+    "prettier-plugin-astro": "^0.14.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "tailwindcss": "^4.1.16"
+  },
+  "devDependencies": {
+    "prettier": "^3.6.2",
+    "prettier-plugin-tailwindcss": "^0.7.1"
   }
 }

@@ -1,6 +1,8 @@
 ---
-import '../styles/global.css';
+import Button from "@components/Button.astro";
+import "../styles/global.css";
 const { content } = Astro.props;
+
 ---
 
 <html lang="en">
@@ -8,9 +10,9 @@ const { content } = Astro.props;
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<title>{content.title}</title>
+		<title class="mb-12 px-2">{content.title}</title>
 	</head>
-	<body>
+	<body class="bg-white bg-center mb-2 px-12">
 		<slot />
 	</body>
 </html>
