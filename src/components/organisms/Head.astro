@@ -1,0 +1,45 @@
+---
+export interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  canonicalURL?: URL;
+}
+
+const {
+  title,
+  description = 'DraftLab Scaffold - Our Web Development Starter',
+  image = '/favicon.svg',
+  canonicalURL,
+} = Astro.props;
+
+const imageURL = new URL(image, Astro.url).href;
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="generator" content={Astro.generator} />
+
+<!-- Primary Meta Tags -->
+<title>{title}</title>
+<meta name="title" content={title} />
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalURL} />
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content={canonicalURL} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={imageURL} />
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content={canonicalURL} />
+<meta property="twitter:title" content={title} />
+<meta property="twitter:description" content={description} />
+<meta property="twitter:image" content={imageURL} />
+
+<!-- Additional head content -->
+<slot />

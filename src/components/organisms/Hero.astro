@@ -1,7 +1,7 @@
 ---
+import Button from '@components/atoms/Button.astro';
 import Heading from '@components/atoms/Heading.astro';
 import Text from '@components/atoms/Text.astro';
-import Button from '@components/atoms/Button.astro';
 
 export interface Props {
   title: string;
@@ -42,33 +42,33 @@ const containerClasses = `${sizes[size]} ${backgrounds[background]} ${className}
 ---
 
 <section class={containerClasses}>
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <div class={`mx-auto max-w-3xl ${alignments[align]}`}>
-      <!-- Title -->
-      <Heading level={1} class="mb-6">
-        {title}
-      </Heading>
+	<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+		<div class={`mx-auto max-w-3xl ${alignments[align]}`}>
+			<!-- Title -->
+			<Heading level={1} class="mb-6">
+				{title}
+			</Heading>
 
-      <!-- Subtitle -->
-      {subtitle && (
-        <Text size="xl" class="text-gray-600 mb-8">
-          {subtitle}
-        </Text>
-      )}
+			<!-- Subtitle -->
+			{
+				subtitle && (
+					<Text size="xl" class="mb-8 text-gray-600">
+						{subtitle}
+					</Text>
+				)
+			}
 
-      <!-- Actions Slot -->
-      <div class="flex flex-wrap gap-4 justify-center">
-        <slot name="actions">
-          <Button variant="primary" size="lg">
-            Get Started
-          </Button>
-        </slot>
-      </div>
+			<!-- Actions Slot -->
+			<div class="flex flex-wrap justify-center gap-4">
+				<slot name="actions">
+					<Button variant="primary" size="lg"> Get Started </Button>
+				</slot>
+			</div>
 
-      <!-- Additional Content Slot -->
-      <div class="mt-12">
-        <slot />
-      </div>
-    </div>
-  </div>
+			<!-- Additional Content Slot -->
+			<div class="mt-12">
+				<slot />
+			</div>
+		</div>
+	</div>
 </section>

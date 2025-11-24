@@ -1,6 +1,6 @@
 ---
-import NavItem from '@components/molecules/NavItem.astro';
 import Link from '@components/atoms/Link.astro';
+import NavItem from '@components/molecules/NavItem.astro';
 
 export interface NavLink {
   href: string;
@@ -28,40 +28,46 @@ const isActive = (href: string) => {
 ---
 
 <nav class={`bg-white border-b border-gray-200 ${className}`}>
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <div class="flex h-16 items-center justify-between">
-      <!-- Logo/Site Name -->
-      <div class="flex-shrink-0">
-        <Link href="/" variant="unstyled" class="text-xl font-bold text-gray-900">
-          {siteName}
-        </Link>
-      </div>
+	<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+		<div class="flex h-16 items-center justify-between">
+			<!-- Logo/Site Name -->
+			<div class="shrink-0">
+				<Link
+					href="/"
+					variant="unstyled"
+					class="text-xl font-bold text-gray-900"
+				>
+					{siteName}
+				</Link>
+			</div>
 
-      <!-- Navigation Links -->
-      <div class="hidden md:block">
-        <div class="flex items-center space-x-1">
-          {links.map((link) => (
-            <NavItem
-              href={link.href}
-              label={link.label}
-              active={isActive(link.href)}
-            />
-          ))}
-        </div>
-      </div>
+			<!-- Navigation Links -->
+			<div class="hidden md:block">
+				<div class="flex items-center space-x-1">
+					{
+						links.map((link) => (
+							<NavItem
+								href={link.href}
+								label={link.label}
+								active={isActive(link.href)}
+							/>
+						))
+					}
+				</div>
+			</div>
 
-      <!-- CTA or Actions Slot -->
-      <div class="flex items-center space-x-4">
-        <slot name="actions" />
-      </div>
+			<!-- CTA or Actions Slot -->
+			<div class="flex items-center space-x-4">
+				<slot name="actions" />
+			</div>
 
-      <!-- Mobile Menu Button Slot -->
-      <div class="md:hidden">
-        <slot name="mobile-menu-button" />
-      </div>
-    </div>
-  </div>
+			<!-- Mobile Menu Button Slot -->
+			<div class="md:hidden">
+				<slot name="mobile-menu-button" />
+			</div>
+		</div>
+	</div>
 
-  <!-- Mobile Menu Slot -->
-  <slot name="mobile-menu" />
+	<!-- Mobile Menu Slot -->
+	<slot name="mobile-menu" />
 </nav>

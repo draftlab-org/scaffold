@@ -1,5 +1,6 @@
 ---
 import '@styles/global.css';
+import Head from '@components/organisms/Head.astro';
 
 export interface Props {
   title: string;
@@ -19,39 +20,20 @@ const {
 
 const canonicalURL = Astro.site
   ? new URL(Astro.url.pathname, Astro.site)
-  : Astro.url.href;
+  : Astro.url;
 ---
 
 <!doctype html>
 <html lang={lang}>
 	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-
-		<!-- Primary Meta Tags -->
-		<title>{title}</title>
-		<meta name="title" content={title} />
-		<meta name="description" content={description} />
-		<link rel="canonical" href={canonicalURL} />
-
-		<!-- Open Graph / Facebook -->
-		<meta property="og:type" content="website" />
-		<meta property="og:url" content={canonicalURL} />
-		<meta property="og:title" content={title} />
-		<meta property="og:description" content={description} />
-		<meta property="og:image" content={new URL(image, Astro.url).href} />
-
-		<!-- Twitter -->
-		<meta property="twitter:card" content="summary_large_image" />
-		<meta property="twitter:url" content={canonicalURL} />
-		<meta property="twitter:title" content={title} />
-		<meta property="twitter:description" content={description} />
-		<meta property="twitter:image" content={new URL(image, Astro.url).href} />
-
-		<!-- Additional head content -->
-		<slot name="head" />
+		<Head
+			title={title}
+			description={description}
+			image={image}
+			canonicalURL={canonicalURL}
+		>
+			<slot name="head" />
+		</Head>
 	</head>
 
 	<body class={className}>

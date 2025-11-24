@@ -34,17 +34,19 @@ const sizes = {
   lg: 'text-lg px-6 py-3 rounded-lg',
 };
 
-const classes = `${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`;
+const classes = `${baseStyles} ${variants[variant as keyof typeof variants]} ${sizes[size as keyof typeof sizes]} ${className}`;
 
 const Tag = as === 'a' ? 'a' : 'button';
 ---
 
-{Tag === 'a' ? (
-  <a href={href} class={classes} {...props}>
-    <slot />
-  </a>
-) : (
-  <button type={type} class={classes} {...props}>
-    <slot />
-  </button>
-)}
+{
+	Tag === 'a' ? (
+		<a href={href} class={classes} {...props}>
+			<slot />
+		</a>
+	) : (
+		<button type={type} class={classes} {...props}>
+			<slot />
+		</button>
+	)
+}
