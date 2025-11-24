@@ -1,0 +1,71 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Header from '@components/sections/Header.astro';
+import Main from '@components/sections/Main.astro';
+import Footer from '@components/organisms/Footer.astro';
+import type { NavLink } from '@components/organisms/Navigation.astro';
+import type { FooterSection } from '@components/organisms/Footer.astro';
+
+export interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  navLinks?: NavLink[];
+  footerSections?: FooterSection[];
+  siteName?: string;
+  stickyHeader?: boolean;
+  containerized?: boolean;
+  maxWidth?: 'full' | '7xl' | '6xl' | '5xl' | '4xl';
+  class?: string;
+}
+
+const {
+  title,
+  description,
+  image,
+  navLinks = [
+    { href: '/', label: 'Home' },
+    { href: '/about', label: 'About' },
+    { href: '/contact', label: 'Contact' },
+  ],
+  footerSections = [],
+  siteName = 'DraftLab',
+  stickyHeader = true,
+  containerized = true,
+  maxWidth = '7xl',
+  class: className = '',
+} = Astro.props;
+---
+
+<BaseLayout title={title} description={description} image={image}>
+  <slot name="head" slot="head" />
+
+  <div class="flex flex-col min-h-screen">
+    <!-- Header -->
+    <Header
+      links={navLinks}
+      siteName={siteName}
+      sticky={stickyHeader}
+    >
+      <slot name="header-actions" slot="actions" />
+    </Header>
+
+    <!-- Main Content -->
+    <Main
+      containerized={containerized}
+      maxWidth={maxWidth}
+      class={className}
+    >
+      <slot />
+    </Main>
+
+    <!-- Footer -->
+    <Footer
+      sections={footerSections}
+      siteName={siteName}
+      class="mt-auto"
+    >
+      <slot name="footer-content" />
+    </Footer>
+  </div>
+</BaseLayout>

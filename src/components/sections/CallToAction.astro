@@ -1,0 +1,91 @@
+---
+import Heading from '@components/atoms/Heading.astro';
+import Text from '@components/atoms/Text.astro';
+import Button from '@components/atoms/Button.astro';
+
+export interface Props {
+  title: string;
+  description?: string;
+  primaryAction?: {
+    label: string;
+    href: string;
+  };
+  secondaryAction?: {
+    label: string;
+    href: string;
+  };
+  background?: 'white' | 'gray' | 'blue' | 'gradient';
+  class?: string;
+}
+
+const {
+  title,
+  description,
+  primaryAction,
+  secondaryAction,
+  background = 'blue',
+  class: className = '',
+} = Astro.props;
+
+const backgrounds = {
+  white: 'bg-white',
+  gray: 'bg-gray-50',
+  blue: 'bg-blue-600 text-white',
+  gradient: 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white',
+};
+
+const textColor = background === 'blue' || background === 'gradient' ? 'text-white' : 'text-gray-900';
+const descColor = background === 'blue' || background === 'gradient' ? 'text-blue-100' : 'text-gray-600';
+---
+
+<section class={`py-16 md:py-24 ${backgrounds[background]} ${className}`}>
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="text-center">
+      <!-- Title -->
+      <Heading level={2} class={`mb-4 ${textColor}`}>
+        {title}
+      </Heading>
+
+      <!-- Description -->
+      {description && (
+        <Text size="xl" class={`mb-8 ${descColor}`}>
+          {description}
+        </Text>
+      )}
+
+      <!-- Actions -->
+      <div class="flex flex-wrap gap-4 justify-center">
+        {primaryAction && (
+          <Button
+            as="a"
+            href={primaryAction.href}
+            variant={background === 'blue' || background === 'gradient' ? 'outline' : 'primary'}
+            size="lg"
+            class={background === 'blue' || background === 'gradient' ? 'border-white text-white hover:bg-white hover:text-blue-600' : ''}
+          >
+            {primaryAction.label}
+          </Button>
+        )}
+
+        {secondaryAction && (
+          <Button
+            as="a"
+            href={secondaryAction.href}
+            variant="ghost"
+            size="lg"
+            class={background === 'blue' || background === 'gradient' ? 'text-white hover:bg-white/10' : ''}
+          >
+            {secondaryAction.label}
+          </Button>
+        )}
+
+        <slot name="actions" />
+      </div>
+
+      <!-- Additional Content -->
+      <div class="mt-12">
+        <slot />
+      </div>
+    </div>
+  </div>
+</section>

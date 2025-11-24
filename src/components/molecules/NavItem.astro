@@ -1,0 +1,28 @@
+---
+import Link from '@components/atoms/Link.astro';
+
+export interface Props {
+  href: string;
+  active?: boolean;
+  label: string;
+  class?: string;
+}
+
+const {
+  href,
+  active = false,
+  label,
+  class: className = '',
+} = Astro.props;
+
+const activeStyles = active
+  ? 'text-blue-600 font-semibold'
+  : 'text-gray-700 hover:text-gray-900';
+
+const classes = `inline-flex items-center px-3 py-2 text-sm font-medium transition-colors ${activeStyles} ${className}`;
+---
+
+<Link href={href} variant="unstyled" class={classes}>
+  {label}
+  <slot />
+</Link>

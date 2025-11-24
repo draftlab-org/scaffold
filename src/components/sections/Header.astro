@@ -1,0 +1,31 @@
+---
+import type { NavLink } from '@components/organisms/Navigation.astro';
+import Navigation from '@components/organisms/Navigation.astro';
+
+export interface Props {
+  links: NavLink[];
+  siteName?: string;
+  transparent?: boolean;
+  sticky?: boolean;
+  class?: string;
+}
+
+const {
+  links,
+  siteName,
+  transparent = false,
+  sticky = false,
+  class: className = '',
+} = Astro.props;
+
+const stickyClass = sticky ? 'sticky top-0 z-50' : '';
+const transparentClass = transparent ? 'bg-transparent border-transparent' : '';
+---
+
+<header class={`${stickyClass} ${className}`}>
+	<Navigation links={links} siteName={siteName} class={transparentClass}>
+		<slot name="actions" slot="actions" />
+		<slot name="mobile-menu-button" slot="mobile-menu-button" />
+		<slot name="mobile-menu" slot="mobile-menu" />
+	</Navigation>
+</header>

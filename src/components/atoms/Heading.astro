@@ -1,0 +1,32 @@
+---
+export interface Props {
+  level: 1 | 2 | 3 | 4 | 5 | 6;
+  as?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+  class?: string;
+  [key: string]: any;
+}
+
+const {
+  level,
+  as,
+  class: className = '',
+  ...props
+} = Astro.props;
+
+const Tag = as || `h${level}`;
+
+const styles = {
+  h1: 'text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight',
+  h2: 'text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight',
+  h3: 'text-2xl md:text-3xl lg:text-4xl font-semibold',
+  h4: 'text-xl md:text-2xl lg:text-3xl font-semibold',
+  h5: 'text-lg md:text-xl lg:text-2xl font-medium',
+  h6: 'text-base md:text-lg lg:text-xl font-medium',
+};
+
+const classes = `${styles[Tag]} ${className}`;
+---
+
+<Tag class={classes} {...props}>
+  <slot />
+</Tag>

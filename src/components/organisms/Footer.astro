@@ -1,0 +1,72 @@
+---
+import Link from '@components/atoms/Link.astro';
+import Text from '@components/atoms/Text.astro';
+
+export interface FooterLink {
+  href: string;
+  label: string;
+  external?: boolean;
+}
+
+export interface FooterSection {
+  title: string;
+  links: FooterLink[];
+}
+
+export interface Props {
+  sections?: FooterSection[];
+  siteName?: string;
+  copyright?: string;
+  class?: string;
+}
+
+const {
+  sections = [],
+  siteName = 'DraftLab',
+  copyright,
+  class: className = '',
+} = Astro.props;
+
+const currentYear = new Date().getFullYear();
+const copyrightText = copyright || `© ${currentYear} ${siteName}. All rights reserved.`;
+---
+
+<footer class={`bg-gray-50 border-t border-gray-200 ${className}`}>
+  <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+    <!-- Footer Sections -->
+    {sections.length > 0 && (
+      <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+        {sections.map((section) => (
+          <div>
+            <h3 class="text-sm font-semibold text-gray-900 mb-4">
+              {section.title}
+            </h3>
+            <ul class="space-y-3">
+              {section.links.map((link) => (
+                <li>
+                  <Link
+                    href={link.href}
+                    variant="footer"
+                    external={link.external}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    )}
+
+    <!-- Custom Content Slot -->
+    <slot />
+
+    <!-- Copyright -->
+    <div class="border-t border-gray-200 pt-8">
+      <Text size="sm" class="text-gray-500 text-center">
+        {copyrightText}
+      </Text>
+    </div>
+  </div>
+</footer>

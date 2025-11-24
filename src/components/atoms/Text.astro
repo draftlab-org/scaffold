@@ -1,0 +1,40 @@
+---
+export interface Props {
+  as?: 'p' | 'span' | 'div' | 'blockquote';
+  size?: 'sm' | 'base' | 'lg' | 'xl';
+  weight?: 'normal' | 'medium' | 'semibold' | 'bold';
+  class?: string;
+  [key: string]: any;
+}
+
+const {
+  as = 'p',
+  size = 'base',
+  weight = 'normal',
+  class: className = '',
+  ...props
+} = Astro.props;
+
+const Tag = as;
+
+const sizes = {
+  sm: 'text-sm',
+  base: 'text-base',
+  lg: 'text-lg',
+  xl: 'text-xl',
+};
+
+const weights = {
+  normal: 'font-normal',
+  medium: 'font-medium',
+  semibold: 'font-semibold',
+  bold: 'font-bold',
+};
+
+const baseStyles = as === 'blockquote' ? 'border-l-4 border-gray-300 pl-4 italic' : '';
+const classes = `${baseStyles} ${sizes[size]} ${weights[weight]} ${className}`;
+---
+
+<Tag class={classes} {...props}>
+  <slot />
+</Tag>
