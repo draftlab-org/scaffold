@@ -1,5 +1,6 @@
 ---
 import '@styles/global.css';
+import { Font } from 'astro:assets';
 import Head from '@components/organisms/Head.astro';
 
 export interface Props {
@@ -32,6 +33,7 @@ const canonicalURL = Astro.site
 			image={image}
 			canonicalURL={canonicalURL}
 		>
+			<Font cssVariable='--font-inter' preload />
 			<slot name="head" />
 		</Head>
 	</head>
