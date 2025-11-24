@@ -28,7 +28,7 @@ const alignments = {
 };
 
 const sizes = {
-  default: 'py-16 md:py-24',
+  default: 'py-8 md:py-12',
   large: 'py-24 md:py-32 lg:py-40',
 };
 
@@ -59,11 +59,11 @@ const containerClasses = `${sizes[size]} ${backgrounds[background]} ${className}
 			}
 
 			<!-- Actions Slot -->
-			<div class="flex flex-wrap justify-center gap-4">
+			<!-- <div class="flex flex-wrap justify-center gap-4">
 				<slot name="actions">
 					<Button variant="primary" size="lg"> Get Started </Button>
 				</slot>
-			</div>
+			</div> -->
 
 			<!-- Additional Content Slot -->
 			<div class="mt-12">
