@@ -61,17 +61,17 @@
   --color-quintenary-900: #59168b;
   --color-quintenary-950: #3c0366;
 
-  --color-neutral-50: #f8fafc;
-  --color-neutral-100: #f1f5f9;
-  --color-neutral-200: #e2e8f0;
-  --color-neutral-300: #cad5e2;
-  --color-neutral-400: #90a1b9;
-  --color-neutral-500: #62748e;
-  --color-neutral-600: #45556c;
-  --color-neutral-700: #314158;
-  --color-neutral-800: #1d293d;
-  --color-neutral-900: #0f172b;
-  --color-neutral-950: #020618;
+  --color-gray-50: #f8fafc;
+  --color-gray-100: #f1f5f9;
+  --color-gray-200: #e2e8f0;
+  --color-gray-300: #cad5e2;
+  --color-gray-400: #90a1b9;
+  --color-gray-500: #62748e;
+  --color-gray-600: #45556c;
+  --color-gray-700: #314158;
+  --color-gray-800: #1d293d;
+  --color-gray-900: #0f172b;
+  --color-gray-950: #020618;
 
   --color-white: #ffffff;
   --color-black: #000000;

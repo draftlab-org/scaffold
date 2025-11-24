@@ -2,5 +2,6 @@
 @import './colors.css';
 @import './typography.css';
 @import './breakpoints.css';
+@import './components.css';
+
 @plugin '@tailwindcss/typography';
-/* @import './components.css'; */

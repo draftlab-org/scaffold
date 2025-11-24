@@ -1,7 +1,7 @@
 ---
 export interface Props {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   as?: 'button' | 'a';
   href?: string;
   type?: 'button' | 'submit' | 'reset';
@@ -22,16 +22,17 @@ const {
 const baseStyles = 'inline-flex items-center justify-center font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
 
 const variants = {
-  primary: 'bg-primary-600 text-white hover:bg-primary-700 focus-visible:ring-primary-600',
-  secondary: 'bg-gray-600 text-white hover:bg-gray-700 focus-visible:ring-gray-600',
-  outline: 'border-2 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white focus-visible:ring-gray-900',
-  ghost: 'text-gray-900 hover:bg-gray-100 focus-visible:ring-gray-900',
+  primary: 'button-primary',
+  secondary: 'button-secondary',
+  outline: 'button-outline',
+  ghost: 'button-ghost',
 };
 
 const sizes = {
-  sm: 'text-sm px-3 py-1.5 rounded',
-  md: 'text-base px-4 py-2 rounded-md',
-  lg: 'text-lg px-6 py-3 rounded-lg',
+  sm: 'button-size-sm',
+  md: 'button-size-md',
+  lg: 'button-size-lg',
+  xl: 'button-size-xl',
 };
 
 const classes = `${baseStyles} ${variants[variant as keyof typeof variants]} ${sizes[size as keyof typeof sizes]} ${className}`;
