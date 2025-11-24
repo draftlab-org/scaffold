@@ -61,9 +61,6 @@
   --color-quintenary-900: #59168b;
   --color-quintenary-950: #3c0366;
 
-  --color-warning-light: #fb2c36;
-  --color-warning-dark: #c10007;
-
   --color-neutral-50: #f8fafc;
   --color-neutral-100: #f1f5f9;
   --color-neutral-200: #e2e8f0;
@@ -75,4 +72,7 @@
   --color-neutral-800: #1d293d;
   --color-neutral-900: #0f172b;
   --color-neutral-950: #020618;
+
+  --color-white: #ffffff;
+  --color-black: #000000;
 }
