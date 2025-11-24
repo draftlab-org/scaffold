@@ -1,44 +1,35 @@
 @theme {
   --font-sans: var(--font-inter);
+
+  --text-sm: 0.625rem;
+  --text-base: 0.875rem;
+  --text-lg: 1rem;
+  --text-xl: 1.125rem;
+  --text-2xl: 1.4rem;
+  --text-3xl: 1.75rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 2.5rem;
+  --text-6xl: 3.5rem;
 }
 
 @layer base {
-  /* body {
-    @apply bg-white font-serif text-black;
-  } */
-
-  /* h1,
-  h2,
-  h3,
-  h4 {
-    @apply font-sans;
-  } */
-  /* 
   h1 {
-    @apply my-8 text-4xl leading-16 font-bold md:text-6xl md:leading-24;
+    @apply text-4xl md:text-6xl;
   }
 
   h2 {
-    @apply mb-2 text-3xl font-bold;
+    @apply text-3xl md:text-5xl;
   }
 
   h3 {
-    @apply my-8 font-normal;
+    @apply text-xl md:text-2xl;
   }
 
   h4 {
-    @apply text-2xl font-bold;
-  }
-
-  h5 {
-    @apply font-serif text-sm font-normal;
+    @apply text-base;
   }
 
   p {
-    @apply mb-2 font-serif text-sm font-normal;
+    @apply text-sm md:text-base;
   }
-
-  span:not(p *) {
-    @apply font-sans;
-  }  */
 }
