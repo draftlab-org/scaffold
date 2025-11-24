@@ -1,0 +1,46 @@
+---
+import Hero from '@components/organisms/Hero.astro';
+import type { Person } from '@components/organisms/Person.astro';
+import PeopleSection from '@components/sections/PeopleSection.astro';
+import peopleData from '@content/people.json';
+import sections from '@content/sections.json';
+import PageLayout from '@layouts/PageLayout.astro';
+
+// Import all people images
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/people/*.png',
+  { eager: true }
+);
+
+// Map people data to include actual image imports
+const people: Person[] = peopleData.map((person) => ({
+  ...person,
+  headshot: images[`/src/assets/people/${person.headshot}`]?.default,
+}));
+---
+
+<PageLayout
+	title="About Us - DraftLab Scaffold"
+	description="Meet the team behind DraftLab Scaffold"
+>
+	<!-- Hero Section -->
+	<Hero
+		title="About Us"
+		subtitle="We are a group of people who don't exist really! We're just here to populate the website."
+		size="default"
+		background="white"
+	/>
+
+	<p class="text-center">
+		Thank you <a href="https://www.dicebear.com">Dicebear</a> and <a
+			href="https://www.openpeeps.com">Open Peeps!</a
+		>
+	</p>
+
+	<!-- People Sections -->
+	{
+		sections.map((section) => (
+			<PeopleSection people={people} section={section} />
+		))
+	}
+</PageLayout>

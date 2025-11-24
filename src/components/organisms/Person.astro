@@ -1,0 +1,43 @@
+---
+import Heading from '@components/atoms/Heading.astro';
+import Image from '@components/atoms/Image.astro';
+import Text from '@components/atoms/Text.astro';
+import type { ImageMetadata } from 'astro';
+
+export type Person = {
+  name: string;
+  headshot: ImageMetadata;
+  title: string;
+  sections: string[];
+};
+
+export interface Props {
+  person: Person;
+  class?: string;
+}
+
+const { person, class: className = '' } = Astro.props;
+---
+
+<div class={`text-center ${className}`}>
+	<!-- Headshot -->
+	<div class="mb-4 flex justify-center">
+		<Image
+			src={person.headshot}
+			alt={person.name}
+			width={200}
+			height={200}
+			class="h-48 w-48 rounded-lg object-cover"
+		/>
+	</div>
+
+	<!-- Name -->
+	<Heading level={4} class="mb-2">
+		{person.name}
+	</Heading>
+
+	<!-- Title -->
+	<Text size="sm" class="text-gray-600">
+		{person.title}
+	</Text>
+</div>

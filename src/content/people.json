@@ -1,0 +1,146 @@
+[
+  {
+    "name": "Sarah Chen",
+    "headshot": "sarah-chen.png",
+    "title": "Chief Executive Officer",
+    "sections": ["Leadership"]
+  },
+  {
+    "name": "Marcus Johnson",
+    "headshot": "marcus-johnson.png",
+    "title": "Chief Technology Officer",
+    "sections": ["Leadership", "Engineering"]
+  },
+  {
+    "name": "Emily Rodriguez",
+    "headshot": "emily-rodriguez.png",
+    "title": "VP of Product",
+    "sections": ["Leadership", "Product"]
+  },
+  {
+    "name": "James Thompson",
+    "headshot": "james-thompson.png",
+    "title": "VP of Engineering",
+    "sections": ["Leadership", "Engineering"]
+  },
+  {
+    "name": "Aisha Patel",
+    "headshot": "aisha-patel.png",
+    "title": "Senior Software Engineer",
+    "sections": ["Engineering"]
+  },
+  {
+    "name": "David Kim",
+    "headshot": "david-kim.png",
+    "title": "Software Engineer",
+    "sections": ["Engineering"]
+  },
+  {
+    "name": "Maria Santos",
+    "headshot": "maria-santos.png",
+    "title": "Frontend Developer",
+    "sections": ["Engineering"]
+  },
+  {
+    "name": "Alex Turner",
+    "headshot": "alex-turner.png",
+    "title": "DevOps Engineer",
+    "sections": ["Engineering"]
+  },
+  {
+    "name": "Nina Kowalski",
+    "headshot": "nina-kowalski.png",
+    "title": "Product Manager",
+    "sections": ["Product"]
+  },
+  {
+    "name": "Ryan O'Connor",
+    "headshot": "ryan-oconnor.png",
+    "title": "Product Designer",
+    "sections": ["Product", "Design"]
+  },
+  {
+    "name": "Priya Sharma",
+    "headshot": "priya-sharma.png",
+    "title": "UX Researcher",
+    "sections": ["Product", "Design"]
+  },
+  {
+    "name": "Jordan Lee",
+    "headshot": "jordan-lee.png",
+    "title": "Senior Designer",
+    "sections": ["Design"]
+  },
+  {
+    "name": "Sophie Anderson",
+    "headshot": "sophie-anderson.png",
+    "title": "UI Designer",
+    "sections": ["Design"]
+  },
+  {
+    "name": "Carlos Martinez",
+    "headshot": "carlos-martinez.png",
+    "title": "Head of Marketing",
+    "sections": ["Marketing"]
+  },
+  {
+    "name": "Lisa Wang",
+    "headshot": "lisa-wang.png",
+    "title": "Content Strategist",
+    "sections": ["Marketing"]
+  },
+  {
+    "name": "Michael Brown",
+    "headshot": "michael-brown.png",
+    "title": "Growth Manager",
+    "sections": ["Marketing"]
+  },
+  {
+    "name": "Hannah Cohen",
+    "headshot": "hannah-cohen.png",
+    "title": "Social Media Manager",
+    "sections": ["Marketing"]
+  },
+  {
+    "name": "Omar Hassan",
+    "headshot": "omar-hassan.png",
+    "title": "VP of Sales",
+    "sections": ["Sales"]
+  },
+  {
+    "name": "Jessica Taylor",
+    "headshot": "jessica-taylor.png",
+    "title": "Account Executive",
+    "sections": ["Sales"]
+  },
+  {
+    "name": "Kevin Nguyen",
+    "headshot": "kevin-nguyen.png",
+    "title": "Customer Success Manager",
+    "sections": ["Sales"]
+  },
+  {
+    "name": "Rachel Green",
+    "headshot": "rachel-green.png",
+    "title": "Chief Financial Officer",
+    "sections": ["Leadership", "Operations"]
+  },
+  {
+    "name": "Daniel Wright",
+    "headshot": "daniel-wright.png",
+    "title": "HR Director",
+    "sections": ["Operations"]
+  },
+  {
+    "name": "Zoe Adams",
+    "headshot": "zoe-adams.png",
+    "title": "Office Manager",
+    "sections": ["Operations"]
+  },
+  {
+    "name": "Tyler Morgan",
+    "headshot": "tyler-morgan.png",
+    "title": "Data Analyst",
+    "sections": ["Engineering", "Product"]
+  }
+]

@@ -1,0 +1,49 @@
+---
+import Heading from '@components/atoms/Heading.astro';
+import type { Person as PersonType } from '@components/organisms/Person.astro';
+import Person from '@components/organisms/Person.astro';
+import sections from '@content/sections.json';
+
+export interface Props {
+  people: PersonType[];
+  section: string;
+  class?: string;
+}
+
+const { people, section, class: className = '' } = Astro.props;
+
+// Validate section exists in sections list
+if (!sections.includes(section)) {
+  throw new Error(`Invalid section: ${section}. Must be one of: ${sections.join(', ')}`);
+}
+
+// Filter people by section
+const filteredPeople = people.filter((person) =>
+  person.sections.includes(section)
+);
+---
+
+<section class={`py-16 ${className}`}>
+	<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+		<!-- Section Headline -->
+		<div class="mb-12 text-center">
+			<Heading level={2} class="mb-4">
+				{section}
+			</Heading>
+		</div>
+
+		<!-- People Grid -->
+		<div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+			{filteredPeople.map((person) => <Person person={person} />)}
+		</div>
+
+		<!-- Empty State -->
+		{
+			filteredPeople.length === 0 && (
+				<div class="py-12 text-center text-gray-500">
+					No people found in this section.
+				</div>
+			)
+		}
+	</div>
+</section>
