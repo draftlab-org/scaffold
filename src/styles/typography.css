@@ -12,6 +12,13 @@
   --text-6xl: 3.5rem;
 }
 
+/* defines default link styling as a single source of truth */
+@layer components {
+  .link-default {
+    @apply text-primary-600 underline underline-offset-2 transition-colors hover:text-primary-700;
+  }
+}
+
 @layer base {
   h1 {
     @apply text-4xl md:text-6xl;
@@ -31,5 +38,11 @@
 
   p {
     @apply text-sm md:text-base;
+  }
+
+  /* applies default link styling to "a" components that do not have the "data-component" property,
+  so we can manage styling of Links, Buttons etc directly in the component  */
+  a:not([data-component]) {
+    @apply link-default;
   }
 }

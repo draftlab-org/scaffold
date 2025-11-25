@@ -1,4 +1,5 @@
 ---
+import Button from '@components/atoms/Button.astro';
 import Hero from '@components/organisms/Hero.astro';
 import type { Person } from '@components/organisms/Person.astro';
 import PeopleSection from '@components/sections/PeopleSection.astro';
@@ -31,10 +32,24 @@ const people: Person[] = peopleData.map((person) => ({
 		background="white"
 	>
 		<p class="text-center">
-			Thank you <a href="https://www.dicebear.com">Dicebear</a> and <a
-				href="https://www.openpeeps.com">Open Peeps!</a
+			Thank you <Button
+				type="button"
+				as="a"
+				href="https://www.dicebear.com"
+				variant="primary"
+				size="md">Dicebear</Button
+			>
+			<a href="">Dicebear</a> and <a href="https://www.openpeeps.com"
+				>Open Peeps!</a
 			>
 		</p></Hero
+	>
+	<Button
+		type="button"
+		as="button"
+		href="https://www.dicebear.com"
+		variant="primary"
+		size="md">Dicebear</Button
 	>
 
 	<!-- People Sections -->
