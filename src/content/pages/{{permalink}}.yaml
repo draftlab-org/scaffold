@@ -4,6 +4,8 @@ description: |-
   ## Feature Showcase
 
   This is the sandbox page showcasing sections, features, and components.
+
+  Enjoy!
 sections:
   - type: richText
     background: gray
