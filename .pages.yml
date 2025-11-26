@@ -212,7 +212,7 @@ content:
     label: Pages
     type: collection
     path: src/content/pages
-    extension: yaml
+    format: yaml
     filename: '{{slug}}'
     view:
       fields: [title, description]
