@@ -13,10 +13,8 @@
 }
 
 /* defines default link styling as a single source of truth */
-@layer components {
-  .link-default {
-    @apply text-primary-600 underline underline-offset-2 transition-colors hover:text-primary-700;
-  }
+@utility link-default {
+  @apply text-primary-600 underline underline-offset-2 transition-colors hover:text-primary-800;
 }
 
 @layer base {
