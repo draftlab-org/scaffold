@@ -25,6 +25,7 @@ components:
         label: Size
         type: select
         options:
+          values:
           - label: Small
             value: sm
           - label: Medium
