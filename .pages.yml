@@ -213,7 +213,7 @@ content:
     type: collection
     path: src/content/pages
     format: yaml
-    filename: '{{slug}}'
+    filename: '{{permalink}}.yaml'
     view:
       fields: [title, description]
       primary: title
@@ -223,6 +223,12 @@ content:
         type: string
         required: true
         description: The title of the page
+
+      - name: permalink
+        label: Permalink
+        type: string
+        description: The slug, without slashes or parents, like 'about-us' or 'omg-3'.
+        pattern: { message: "This must be a web-safe string like 'about-us' or 'omg-3'.", regex: '^[a-zA-Z0-9_-]*$' }
 
       - name: description
         label: Page Description
