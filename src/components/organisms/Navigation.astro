@@ -29,15 +29,17 @@ const isActive = (href: string) => {
 
 ---
 
-<nav class={`p-6 w-full bg-white inline-flex justify-between items-center ${className}`}>
-	<div class="flex justify-start items-center gap-10">
+<nav
+	class={`p-6 w-full bg-white inline-flex justify-between items-center ${className}`}
+>
+	<div class="flex items-center justify-start gap-10">
 		<div class="flex h-16 items-center justify-between">
 			<!-- Logo/Site Name -->
 			<div class="shrink-0">
 				<Link
 					href="/"
 					variant="unstyled"
-					class="text-xl font-bold text-gray-900"
+					class="text-gray-900 text-xl font-bold"
 				>
 					{siteName}
 				</Link>

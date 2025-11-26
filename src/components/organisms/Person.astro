@@ -9,6 +9,7 @@ export type Person = {
   headshot: ImageMetadata;
   title: string;
   sections: string[];
+	id: string;
 };
 
 export interface Props {
@@ -20,24 +21,30 @@ const { person, class: className = '' } = Astro.props;
 ---
 
 <div class={`text-center ${className}`}>
-	<!-- Headshot -->
-	<div class="mb-4 flex justify-center">
-		<Image
-			src={person.headshot}
-			alt={person.name}
-			width={200}
-			height={200}
-			class="h-48 w-48 rounded-lg object-cover"
-		/>
-	</div>
+	<a
+		href={`/people/${person.id}`}
+		class="block transition-transform hover:scale-105"
+		data-component
+	>
+		<!-- Headshot -->
+		<div class="mb-4 flex justify-center">
+			<Image
+				src={person.headshot}
+				alt={person.name}
+				width={200}
+				height={200}
+				class="h-48 w-48 rounded-lg object-cover"
+			/>
+		</div>
 
-	<!-- Name -->
-	<Heading level={4} class="mb-2">
-		{person.name}
-	</Heading>
+		<!-- Name -->
+		<Heading level={4} class="mb-2">
+			{person.name}
+		</Heading>
 
-	<!-- Title -->
-	<Text size="sm" class="text-gray-600">
-		{person.title}
-	</Text>
+		<!-- Title -->
+		<Text size="sm" class="text-gray-600">
+			{person.title}
+		</Text>
+	</a>
 </div>

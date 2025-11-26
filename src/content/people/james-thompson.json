@@ -1,0 +1,10 @@
+{
+  "id": "james-thompson",
+  "name": "James Thompson",
+  "headshot": "james-thompson.png",
+  "title": "VP of Engineering",
+  "sections": [
+    "Leadership",
+    "Engineering"
+  ]
+}

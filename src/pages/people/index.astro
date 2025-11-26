@@ -1,0 +1,74 @@
+---
+import { getCollection } from 'astro:content';
+import Image from '@components/atoms/Image.astro';
+import Hero from '@components/organisms/Hero.astro';
+import PageLayout from '@layouts/PageLayout.astro';
+
+// Import all people images
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/people/*.png',
+  { eager: true }
+);
+
+// Get all people from the collection
+const peopleEntries = await getCollection('people');
+
+// Map people data to include actual image imports
+const people = peopleEntries.map((entry) => ({
+  ...entry.data,
+  headshot: images[`/src/assets/people/${entry.data.headshot}`]?.default,
+}));
+---
+
+<PageLayout
+	title="People - DraftLab Scaffold"
+	description="Meet our team members"
+>
+	<!-- Hero Section -->
+	<Hero
+		title="Our Team"
+		subtitle="Meet the amazing people who make everything possible"
+		size="default"
+		background="white"
+	/>
+
+	<!-- People Grid -->
+	<section class="py-16">
+		<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+			<div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+				{
+					people.map((person) => (
+						<a
+							href={`/people/${person.id}`}
+							class="block transition-transform hover:scale-105"
+							data-component
+						>
+							<div class="text-center">
+								<!-- Headshot -->
+								<div class="mb-4 flex justify-center">
+									<Image
+										src={person.headshot}
+										alt={person.name}
+										width={200}
+										height={200}
+										class="h-48 w-48 rounded-lg object-cover"
+									/>
+								</div>
+
+								<!-- Name -->
+								<h4 class="mb-2">
+									{person.name}
+								</h4>
+
+								<!-- Title -->
+								<p class="text-gray-600">
+									{person.title}
+								</p>
+							</div>
+						</a>
+					))
+				}
+			</div>
+		</div>
+	</section>
+</PageLayout>

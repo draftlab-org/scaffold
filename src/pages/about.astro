@@ -1,9 +1,9 @@
 ---
+import { getCollection } from 'astro:content';
 import Button from '@components/atoms/Button.astro';
 import Hero from '@components/organisms/Hero.astro';
 import type { Person } from '@components/organisms/Person.astro';
 import PeopleSection from '@components/sections/PeopleSection.astro';
-import peopleData from '@content/people.json';
 import sections from '@content/sections.json';
 import PageLayout from '@layouts/PageLayout.astro';
 
@@ -13,10 +13,13 @@ const images = import.meta.glob<{ default: ImageMetadata }>(
   { eager: true }
 );
 
+// Get all people from the collection
+const peopleEntries = await getCollection('people');
+
 // Map people data to include actual image imports
-const people: Person[] = peopleData.map((person) => ({
-  ...person,
-  headshot: images[`/src/assets/people/${person.headshot}`]?.default,
+const people: Person[] = peopleEntries.map((entry) => ({
+  ...entry.data,
+  headshot: images[`/src/assets/people/${entry.data.headshot}`]?.default,
 }));
 ---
 

@@ -1,0 +1,89 @@
+---
+import { getCollection } from 'astro:content';
+import Image from '@components/atoms/Image.astro';
+import Hero from '@components/organisms/Hero.astro';
+import PageLayout from '@layouts/PageLayout.astro';
+import type { GetStaticPaths } from 'astro';
+
+// Import all people images
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/people/*.png',
+  { eager: true }
+);
+
+// Generate static paths for all people
+export const getStaticPaths = (async () => {
+  const peopleEntries = await getCollection('people');
+  return peopleEntries.map((entry) => ({
+    params: { id: entry.data.id },
+    props: { person: entry.data },
+  }));
+}) satisfies GetStaticPaths;
+
+const { person } = Astro.props;
+
+// Get the person's headshot
+const headshot = images[`/src/assets/people/${person.headshot}`]?.default;
+---
+
+<PageLayout
+	title={`${person.name} - DraftLab Scaffold`}
+	description={`${person.name}, ${person.title}`}
+>
+	<!-- Hero Section -->
+	<Hero
+		title={person.name}
+		subtitle={person.title}
+		size="default"
+		background="white"
+	/>
+
+	<!-- Person Details -->
+	<section class="py-16">
+		<div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+			<div class="flex flex-col items-center text-center">
+				<!-- Headshot -->
+				<div class="mb-8">
+					<Image
+						src={headshot}
+						alt={person.name}
+						width={300}
+						height={300}
+						class="h-64 w-64 rounded-lg object-cover shadow-lg"
+					/>
+				</div>
+
+				<!-- Name -->
+				<h2 class="mb-4">
+					{person.name}
+				</h2>
+
+				<!-- Title -->
+				<p class="text-gray-600 mb-6">
+					{person.title}
+				</p>
+
+				<!-- Sections/Departments -->
+				{
+					person.sections && person.sections.length > 0 && (
+						<div class="mb-8">
+							<h3 class="mb-3">Departments</h3>
+							<div class="flex flex-wrap justify-center gap-2">
+								{person.sections.map((section) => (
+									<span class="rounded-full bg-primary-100 px-4 py-2 text-primary-700">
+										{section}
+									</span>
+								))}
+							</div>
+						</div>
+					)
+				}
+
+				<!-- Back Button -->
+				<a onclick="history.back()" class="default-link cursor-pointer">
+					← Back
+				</a>
+			</div>
+		</div>
+	</section>
+</PageLayout>

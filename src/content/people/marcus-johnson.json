@@ -1,0 +1,10 @@
+{
+  "id": "marcus-johnson",
+  "name": "Marcus Johnson",
+  "headshot": "marcus-johnson.png",
+  "title": "Chief Technology Officer",
+  "sections": [
+    "Leadership",
+    "Engineering"
+  ]
+}
