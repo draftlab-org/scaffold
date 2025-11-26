@@ -1,0 +1,97 @@
+---
+import Button from '@components/atoms/Button.astro';
+import Image from '@components/atoms/Image.astro';
+import Card from '@components/molecules/Card.astro';
+
+export interface ButtonType {
+  variant: string;
+  size: string;
+  href: string;
+}
+
+export interface CardType {
+  title: string;
+  content?: string;
+  image?: string;
+  button?: ButtonType;
+}
+
+export interface Props {
+  title: string;
+  description?: string;
+  cards?: CardType[];
+  buttons?: ButtonType[];
+  class?: string;
+}
+
+const {
+  title,
+  description,
+  cards = [],
+  buttons = [],
+  class: className = '',
+} = Astro.props;
+---
+
+<section class={`py-16 ${className}`}>
+	<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+		<!-- Section Header -->
+		<div class="mb-12 text-center">
+			<h2 class="mb-4">{title}</h2>
+			{description && <p class="text-gray-600">{description}</p>}
+		</div>
+
+		<!-- Cards Grid -->
+		{
+			cards.length > 0 && (
+				<div class="mb-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+					{cards.map((card) => (
+						<Card variant="elevated" padding="lg">
+							{card.image && (
+								<div class="mb-4">
+									<img
+										src={card.image}
+										alt={card.title}
+										class="h-48 w-full rounded-lg object-cover"
+									/>
+								</div>
+							)}
+							<h3 class="mb-3">{card.title}</h3>
+							{card.content && <p class="mb-4 text-gray-600">{card.content}</p>}
+							{card.button && (
+								<Button
+									type="button"
+									as="a"
+									variant={card.button.variant as any}
+									size={card.button.size as any}
+									href={card.button.href}
+								>
+									Learn More
+								</Button>
+							)}
+						</Card>
+					))}
+				</div>
+			)
+		}
+
+		<!-- Action Buttons -->
+		{
+			buttons.length > 0 && (
+				<div class="flex flex-wrap justify-center gap-4">
+					{buttons.map((button) => (
+						<Button
+							type="button"
+							as="a"
+							variant={button.variant as any}
+							size={button.size as any}
+							href={button.href}
+						>
+							{button.href.split('/').pop() || 'Learn More'}
+						</Button>
+					))}
+				</div>
+			)
+		}
+	</div>
+</section>

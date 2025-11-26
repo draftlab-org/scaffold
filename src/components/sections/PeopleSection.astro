@@ -7,13 +7,14 @@ import sections from '@content/sections.json';
 export interface Props {
   people: PersonType[];
   section: string;
+  validateSection?: boolean;
   class?: string;
 }
 
-const { people, section, class: className = '' } = Astro.props;
+const { people, section, validateSection = true, class: className = '' } = Astro.props;
 
-// Validate section exists in sections list
-if (!sections.includes(section)) {
+// Optionally validate section exists in sections list
+if (validateSection && !sections.includes(section)) {
   throw new Error(`Invalid section: ${section}. Must be one of: ${sections.join(', ')}`);
 }
 

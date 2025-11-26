@@ -1,0 +1,86 @@
+---
+import { getCollection } from 'astro:content';
+import CardSection from '@components/sections/CardSection.astro';
+import HeroSection from '@components/sections/HeroSection.astro';
+import PartnersSection from '@components/sections/PartnersSection.astro';
+import PeopleSection from '@components/sections/PeopleSection.astro';
+import RichTextSection from '@components/sections/RichTextSection.astro';
+import PageLayout from '@layouts/PageLayout.astro';
+import type { GetStaticPaths } from 'astro';
+
+// Generate static paths from pages collection
+export const getStaticPaths = (async () => {
+  const pages = await getCollection('pages');
+  return pages.map((page) => ({
+    params: { slug: page.id },
+    props: { page },
+  }));
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+
+// Import all people images for people sections
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/people/*.png',
+  { eager: true }
+);
+
+// Helper to resolve people images
+const resolvePeopleImages = (people: any[]) => {
+  return people.map((person) => ({
+    ...person,
+    headshot: images[`/src/assets/people/${person.headshot}`]?.default,
+  }));
+};
+---
+
+<PageLayout title={page.data.title} description={page.data.description}>
+	{
+		page.data.sections.map((section: any) => {
+			switch (section.type) {
+				case 'hero':
+					return (
+						<HeroSection
+							title={section.title}
+							subtitle={section.subtitle}
+							backgroundImage={section.backgroundImage}
+						/>
+					);
+				case 'richText':
+					return (
+						<RichTextSection
+							background={section.background}
+							content={section.content}
+						/>
+					);
+				case 'card':
+					return (
+						<CardSection
+							title={section.title}
+							description={section.description}
+							cards={section.cards}
+							buttons={section.buttons}
+						/>
+					);
+				case 'people':
+					const peopleWithImages = resolvePeopleImages(section.people);
+					return (
+						<PeopleSection
+							people={peopleWithImages}
+							section={section.category}
+							validateSection={false}
+						/>
+					);
+				case 'partners':
+					return (
+						<PartnersSection
+							title={section.title}
+							partners={section.partners}
+						/>
+					);
+				default:
+					return null;
+			}
+		})
+	}
+</PageLayout>

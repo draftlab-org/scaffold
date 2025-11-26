@@ -1,0 +1,71 @@
+---
+export interface Partner {
+  name: string;
+  affiliation?: string;
+  url?: string;
+  category: string;
+  image: string;
+}
+
+export interface Props {
+  title: string;
+  partners: Partner[];
+  class?: string;
+}
+
+const { title, partners, class: className = '' } = Astro.props;
+---
+
+<section class={`py-16 ${className}`}>
+	<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+		<!-- Section Header -->
+		<div class="mb-12 text-center">
+			<h2 class="mb-4">{title}</h2>
+		</div>
+
+		<!-- Partners Grid -->
+		<div class="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+			{
+				partners.map((partner) => (
+					<div class="flex flex-col items-center text-center">
+						{partner.url ? (
+							<a
+								href={partner.url}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="group"
+								data-component
+							>
+								<div class="mb-4 flex h-32 w-full items-center justify-center rounded-lg bg-white p-6 shadow-sm transition-shadow group-hover:shadow-md">
+									<img
+										src={partner.image}
+										alt={partner.name}
+										class="max-h-full max-w-full object-contain"
+									/>
+								</div>
+								<h4 class="mb-2">{partner.name}</h4>
+								{partner.affiliation && (
+									<p class="text-gray-600">{partner.affiliation}</p>
+								)}
+							</a>
+						) : (
+							<>
+								<div class="mb-4 flex h-32 w-full items-center justify-center rounded-lg bg-white p-6 shadow-sm">
+									<img
+										src={partner.image}
+										alt={partner.name}
+										class="max-h-full max-w-full object-contain"
+									/>
+								</div>
+								<h4 class="mb-2">{partner.name}</h4>
+								{partner.affiliation && (
+									<p class="text-gray-600">{partner.affiliation}</p>
+								)}
+							</>
+						)}
+					</div>
+				))
+			}
+		</div>
+	</div>
+</section>
