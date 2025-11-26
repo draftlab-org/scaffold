@@ -14,6 +14,7 @@ components:
         label: Variant
         type: select
         options:
+          values:
           - label: Primary
             value: primary
           - label: Secondary
