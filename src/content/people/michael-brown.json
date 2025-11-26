@@ -1,7 +1,7 @@
 {
   "id": "michael-brown",
   "name": "Michael Brown",
-  "headshot": "michael-brown.png",
+  "headshot": "../../assets/people/michael-brown.png",
   "title": "Growth Manager",
   "sections": [
     "Marketing"

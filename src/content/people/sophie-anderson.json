@@ -1,7 +1,7 @@
 {
   "id": "sophie-anderson",
   "name": "Sophie Anderson",
-  "headshot": "sophie-anderson.png",
+  "headshot": "../../assets/people/sophie-anderson.png",
   "title": "UI Designer",
   "sections": [
     "Design"

@@ -1,10 +1,13 @@
 ---
+import type { ImageMetadata } from 'astro';
+import Image from '@components/atoms/Image.astro';
+
 export interface Partner {
   name: string;
   affiliation?: string;
   url?: string;
   category: string;
-  image: string;
+  image: ImageMetadata;
 }
 
 export interface Props {
@@ -37,9 +40,11 @@ const { title, partners, class: className = '' } = Astro.props;
 								data-component
 							>
 								<div class="mb-4 flex h-32 w-full items-center justify-center rounded-lg bg-white p-6 shadow-sm transition-shadow group-hover:shadow-md">
-									<img
+									<Image
 										src={partner.image}
 										alt={partner.name}
+										width={200}
+										height={128}
 										class="max-h-full max-w-full object-contain"
 									/>
 								</div>
@@ -51,9 +56,11 @@ const { title, partners, class: className = '' } = Astro.props;
 						) : (
 							<>
 								<div class="mb-4 flex h-32 w-full items-center justify-center rounded-lg bg-white p-6 shadow-sm">
-									<img
+									<Image
 										src={partner.image}
 										alt={partner.name}
+										width={200}
+										height={128}
 										class="max-h-full max-w-full object-contain"
 									/>
 								</div>

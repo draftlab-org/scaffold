@@ -1,7 +1,7 @@
 {
   "id": "aisha-patel",
   "name": "Aisha Patel",
-  "headshot": "aisha-patel.png",
+  "headshot": "../../assets/people/aisha-patel.png",
   "title": "Senior Software Engineer",
   "sections": [
     "Engineering"

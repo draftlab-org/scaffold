@@ -1,7 +1,7 @@
 {
   "id": "kevin-nguyen",
   "name": "Kevin Nguyen",
-  "headshot": "kevin-nguyen.png",
+  "headshot": "../../assets/people/kevin-nguyen.png",
   "title": "Customer Success Manager",
   "sections": [
     "Sales"

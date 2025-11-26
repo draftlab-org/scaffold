@@ -5,12 +5,6 @@ import Hero from '@components/organisms/Hero.astro';
 import PageLayout from '@layouts/PageLayout.astro';
 import type { GetStaticPaths } from 'astro';
 
-// Import all people images
-const images = import.meta.glob<{ default: ImageMetadata }>(
-  '/src/assets/people/*.png',
-  { eager: true }
-);
-
 // Generate static paths for all people
 export const getStaticPaths = (async () => {
   const peopleEntries = await getCollection('people');
@@ -21,9 +15,6 @@ export const getStaticPaths = (async () => {
 }) satisfies GetStaticPaths;
 
 const { person } = Astro.props;
-
-// Get the person's headshot
-const headshot = images[`/src/assets/people/${person.headshot}`]?.default;
 ---
 
 <PageLayout
@@ -45,7 +36,7 @@ const headshot = images[`/src/assets/people/${person.headshot}`]?.default;
 				<!-- Headshot -->
 				<div class="mb-8">
 					<Image
-						src={headshot}
+						src={person.headshot}
 						alt={person.name}
 						width={300}
 						height={300}

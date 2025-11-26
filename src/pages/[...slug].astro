@@ -18,20 +18,6 @@ export const getStaticPaths = (async () => {
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;
-
-// Import all people images for people sections
-const images = import.meta.glob<{ default: ImageMetadata }>(
-  '/src/assets/people/*.png',
-  { eager: true }
-);
-
-// Helper to resolve people images
-const resolvePeopleImages = (people: any[]) => {
-  return people.map((person) => ({
-    ...person,
-    headshot: images[`/src/assets/people/${person.headshot}`]?.default,
-  }));
-};
 ---
 
 <PageLayout title={page.data.title} description={page.data.description}>
@@ -63,10 +49,9 @@ const resolvePeopleImages = (people: any[]) => {
 						/>
 					);
 				case 'people':
-					const peopleWithImages = resolvePeopleImages(section.people);
 					return (
 						<PeopleSection
-							people={peopleWithImages}
+							people={section.people}
 							section={section.category}
 							validateSection={false}
 						/>

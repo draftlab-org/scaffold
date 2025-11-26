@@ -1,7 +1,7 @@
 {
   "id": "zoe-adams",
   "name": "Zoe Adams",
-  "headshot": "zoe-adams.png",
+  "headshot": "../../assets/people/zoe-adams.png",
   "title": "Office Manager",
   "sections": [
     "Operations"

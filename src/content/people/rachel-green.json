@@ -1,7 +1,7 @@
 {
   "id": "rachel-green",
   "name": "Rachel Green",
-  "headshot": "rachel-green.png",
+  "headshot": "../../assets/people/rachel-green.png",
   "title": "Chief Financial Officer",
   "sections": [
     "Leadership",

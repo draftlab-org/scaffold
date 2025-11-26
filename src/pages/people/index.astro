@@ -4,20 +4,9 @@ import Image from '@components/atoms/Image.astro';
 import Hero from '@components/organisms/Hero.astro';
 import PageLayout from '@layouts/PageLayout.astro';
 
-// Import all people images
-const images = import.meta.glob<{ default: ImageMetadata }>(
-  '/src/assets/people/*.png',
-  { eager: true }
-);
-
-// Get all people from the collection
+// Get all people from the collection (images are automatically resolved)
 const peopleEntries = await getCollection('people');
-
-// Map people data to include actual image imports
-const people = peopleEntries.map((entry) => ({
-  ...entry.data,
-  headshot: images[`/src/assets/people/${entry.data.headshot}`]?.default,
-}));
+const people = peopleEntries.map((entry) => entry.data);
 ---
 
 <PageLayout

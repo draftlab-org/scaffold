@@ -1,0 +1,305 @@
+# Pages CMS Configuration
+# Documentation: https://pagescms.org/docs/configuration/
+
+# Media configuration
+media: src/assets
+
+# Reusable components
+components:
+  # Button component
+  button:
+    fields:
+      - name: variant
+        label: Variant
+        type: select
+        options:
+          - label: Primary
+            value: primary
+          - label: Secondary
+            value: secondary
+        required: true
+        default: primary
+      - name: size
+        label: Size
+        type: select
+        options:
+          - label: Small
+            value: sm
+          - label: Medium
+            value: md
+          - label: Large
+            value: lg
+        required: true
+        default: md
+      - name: href
+        label: Link URL
+        type: string
+        required: true
+        description: The URL this button links to
+
+  # Card component
+  card:
+    fields:
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: content
+        label: Content
+        type: text
+        description: Brief description of the card
+      - name: image
+        label: Image
+        type: image
+        description: Card image (relative path from content file)
+      - name: button
+        label: Button
+        type: object
+        component: button
+
+  # Person component
+  person:
+    fields:
+      - name: id
+        label: ID
+        type: string
+        required: true
+        description: Unique identifier (slug format, e.g. john-doe)
+      - name: name
+        label: Name
+        type: string
+        required: true
+      - name: headshot
+        label: Headshot
+        type: image
+        required: true
+        description: Relative path to image (e.g. ../../assets/people/john-doe.png)
+      - name: title
+        label: Job Title
+        type: string
+        required: true
+      - name: sections
+        label: Sections
+        type: string
+        list: true
+        description: Department/section tags (e.g. Leadership, Engineering)
+
+  # Partner component
+  partner:
+    fields:
+      - name: name
+        label: Name
+        type: string
+        required: true
+      - name: affiliation
+        label: Affiliation
+        type: string
+        description: e.g. "Platinum Sponsor"
+      - name: url
+        label: Website URL
+        type: string
+        description: Partner's website
+      - name: category
+        label: Category
+        type: string
+        required: true
+        description: e.g. sponsor, infrastructure, community
+      - name: image
+        label: Logo
+        type: image
+        required: true
+        description: Relative path to partner logo
+
+  # Section components for block variants
+  hero_section:
+    fields:
+      - name: type
+        type: string
+        default: hero
+        hidden: true
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: subtitle
+        label: Subtitle
+        type: string
+      - name: backgroundImage
+        label: Background Image
+        type: image
+        description: Optional hero background image
+
+  richtext_section:
+    fields:
+      - name: type
+        type: string
+        default: richText
+        hidden: true
+      - name: background
+        label: Background Color
+        type: select
+        options:
+          - label: White
+            value: white
+          - label: Gray
+            value: gray
+          - label: Gradient
+            value: gradient
+        required: true
+        default: white
+      - name: content
+        label: Content
+        type: rich-text
+        required: true
+        description: Markdown content for this section
+
+  card_section:
+    fields:
+      - name: type
+        type: string
+        default: card
+        hidden: true
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: description
+        label: Description
+        type: text
+      - name: cards
+        label: Cards
+        type: object
+        list: true
+        component: card
+        description: Grid of content cards
+      - name: buttons
+        label: Action Buttons
+        type: object
+        list: true
+        component: button
+        description: Buttons at the bottom of the section
+
+  people_section:
+    fields:
+      - name: type
+        type: string
+        default: people
+        hidden: true
+      - name: category
+        label: Category
+        type: string
+        required: true
+        description: Section title (e.g. "Community Leaders")
+      - name: people
+        label: People
+        type: object
+        list: true
+        component: person
+        required: true
+
+  partners_section:
+    fields:
+      - name: type
+        type: string
+        default: partners
+        hidden: true
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: partners
+        label: Partners
+        type: object
+        list: true
+        component: partner
+        required: true
+
+# Content collections
+content:
+  # Pages collection
+  - name: pages
+    label: Pages
+    type: collection
+    path: src/content/pages
+    extension: yaml
+    filename: '{{slug}}'
+    view:
+      fields: [title, description]
+      primary: title
+    fields:
+      - name: title
+        label: Page Title
+        type: string
+        required: true
+        description: The title of the page
+
+      - name: description
+        label: Page Description
+        type: string
+        description: SEO meta description
+
+      - name: sections
+        label: Page Sections
+        type: block
+        list: true
+        required: true
+        description: Add and arrange page sections in any order
+        blocks:
+          - name: hero
+            label: Hero Section
+            component: hero_section
+
+          - name: richText
+            label: Rich Text Section
+            component: richtext_section
+
+          - name: card
+            label: Card Section
+            component: card_section
+
+          - name: people
+            label: People Section
+            component: people_section
+
+          - name: partners
+            label: Partners Section
+            component: partners_section
+
+  # People collection
+  - name: people
+    label: People
+    type: collection
+    path: src/content/people
+    extension: json
+    filename: '{{fields.id}}'
+    view:
+      fields: [name, title]
+      primary: name
+    fields:
+      - name: id
+        label: ID
+        type: string
+        required: true
+        description: Unique identifier (slug format, e.g. john-doe)
+
+      - name: name
+        label: Name
+        type: string
+        required: true
+
+      - name: headshot
+        label: Headshot
+        type: image
+        required: true
+        description: Relative path (e.g. ../../assets/people/john-doe.png)
+
+      - name: title
+        label: Job Title
+        type: string
+        required: true
+
+      - name: sections
+        label: Sections/Departments
+        type: string
+        list: true
+        description: Tags like "Leadership", "Engineering", etc.

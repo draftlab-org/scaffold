@@ -1,7 +1,7 @@
 {
   "id": "nina-kowalski",
   "name": "Nina Kowalski",
-  "headshot": "nina-kowalski.png",
+  "headshot": "../../assets/people/nina-kowalski.png",
   "title": "Product Manager",
   "sections": [
     "Product"
