@@ -1,0 +1,6 @@
+title: Test file yay
+description: content
+sections:
+  - type: richText
+    background: white
+    content: Hello
