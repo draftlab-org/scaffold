@@ -213,7 +213,7 @@ content:
     type: collection
     path: src/content/pages
     format: yaml
-    filename: '{{permalink}}.yaml'
+    filename: '{permalink}.yaml'
     view:
       fields: [title, description]
       primary: title
