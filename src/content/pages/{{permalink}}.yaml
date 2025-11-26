@@ -1,0 +1,15 @@
+title: Feature Showcase
+permalink: feature-showcase
+description: |-
+  ## Feature Showcase
+
+  This is the sandbox page showcasing sections, features, and components.
+sections:
+  - type: richText
+    background: gray
+    content: |-
+      # Rich Text Block
+
+      Some content inside the block.
+
+      ![](/src/assets/hero.png)
