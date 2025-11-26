@@ -1,0 +1,17 @@
+title: Feature Showcase Page
+permalink: feature-showcase
+description: >-
+  # Feature Showcase
+
+
+  Examples of sections, components, and features of the Draftlab Scaffold
+  template.
+sections:
+  - type: richText
+    background: gray
+    content: |-
+      # Rich Text
+
+      This is some content
+
+      ![](/src/assets/hero.png)
