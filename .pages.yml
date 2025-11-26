@@ -56,7 +56,6 @@ components:
         description: Card image (absolute path, e.g. /src/assets/images/card.jpg)
       - name: button
         label: Button
-        type: object
         component: button
 
   # Person component
@@ -137,6 +136,7 @@ components:
         label: Background Color
         type: select
         options:
+          values:
           - label: White
             value: white
           - label: Gray
