@@ -15,10 +15,10 @@ components:
         type: select
         options:
           values:
-          - label: Primary
-            value: primary
-          - label: Secondary
-            value: secondary
+            - label: Primary
+              value: primary
+            - label: Secondary
+              value: secondary
         required: true
         default: primary
       - name: size
@@ -26,12 +26,12 @@ components:
         type: select
         options:
           values:
-          - label: Small
-            value: sm
-          - label: Medium
-            value: md
-          - label: Large
-            value: lg
+            - label: Small
+              value: sm
+            - label: Medium
+              value: md
+            - label: Large
+              value: lg
         required: true
         default: md
       - name: href
@@ -50,7 +50,7 @@ components:
         required: true
       - name: content
         label: Content
-        type: text
+        type: rich-text
         description: Brief description of the card
       - name: image
         label: Image
@@ -139,12 +139,12 @@ components:
         type: select
         options:
           values:
-          - label: White
-            value: white
-          - label: Gray
-            value: gray
-          - label: Gradient
-            value: gradient
+            - label: White
+              value: white
+            - label: Gray
+              value: gray
+            - label: Gradient
+              value: gradient
         required: true
         default: white
       - name: content
@@ -162,7 +162,7 @@ components:
         required: true
       - name: description
         label: Description
-        type: text
+        type: rich-text
       - name: cards
         label: Cards
         type: object
@@ -226,7 +226,7 @@ content:
 
       - name: description
         label: Page Description
-        type: string
+        type: rich-text
         description: SEO meta description
 
       - name: sections

@@ -20,7 +20,7 @@ const bgClass = backgrounds[background as keyof typeof backgrounds] || backgroun
 
 <section class={`py-16 ${bgClass} ${className}`}>
 	<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-		<div class="prose prose-lg mx-auto max-w-3xl">
+		<div class="mx-auto prose max-w-3xl">
 			<Fragment set:html={marked.parse(content)} />
 		</div>
 	</div>
