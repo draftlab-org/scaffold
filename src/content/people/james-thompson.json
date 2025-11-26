@@ -1,7 +1,7 @@
 {
   "id": "james-thompson",
   "name": "James Thompson",
-  "headshot": "../../assets/people/james-thompson.png",
+  "headshot": "/src/assets/people/james-thompson.png",
   "title": "VP of Engineering",
   "sections": [
     "Leadership",

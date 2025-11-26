@@ -1,7 +1,7 @@
 {
   "id": "maria-santos",
   "name": "Maria Santos",
-  "headshot": "../../assets/people/maria-santos.png",
+  "headshot": "/src/assets/people/maria-santos.png",
   "title": "Frontend Developer",
   "sections": [
     "Engineering"

@@ -1,7 +1,7 @@
 {
   "id": "emily-rodriguez",
   "name": "Emily Rodriguez",
-  "headshot": "../../assets/people/emily-rodriguez.png",
+  "headshot": "/src/assets/people/emily-rodriguez.png",
   "title": "VP of Product",
   "sections": [
     "Leadership",

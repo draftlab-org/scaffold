@@ -1,7 +1,7 @@
 {
   "id": "priya-sharma",
   "name": "Priya Sharma",
-  "headshot": "../../assets/people/priya-sharma.png",
+  "headshot": "/src/assets/people/priya-sharma.png",
   "title": "UX Researcher",
   "sections": [
     "Product",

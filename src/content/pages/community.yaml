@@ -74,21 +74,21 @@ sections:
     people:
       - id: sarah-chen
         name: Sarah Chen
-        headshot: ../../assets/people/sarah-chen.png
+        headshot: /src/assets/people/sarah-chen.png
         title: Community Manager
         sections:
           - Leadership
           - Community
       - id: marcus-johnson
         name: Marcus Johnson
-        headshot: ../../assets/people/marcus-johnson.png
+        headshot: /src/assets/people/marcus-johnson.png
         title: Developer Advocate
         sections:
           - Engineering
           - Community
       - id: emily-rodriguez
         name: Emily Rodriguez
-        headshot: ../../assets/people/emily-rodriguez.png
+        headshot: /src/assets/people/emily-rodriguez.png
         title: Community Coordinator
         sections:
           - Community
@@ -102,22 +102,22 @@ sections:
         affiliation: Platinum Sponsor
         url: https://techcorp.example.com
         category: sponsor
-        image: ../../assets/partners/techcorp.png
+        image: /src/assets/partners/techcorp.png
       - name: DevTools Inc
         affiliation: Gold Sponsor
         url: https://devtools.example.com
         category: sponsor
-        image: ../../assets/partners/devtools.png
+        image: /src/assets/partners/devtools.png
       - name: CloudHost
         affiliation: Infrastructure Partner
         url: https://cloudhost.example.com
         category: infrastructure
-        image: ../../assets/partners/cloudhost.png
+        image: /src/assets/partners/cloudhost.png
       - name: Open Source Foundation
         affiliation: Community Partner
         url: https://osf.example.com
         category: community
-        image: ../../assets/partners/osf.png
+        image: /src/assets/partners/osf.png
 
   # 7. Another Rich Text Section
   - type: richText

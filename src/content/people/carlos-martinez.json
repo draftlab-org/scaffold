@@ -1,7 +1,7 @@
 {
   "id": "carlos-martinez",
   "name": "Carlos Martinez",
-  "headshot": "../../assets/people/carlos-martinez.png",
+  "headshot": "/src/assets/people/carlos-martinez.png",
   "title": "Head of Marketing",
   "sections": [
     "Marketing"

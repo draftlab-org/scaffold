@@ -1,7 +1,7 @@
 {
   "id": "marcus-johnson",
   "name": "Marcus Johnson",
-  "headshot": "../../assets/people/marcus-johnson.png",
+  "headshot": "/src/assets/people/marcus-johnson.png",
   "title": "Chief Technology Officer",
   "sections": [
     "Leadership",

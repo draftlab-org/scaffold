@@ -1,7 +1,7 @@
 {
   "id": "sarah-chen",
   "name": "Sarah Chen",
-  "headshot": "../../assets/people/sarah-chen.png",
+  "headshot": "/src/assets/people/sarah-chen.png",
   "title": "Chief Executive Officer",
   "sections": [
     "Leadership"

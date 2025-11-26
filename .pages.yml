@@ -51,7 +51,7 @@ components:
       - name: image
         label: Image
         type: image
-        description: Card image (relative path from content file)
+        description: Card image (absolute path, e.g. /src/assets/images/card.jpg)
       - name: button
         label: Button
         type: object
@@ -73,7 +73,7 @@ components:
         label: Headshot
         type: image
         required: true
-        description: Relative path to image (e.g. ../../assets/people/john-doe.png)
+        description: Absolute path from root (e.g. /src/assets/people/john-doe.png)
       - name: title
         label: Job Title
         type: string
@@ -108,7 +108,7 @@ components:
         label: Logo
         type: image
         required: true
-        description: Relative path to partner logo
+        description: Absolute path to partner logo (e.g. /src/assets/partners/logo.png)
 
   # Section components for block variants
   hero_section:
@@ -127,7 +127,7 @@ components:
       - name: backgroundImage
         label: Background Image
         type: image
-        description: Optional hero background image
+        description: Optional hero background image (absolute path, e.g. /src/assets/hero-bg.jpg)
 
   richtext_section:
     fields:
@@ -291,7 +291,7 @@ content:
         label: Headshot
         type: image
         required: true
-        description: Relative path (e.g. ../../assets/people/john-doe.png)
+        description: Absolute path from root (e.g. /src/assets/people/john-doe.png)
 
       - name: title
         label: Job Title

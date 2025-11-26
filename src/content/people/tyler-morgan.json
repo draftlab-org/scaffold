@@ -1,7 +1,7 @@
 {
   "id": "tyler-morgan",
   "name": "Tyler Morgan",
-  "headshot": "../../assets/people/tyler-morgan.png",
+  "headshot": "/src/assets/people/tyler-morgan.png",
   "title": "Data Analyst",
   "sections": [
     "Engineering",

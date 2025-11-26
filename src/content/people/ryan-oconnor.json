@@ -1,7 +1,7 @@
 {
   "id": "ryan-oconnor",
   "name": "Ryan O'Connor",
-  "headshot": "../../assets/people/ryan-oconnor.png",
+  "headshot": "/src/assets/people/ryan-oconnor.png",
   "title": "Product Designer",
   "sections": [
     "Product",

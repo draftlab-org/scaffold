@@ -1,7 +1,7 @@
 {
   "id": "daniel-wright",
   "name": "Daniel Wright",
-  "headshot": "../../assets/people/daniel-wright.png",
+  "headshot": "/src/assets/people/daniel-wright.png",
   "title": "HR Director",
   "sections": [
     "Operations"
