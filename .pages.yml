@@ -113,10 +113,6 @@ components:
   # Section components for block variants
   hero_section:
     fields:
-      - name: type
-        type: string
-        default: hero
-        hidden: true
       - name: title
         label: Title
         type: string
@@ -131,10 +127,6 @@ components:
 
   richtext_section:
     fields:
-      - name: type
-        type: string
-        default: richText
-        hidden: true
       - name: background
         label: Background Color
         type: select
@@ -155,10 +147,6 @@ components:
 
   card_section:
     fields:
-      - name: type
-        type: string
-        default: card
-        hidden: true
       - name: title
         label: Title
         type: string
@@ -181,10 +169,6 @@ components:
 
   people_section:
     fields:
-      - name: type
-        type: string
-        default: people
-        hidden: true
       - name: category
         label: Category
         type: string
@@ -199,10 +183,6 @@ components:
 
   partners_section:
     fields:
-      - name: type
-        type: string
-        default: partners
-        hidden: true
       - name: title
         label: Title
         type: string
@@ -243,6 +223,7 @@ content:
         type: block
         list: true
         required: true
+        blockKey: type
         description: Add and arrange page sections in any order
         blocks:
           - name: hero
