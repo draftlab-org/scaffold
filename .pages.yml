@@ -8,6 +8,7 @@ media: src/assets
 components:
   # Button component
   button:
+    type: object
     fields:
       - name: variant
         label: Variant
@@ -39,6 +40,7 @@ components:
 
   # Card component
   card:
+    type: object
     fields:
       - name: title
         label: Title
@@ -59,6 +61,7 @@ components:
 
   # Person component
   person:
+    type: object
     fields:
       - name: id
         label: ID
@@ -86,6 +89,7 @@ components:
 
   # Partner component
   partner:
+    type: object
     fields:
       - name: name
         label: Name
@@ -112,6 +116,7 @@ components:
 
   # Section components for block variants
   hero_section:
+    type: object
     fields:
       - name: title
         label: Title
@@ -126,6 +131,7 @@ components:
         description: Optional hero background image (absolute path, e.g. /src/assets/hero-bg.jpg)
 
   richtext_section:
+    type: object
     fields:
       - name: background
         label: Background Color
@@ -146,6 +152,7 @@ components:
         description: Markdown content for this section
 
   card_section:
+    type: object
     fields:
       - name: title
         label: Title
@@ -168,6 +175,7 @@ components:
         description: Buttons at the bottom of the section
 
   people_section:
+    type: object
     fields:
       - name: category
         label: Category
@@ -182,6 +190,7 @@ components:
         required: true
 
   partners_section:
+    type: object
     fields:
       - name: title
         label: Title
