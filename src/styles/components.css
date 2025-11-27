@@ -1,18 +1,22 @@
-/* 
+/*
   -------------
-  Button 
+  Button
   -------------
 */
 
 /* Button - Variants */
+
+.button-base {
+  @apply inline-flex items-center justify-center rounded border-2 border-black font-medium shadow-sharp transition duration-75 hover:translate-x-px hover:translate-y-px hover:shadow-sharp-pressed focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50;
+}
 .button-primary {
-  @apply bg-primary-600 text-white hover:bg-primary-700 focus-visible:ring-primary-600;
+  @apply bg-primary-300 text-black;
 }
 .button-secondary {
-  @apply bg-gray-600 text-white hover:bg-gray-700 focus-visible:ring-gray-600;
+  @apply bg-highlight-500 text-white;
 }
 .button-outline {
-  @apply border-2 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white focus-visible:ring-gray-900;
+  @apply bg-white text-gray-900;
 }
 .button-ghost {
   @apply text-gray-900 hover:bg-gray-100 focus-visible:ring-gray-900;
@@ -32,7 +36,7 @@
   @apply rounded-xl px-8 py-4 text-xl;
 }
 
-/* 
+/*
   -------------
   Card
   -------------

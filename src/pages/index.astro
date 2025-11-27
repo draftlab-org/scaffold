@@ -6,6 +6,7 @@ import Card from '@components/molecules/Card.astro';
 import Hero from '@components/organisms/Hero.astro';
 import CallToAction from '@components/sections/CallToAction.astro';
 import PageLayout from '@layouts/PageLayout.astro';
+import SectionLayout from '@layouts/SectionLayout.astro';
 ---
 
 <PageLayout
@@ -27,7 +28,7 @@ import PageLayout from '@layouts/PageLayout.astro';
 				size="lg"
 				as="a"
 				href="https://docs.astro.build"
-				class="border-white text-white hover:bg-white hover:text-blue-600"
+				class="hover:text-blue-600 border-white text-white hover:bg-white"
 			>
 				View Docs
 			</Button>
@@ -35,7 +36,7 @@ import PageLayout from '@layouts/PageLayout.astro';
 	</Hero>
 
 	<!-- Features Section -->
-	<section class="py-16">
+	<SectionLayout>
 		<div class="mb-12 text-center">
 			<Heading level={2} class="mb-4"> Component Architecture </Heading>
 			<Text size="lg" class="text-gray-600">
@@ -45,32 +46,32 @@ import PageLayout from '@layouts/PageLayout.astro';
 
 		<div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
 			<Card variant="bordered">
-				<Heading level={4} class="mb-3 text-blue-600"> Atoms </Heading>
+				<Heading level={4} class="text-blue-600 mb-3"> Atoms </Heading>
 				<Text size="sm" class="text-gray-600">
 					Basic building blocks like buttons, links, and headings
 				</Text>
 			</Card>
 
 			<Card variant="bordered">
-				<Heading level={4} class="mb-3 text-blue-600"> Molecules </Heading>
+				<Heading level={4} class="text-blue-600 mb-3"> Molecules </Heading>
 				<Text size="sm" class="text-gray-600">
 					Simple combinations like cards, navigation items, and form fields
 				</Text>
 			</Card>
 
 			<Card variant="bordered">
-				<Heading level={4} class="mb-3 text-blue-600"> Organisms </Heading>
+				<Heading level={4} class="text-blue-600 mb-3"> Organisms </Heading>
 				<Text size="sm" class="text-gray-600">
 					Complex components like navigation bars, footers, and hero sections
 				</Text>
 			</Card>
 
 			<Card variant="bordered">
-				<Heading level={4} class="mb-3 text-blue-600"> Layouts </Heading>
+				<Heading level={4} class="text-blue-600 mb-3"> Layouts </Heading>
 				<Text size="sm" class="text-gray-600"> Complete page structures </Text>
 			</Card>
 		</div>
-	</section>
+	</SectionLayout>
 
 	<!-- CTA Section -->
 	<CallToAction

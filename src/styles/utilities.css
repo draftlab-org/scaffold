@@ -1,0 +1,4 @@
+@theme {
+  --shadow-sharp: 2px 2px 0 0 rgba(0, 0, 0, 1);
+  --shadow-sharp-pressed: 1px 1px 0 0 rgba(0, 0, 0, 1);
+}

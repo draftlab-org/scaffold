@@ -31,7 +31,7 @@ const currentYear = new Date().getFullYear();
 const copyrightText = copyright || `© ${currentYear} ${siteName}. All rights reserved.`;
 ---
 
-<footer class={`bg-neutral-900 text-neutral-50  ${className}`}>
+<footer class={`bg-highlight-950 text-white  ${className}`}>
 	<div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
 		<!-- Footer Sections -->
 		{
@@ -65,8 +65,8 @@ const copyrightText = copyright || `© ${currentYear} ${siteName}. All rights re
 		<slot />
 
 		<!-- Copyright -->
-		<div class="border-t border-gray-200 pt-8">
-			<Text size="sm" class="text-center text-gray-500">
+		<div class="pt-8">
+			<Text size="sm" class="text-center">
 				{copyrightText}
 			</Text>
 		</div>

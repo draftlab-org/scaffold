@@ -23,49 +23,53 @@ const { page } = Astro.props;
 <PageLayout title={page.data.title} description={page.data.description}>
 	{
 		page.data.sections.map((section: any) => {
-			switch (section.type) {
-				case 'hero':
-					return (
-						<HeroSection
-							title={section.title}
-							subtitle={section.subtitle}
-							backgroundImage={section.backgroundImage}
-						/>
-					);
-				case 'richText':
-					return (
-						<RichTextSection
-							background={section.background}
-							content={section.content}
-						/>
-					);
-				case 'card':
-					return (
-						<CardSection
-							title={section.title}
-							description={section.description}
-							cards={section.cards}
-							buttons={section.buttons}
-						/>
-					);
-				case 'people':
-					return (
-						<PeopleSection
-							people={section.people}
-							section={section.category}
-							validateSection={false}
-						/>
-					);
-				case 'partners':
-					return (
-						<PartnersSection
-							title={section.title}
-							partners={section.partners}
-						/>
-					);
-				default:
-					return null;
-			}
+			const content = (() => {
+				switch (section.type) {
+					case 'hero':
+						return (
+							<HeroSection
+								title={section.title}
+								subtitle={section.subtitle}
+								backgroundImage={section.backgroundImage}
+							/>
+						);
+					case 'richText':
+						return (
+							<RichTextSection
+								background={section.background}
+								content={section.content}
+							/>
+						);
+					case 'card':
+						return (
+							<CardSection
+								title={section.title}
+								description={section.description}
+								cards={section.cards}
+								buttons={section.buttons}
+							/>
+						);
+					case 'people':
+						return (
+							<PeopleSection
+								people={section.people}
+								section={section.category}
+								validateSection={false}
+							/>
+						);
+					case 'partners':
+						return (
+							<PartnersSection
+								title={section.title}
+								partners={section.partners}
+							/>
+						);
+					default:
+						return null;
+				}
+			})();
+
+			return <div class="section-container">{content}</div>;
 		})
 	}
 </PageLayout>

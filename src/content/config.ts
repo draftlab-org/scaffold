@@ -7,6 +7,7 @@ const createSchemas = (image: any) => {
     variant: z.string(),
     size: z.string(),
     href: z.string(),
+    text: z.string(),
   });
 
   // Organisms
@@ -43,7 +44,8 @@ const createSchemas = (image: any) => {
 const pagesCollection = defineCollection({
   type: 'data',
   schema: ({ image }) => {
-    const { buttonSchema, cardSchema, personSchema, partnerSchema } = createSchemas(image);
+    const { buttonSchema, cardSchema, personSchema, partnerSchema } =
+      createSchemas(image);
 
     // Sections defined as a union type so they can be used as variable components
     const sectionsSchema = z.discriminatedUnion('type', [

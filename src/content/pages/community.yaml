@@ -6,7 +6,7 @@ sections:
   - type: hero
     title: Welcome to Our Community
     subtitle: Connect, collaborate, and grow with fellow developers from around the world
-    # backgroundImage: ../../assets/community-hero.jpg
+    backgroundImage: ../../assets/anna-magenta-YELG0ZVK5yw-unsplash.jpg
 
   # 2. Rich Text Section
   - type: richText
@@ -31,6 +31,7 @@ sections:
         content: Help build and improve our projects by contributing code, fixing bugs, and adding features.
         # image: ../../assets/contribute-code.jpg
         button:
+          text: Contribute
           variant: primary
           size: md
           href: /contribute
@@ -38,6 +39,7 @@ sections:
         content: Share your ideas, ask questions, and help others in our community forums and chat channels.
         # image: ../../assets/discussions.jpg
         button:
+          text: Join
           variant: secondary
           size: md
           href: /discussions
@@ -45,11 +47,13 @@ sections:
         content: Improve our docs by writing tutorials, guides, and helping others understand our tools.
         # image: ../../assets/docs.jpg
         button:
+          text: Learn More
           variant: primary
           size: md
           href: /docs
     buttons:
       - variant: primary
+        text: Get Started
         size: lg
         href: /get-started
 
@@ -59,13 +63,16 @@ sections:
     description: Quick links to helpful resources
     buttons:
       - variant: primary
+        text: Forum
         size: md
         href: /forum
       - variant: secondary
+        text: Discord
         size: md
         href: /discord
       - variant: primary
         size: md
+        text: Newsletter
         href: /newsletter
 
   # 5. People Section

@@ -1,13 +1,15 @@
 ---
-import type { ImageMetadata } from 'astro';
 import Button from '@components/atoms/Button.astro';
 import Image from '@components/atoms/Image.astro';
 import Card from '@components/molecules/Card.astro';
+import SectionLayout from '@layouts/SectionLayout.astro';
+import type { ImageMetadata } from 'astro';
 
 export interface ButtonType {
   variant: string;
   size: string;
   href: string;
+	text: string
 }
 
 export interface CardType {
@@ -34,7 +36,7 @@ const {
 } = Astro.props;
 ---
 
-<section class={`py-16 ${className}`}>
+<SectionLayout>
 	<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 		<!-- Section Header -->
 		<div class="mb-12 text-center">
@@ -69,7 +71,7 @@ const {
 									size={card.button.size as any}
 									href={card.button.href}
 								>
-									Learn More
+									{card.button.text}
 								</Button>
 							)}
 						</Card>
@@ -90,11 +92,11 @@ const {
 							size={button.size as any}
 							href={button.href}
 						>
-							{button.href.split('/').pop() || 'Learn More'}
+							{button.text}
 						</Button>
 					))}
 				</div>
 			)
 		}
 	</div>
-</section>
+</SectionLayout>

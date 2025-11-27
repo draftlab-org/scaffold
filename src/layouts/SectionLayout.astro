@@ -1,0 +1,57 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+export interface Props {
+  containerized?: boolean;
+  maxWidth?: 'full' | '7xl' | '6xl' | '5xl' | '4xl';
+  padding?: boolean;
+  class?: string;
+  bgColor?: string;
+  bgImage?: ImageMetadata
+}
+
+const {
+  containerized = true,
+  maxWidth = '7xl',
+  padding = true,
+  class: className = '',
+  bgImage,
+  bgColor
+} = Astro.props;
+
+const maxWidths = {
+  full: 'max-w-full',
+  '7xl': 'max-w-7xl',
+  '6xl': 'max-w-6xl',
+  '5xl': 'max-w-5xl',
+  '4xl': 'max-w-4xl',
+};
+
+const containerClass = containerized ? `mx-auto ${maxWidths[maxWidth]}` : '';
+const paddingClass = padding ? 'px-4 sm:px-6 lg:px-8 py-8' : '';
+---
+
+<section
+	class={`relative ${bgColor && bgColor} border-t border-b border-gray-300 border-dotted`}
+>
+	<span
+		class="absolute top-0 left-0 bg-primary-300 p-1 text-sm text-primary-600 uppercase"
+		>section</span
+	>
+	{
+		bgImage && (
+			<Image
+				src={bgImage}
+				alt=""
+				class="absolute inset-0 -z-10 h-full w-full object-cover"
+				loading="eager"
+			/>
+		)
+	}
+	<div
+		class={`section-container relative ${containerClass} ${paddingClass} ${className}`}
+	>
+		<slot />
+	</div>
+</section>

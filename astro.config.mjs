@@ -17,7 +17,19 @@ export default defineConfig({
         name: 'Inter',
         weights: [100, 200, 300, 400, 500, 600],
         cssVariable: '--font-inter',
-      }
+      },
+      {
+        provider: fontProviders.bunny(),
+        name: 'Rubik',
+        weights: [300, 400, 500, 600, 700, 800],
+        cssVariable: '--font-rubik',
+      },
+      {
+        provider: fontProviders.bunny(),
+        name: 'IBM Plex Serif',
+        weights: [300, 400, 500, 600, 700],
+        cssVariable: '--font-ibm-plex-serif',
+      },
     ],
   },
 
