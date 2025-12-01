@@ -105,7 +105,7 @@ export default function MobileMenu({
                         <li key={link.href}>
                           <a
                             href={link.href}
-                            className={`group flex gap-x-4 text-xl ${
+                            className={`group flex gap-x-4 text-xl text-black ${
                               isActive(link.href)
                                 ? 'underline decoration-primary-300 decoration-dotted decoration-4 underline-offset-8'
                                 : 'no-underline'
