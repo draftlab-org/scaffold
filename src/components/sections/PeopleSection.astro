@@ -9,9 +9,10 @@ export interface Props {
   section: string;
   validateSection?: boolean;
   class?: string;
+	customSection?: boolean
 }
 
-const { people, section, validateSection = true, class: className = '' } = Astro.props;
+const { people, section, validateSection = true, class: className = '', customSection= false } = Astro.props;
 
 // Optionally validate section exists in sections list
 if (validateSection && !sections.includes(section)) {
@@ -22,6 +23,10 @@ if (validateSection && !sections.includes(section)) {
 const filteredPeople = people.filter((person) =>
   person.sections.includes(section)
 );
+
+const peopleGrid = customSection ? people : filteredPeople
+
+
 ---
 
 <section class={`py-16 ${className}`}>
@@ -35,12 +40,12 @@ const filteredPeople = people.filter((person) =>
 
 		<!-- People Grid -->
 		<div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-			{filteredPeople.map((person) => <Person person={person} />)}
+			{peopleGrid.map((person) => <Person person={person} />)}
 		</div>
 
 		<!-- Empty State -->
 		{
-			filteredPeople.length === 0 && (
+			peopleGrid.length === 0 && (
 				<div class="py-12 text-center text-gray-500">
 					No people found in this section.
 				</div>

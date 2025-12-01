@@ -30,24 +30,20 @@ const people: Person[] = peopleEntries.map((entry) => entry.data);
 				href="https://www.dicebear.com"
 				variant="primary"
 				size="md">Dicebear</Button
+			> and <Button
+				type="button"
+				as="a"
+				href="https://www.openpeeps.com"
+				variant="secondary"
+				size="md">Open Peeps!</Button
 			>
-			<a href="">Dicebear</a> and <a href="https://www.openpeeps.com"
-				>Open Peeps!</a
-			>
-		</p></Hero
-	>
-	<Button
-		type="button"
-		as="button"
-		href="https://www.dicebear.com"
-		variant="primary"
-		size="md">Dicebear</Button
-	>
+		</p>
 
-	<!-- People Sections -->
-	{
-		sections.map((section) => (
-			<PeopleSection people={people} section={section} />
-		))
-	}
+		<!-- People Sections -->
+		{
+			sections.map((section) => (
+				<PeopleSection people={people} section={section} />
+			))
+		}
+	</Hero>
 </PageLayout>

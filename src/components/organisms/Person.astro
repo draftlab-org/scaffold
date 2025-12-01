@@ -6,7 +6,7 @@ import type { ImageMetadata } from 'astro';
 
 export type Person = {
   name: string;
-  headshot: ImageMetadata;
+  headshot?: ImageMetadata;
   title: string;
   sections: string[];
 	id: string;
@@ -28,13 +28,17 @@ const { person, class: className = '' } = Astro.props;
 	>
 		<!-- Headshot -->
 		<div class="mb-4 flex justify-center">
-			<Image
-				src={person.headshot}
-				alt={person.name}
-				width={200}
-				height={200}
-				class="h-48 w-48 rounded-lg object-cover"
-			/>
+			{
+				person.headshot && (
+					<Image
+						src={person.headshot}
+						alt={person.name}
+						width={200}
+						height={200}
+						class="h-48 w-48 rounded-lg object-cover"
+					/>
+				)
+			}
 		</div>
 
 		<!-- Name -->
