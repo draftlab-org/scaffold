@@ -25,7 +25,5 @@ const transparentClass = transparent ? 'bg-transparent border-transparent' : '';
 <header class={`${stickyClass} ${className}`}>
 	<Navigation links={links} siteName={siteName} class={transparentClass}>
 		<slot name="actions" slot="actions" />
-		<slot name="mobile-menu-button" slot="mobile-menu-button" />
-		<slot name="mobile-menu" slot="mobile-menu" />
 	</Navigation>
 </header>

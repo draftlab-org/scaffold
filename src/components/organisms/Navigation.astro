@@ -1,6 +1,7 @@
 ---
 import Link from '@components/atoms/Link.astro';
 import NavItem from '@components/molecules/NavItem.astro';
+import MobileMenu from '@components/organisms/MobileMenu';
 
 export interface NavLink {
   href: string;
@@ -25,8 +26,6 @@ const isActive = (href: string) => {
   if (href === '/') return currentPath === '/';
   return currentPath.startsWith(href);
 };
-
-
 ---
 
 <nav
@@ -65,13 +64,10 @@ const isActive = (href: string) => {
 				<slot name="actions" />
 			</div>
 
-			<!-- Mobile Menu Button Slot -->
+			<!-- Mobile Menu -->
 			<div class="md:hidden">
-				<slot name="mobile-menu-button" />
+				<MobileMenu client:load links={links} currentPath={currentPath} />
 			</div>
 		</div>
 	</div>
-
-	<!-- Mobile Menu Slot -->
-	<slot name="mobile-menu" />
 </nav>
