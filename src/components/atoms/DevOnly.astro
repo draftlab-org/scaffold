@@ -1,0 +1,9 @@
+---
+/**
+ * DevOnly component - wraps content that should only render in development mode
+ * Usage: <DevOnly><span>Dev content here</span></DevOnly>
+ */
+const isDev = import.meta.env.DEV;
+---
+
+{isDev && <slot />}

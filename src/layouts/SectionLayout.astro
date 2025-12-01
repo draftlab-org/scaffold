@@ -1,5 +1,7 @@
 ---
 import { Image } from 'astro:assets';
+import DevOnly from '@components/atoms/DevOnly.astro';
+import { devClass } from '@utils/dev';
 import type { ImageMetadata } from 'astro';
 
 export interface Props {
@@ -33,12 +35,14 @@ const paddingClass = padding ? 'px-4 sm:px-6 lg:px-8 py-8' : '';
 ---
 
 <section
-	class={`relative ${bgColor && bgColor} border-t border-b border-gray-300 border-dotted`}
+	class={`relative ${bgColor && bgColor} ${devClass('border-t border-b border-gray-300 border-dotted')}`}
 >
-	<span
-		class="absolute top-0 left-0 bg-primary-300 p-1 text-sm text-primary-600 uppercase"
-		>section</span
-	>
+	<DevOnly>
+		<span
+			class="absolute top-0 left-0 bg-primary-300 p-1 text-sm text-primary-600 uppercase"
+			>section</span
+		>
+	</DevOnly>
 	{
 		bgImage && (
 			<Image
