@@ -36,6 +36,18 @@ We are following atomic design principles described by Brad Frost (https://atomi
 
 Components are organized from simple to complex in `src/components/`. Atoms like Button and Image are basic building blocks. Molecules combine atoms into simple patterns like Card. Organisms such as Hero and Navigation are complex, standalone components. Sections are full-width page blocks that combine organisms and molecules into complete interface sections.
 
+### Development Utilities
+
+The `DevOnly` component and `devClass` utility help manage development-only UI elements. Wrap any content in `<DevOnly>` to remove it from production builds. Use `devClass('classes')` to apply Tailwind classes only in development.
+
+```astro
+import DevOnly from '@components/atoms/DevOnly.astro';
+import { devClass } from '@utils/dev';
+
+<DevOnly><span>Debug info</span></DevOnly>
+<div class={`base ${devClass('border-2 border-red-500')}`} />
+```
+
 ### Content Collections
 
 Content lives in `src/content/` with schemas defined in `config.ts`. The Pages collection uses YAML files where each file becomes a route. Pages contain a sections array that you can populate with any combination of Hero, RichText, Card, People, or Partners sections. The People collection stores team member information as individual JSON files.
@@ -76,7 +88,7 @@ npm run preview      # Preview production build
 src/
 ├── assets/          # Images and media
 ├── components/
-│   ├── atoms/       # Basic elements (Button, Image, Link)
+│   ├── atoms/       # Basic elements (Button, Image, Link, DevOnly)
 │   ├── molecules/   # Simple combinations (Card, NavItem)
 │   ├── organisms/   # Complex components (Hero, Person, Footer)
 │   └── sections/    # Page sections (HeroSection, CardSection, etc.)
@@ -93,6 +105,8 @@ src/
 │   │   ├── index.astro    # People directory
 │   │   └── [id].astro     # Individual profiles
 │   └── index.astro
+├── utils/
+│   └── dev.ts             # Development utilities
 └── styles/
     ├── global.css         # Base imports
     ├── typography.css     # Text utilities
