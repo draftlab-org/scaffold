@@ -24,7 +24,11 @@
     "prettier-plugin-astro": "^0.14.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "tailwindcss": "^4.1.16"
+    "rehype": "^13.0.2",
+    "rehype-parse": "^9.0.1",
+    "rehype-stringify": "^10.0.1",
+    "tailwindcss": "^4.1.16",
+    "unist-util-visit": "^5.0.0"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.19",

@@ -1,6 +1,10 @@
 ---
+import { Image } from 'astro:assets';
+
 import SectionLayout from '@layouts/SectionLayout.astro';
 import { marked } from 'marked';
+import { renderMarkdownWithImages } from '@utils/renderMarkdownWithImages';
+
 export interface Props {
   background: string;
   content: string;
@@ -15,25 +19,15 @@ const backgrounds = {
   gradient: 'bg-gradient-to-br from-blue-50 to-indigo-100',
 };
 
-
 const bgClass = backgrounds[background as keyof typeof backgrounds] || backgrounds.white;
 
-// TODO: #2 have Astro parse images retrieved from YAML
-marked.use({
-  renderer: {
-    image({ href, tokens }) {
-      const altText = this.parser.parseInline(tokens);
-      return `<img src="${href}" alt="${altText}" />`;
-    },
-  },
-});
-const html = marked.parse(content)
+const html = await renderMarkdownWithImages(content);
 
-console.log(content);
 ---
 
 <SectionLayout bgColor={bgClass}>
 	<div class="mx-auto prose max-w-3xl">
 		<Fragment set:html={html} />
+    <Image src="/src/assets/hero.png" alt="Hero image" />
 	</div>
 </SectionLayout>
