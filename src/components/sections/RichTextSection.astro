@@ -2,8 +2,7 @@
 import { Image } from 'astro:assets';
 
 import SectionLayout from '@layouts/SectionLayout.astro';
-import { marked } from 'marked';
-import { renderMarkdownWithImages } from '@utils/renderMarkdownWithImages';
+import renderMarkdownWithImages from '@utils/renderMarkdownWithImages';
 
 export interface Props {
   background: string;
@@ -28,6 +27,8 @@ const html = await renderMarkdownWithImages(content);
 <SectionLayout bgColor={bgClass}>
 	<div class="mx-auto prose max-w-3xl">
 		<Fragment set:html={html} />
+
+    <p>Generated via Astro Image </p>
     <Image src="/src/assets/hero.png" alt="Hero image" />
 	</div>
 </SectionLayout>
