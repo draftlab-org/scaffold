@@ -19,7 +19,7 @@ const processImageNodes = () => async (tree: any) => {
     const src = node.properties?.src;
     const alt = node.properties?.alt ?? '';
 
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       getImage({ src })
         .then((fetchedImage) => {
           if (fetchedImage) {
