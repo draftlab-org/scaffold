@@ -24,9 +24,9 @@ const processImageNodes = () => async (tree: any) => {
         .then((fetchedImage) => {
           if (fetchedImage) {
             node.properties = {
-              ...fetchedImage.attributes,
               src: fetchedImage.src,
               alt,
+              ...fetchedImage.attributes,
             };
           }
           resolve();
