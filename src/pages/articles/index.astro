@@ -1,0 +1,122 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import Button from '@components/atoms/Button.astro';
+import Tag from '@components/atoms/Tag.astro';
+import Card from '@components/molecules/Card.astro';
+import HeroSection from '@components/sections/HeroSection.astro';
+import PageLayout from '@layouts/PageLayout.astro';
+import SectionLayout from '@layouts/SectionLayout.astro';
+import { isDev } from '@utils/dev';
+
+// Fetch all articles
+const allArticles = await getCollection('articles');
+
+// Filter articles based on environment: show drafts in dev, only published in production
+const articles = allArticles
+  .filter((article) => isDev || article.data.published === 'published')
+  .sort((a, b) => b.data.publishedDate.getTime() - a.data.publishedDate.getTime());
+
+// Fetch all people for author lookups
+const allPeople = await getCollection('people');
+const peopleMap = new Map(allPeople.map((person) => [person.data.id, person.data]));
+
+// Helper to get author names
+const getAuthorNames = (authorIds: string[]) => {
+  return authorIds
+    .map((id) => peopleMap.get(id)?.name)
+    .filter(Boolean)
+    .join(', ');
+};
+
+// Helper to format date
+const formatDate = (date: Date) => {
+  return new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }).format(date);
+};
+---
+
+<PageLayout
+	title="Articles"
+	description="Explore our latest articles on web development, design, and technology"
+>
+	<!-- Header Section -->
+	<HeroSection
+		title="Articles"
+		subtitle="Insights, tutorials, and best practices from our team"
+		class="from-blue-50 to-indigo-100 bg-linear-to-br"
+	/>
+
+	<!-- Articles Grid -->
+	<SectionLayout>
+		<div class="py-12">
+			{
+				articles.length === 0 ? (
+					<div class="py-12 text-center">
+						<p class="text-lg text-gray-600">
+							No articles published yet. Check back soon!
+						</p>
+					</div>
+				) : (
+					<div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+						{articles.map((article) => (
+							<Card variant="bordered" class="flex h-full flex-col">
+								<div class="flex h-full flex-col p-6">
+									{/* Draft badge (only visible in dev) */}
+									{isDev && article.data.published === 'draft' && (
+										<div class="mb-3">
+											<Tag variant="highlight" class="font-bold">
+												DRAFT
+											</Tag>
+										</div>
+									)}
+
+									{/* Tags */}
+									<div class="mb-3 flex flex-wrap gap-2">
+										{article.data.tags.slice(0, 3).map((tag) => (
+											<Tag variant="primary">{tag}</Tag>
+										))}
+									</div>
+
+									{/* Title */}
+									<h3 class="mb-3 line-clamp-2 text-xl font-semibold">
+										{article.data.title}
+									</h3>
+
+									{/* Metadata */}
+									<div class="mb-4 space-y-1">
+										<p class="text-sm text-gray-600">
+											By {getAuthorNames(article.data.authors)}
+										</p>
+										<p class="text-sm text-gray-500">
+											{formatDate(article.data.publishedDate)}
+										</p>
+									</div>
+
+									{/* Spacer to push button to bottom */}
+									<div class="grow" />
+
+									{/* Read More Button */}
+									<div class="mt-4">
+										<Button
+											variant="outline"
+											size="sm"
+											as="a"
+											href={`/articles/${article.slug}`}
+											class="w-full"
+										>
+											Read Article
+										</Button>
+									</div>
+								</div>
+							</Card>
+						))}
+					</div>
+				)
+			}
+		</div>
+	</SectionLayout>
+</PageLayout>

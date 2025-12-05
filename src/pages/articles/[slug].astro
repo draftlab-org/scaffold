@@ -1,0 +1,137 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import Link from '@components/atoms/Link.astro'
+import Tag from '@components/atoms/Tag.astro';
+import HeroSection from '@components/sections/HeroSection.astro';
+import PageLayout from '@layouts/PageLayout.astro';
+import SectionLayout from '@layouts/SectionLayout.astro';
+import { isDev } from '@utils/dev';
+
+export async function getStaticPaths() {
+  const articles = await getCollection('articles');
+
+  // In production, only build published articles. In dev, build all articles.
+  return articles
+    .filter((article) => isDev || article.data.published === 'published')
+    .map((article) => ({
+      params: { slug: article.slug },
+      props: { article },
+    }));
+}
+
+const { article } = Astro.props;
+const { Content } = await article.render();
+
+// Fetch all people for author lookups
+const allPeople = await getCollection('people');
+const peopleMap = new Map(allPeople.map((person) => [person.data.id, person.data]));
+
+// Get author details
+const authors = article.data.authors
+  .map((id) => peopleMap.get(id))
+  .filter(Boolean);
+
+// Format date
+const formatDate = (date: Date) => {
+  return new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }).format(date);
+};
+
+const {title, publishedDate, backgroundImage, tags, published } = article.data
+---
+
+<PageLayout
+	title={article.data.title}
+	description={`Article by ${authors.map((a) => a?.name).join(', ')}`}
+>
+	<!-- Article Header -->
+	<HeroSection title={title} backgroundImage={backgroundImage}>
+		{/* Draft badge (only visible in dev) */}
+		{
+			isDev && published === 'draft' && (
+				<div class="mb-4">
+					<Tag variant="highlight" size="md" class="font-bold">
+						DRAFT
+					</Tag>
+				</div>
+			)
+		}
+		{/* Tags */}
+		<div class="mb-4 flex flex-wrap gap-2">
+			{
+				tags.map((tag) => (
+					<Tag variant="primary" size="md">
+						{tag}
+					</Tag>
+				))
+			}
+		</div>
+
+		{/* Metadata */}
+		<div class="flex flex-wrap items-center gap-4 text-gray-700">
+			<p class="text-base">
+				By <span class="font-medium"
+					>{
+						authors.map((a, i) => (
+							<>
+								<Link variant="unstyled" href={`/people/${a?.id}`}>
+									{a?.name}
+								</Link>
+								{i < authors.length - 1 && '•'}
+							</>
+						))
+					}</span
+				>
+			</p>
+			<span class="text-gray-400">•</span>
+			<p class="text-base">
+				{formatDate(publishedDate)}
+			</p>
+		</div>
+	</HeroSection>
+
+	<!-- Article Content -->
+	<SectionLayout>
+		<article class="mx-auto prose max-w-4xl py-12 prose-blue">
+			<Content />
+		</article>
+	</SectionLayout>
+
+	<!-- Authors Section -->
+	{
+		authors && (
+			<SectionLayout bgColor="bg-gray-50">
+				<div class="mx-auto max-w-4xl py-12">
+					<h2 class="mb-8 text-2xl font-bold">
+						{authors.length === 1 ? 'About the Author' : 'About the Authors'}
+					</h2>
+					<div class="grid gap-6 md:grid-cols-2">
+						{authors.map(
+							(author) =>
+								author && (
+									<div class="flex gap-4 rounded-lg bg-white p-6 shadow-sm">
+										{author.headshot && (
+											<Image
+												src={author.headshot}
+												alt={author.name}
+												class="h-16 w-16 rounded-full object-cover"
+											/>
+										)}
+
+										<div>
+											<h3 class="mb-1 text-lg font-semibold">{author.name}</h3>
+											<p class="text-sm text-gray-600">{author.title}</p>
+										</div>
+									</div>
+								)
+						)}
+					</div>
+				</div>
+			</SectionLayout>
+		)
+	}
+</PageLayout>

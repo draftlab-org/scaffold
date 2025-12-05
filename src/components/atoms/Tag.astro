@@ -1,0 +1,35 @@
+---
+export interface Props {
+	variant?: 'primary' | 'secondary' | 'highlight' | 'gray';
+	size?: 'sm' | 'md' | 'lg';
+	class?: string;
+}
+
+const {
+	variant = 'primary',
+	size = 'sm',
+	class: className = '',
+	...props
+} = Astro.props;
+
+const baseStyles = 'tag-base';
+
+const variants = {
+	primary: 'tag-primary',
+	secondary: 'tag-secondary',
+	highlight: 'tag-highlight',
+	gray: 'tag-gray',
+};
+
+const sizes = {
+	sm: 'tag-size-sm',
+	md: 'tag-size-md',
+	lg: 'tag-size-lg',
+};
+
+const classes = `${baseStyles} ${variants[variant as keyof typeof variants]} ${sizes[size as keyof typeof sizes]} ${className}`;
+---
+
+<span class={classes} {...props}>
+	<slot />
+</span>

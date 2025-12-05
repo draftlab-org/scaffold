@@ -1,7 +1,7 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection, type ImageFunction, z } from 'astro:content';
 
 // Helper to create schemas with image support
-const createSchemas = (image: any) => {
+const createSchemas = (image: ImageFunction) => {
   // Atoms
   const buttonSchema = z.object({
     variant: z.string(),
@@ -35,7 +35,7 @@ const createSchemas = (image: any) => {
     affiliation: z.string().optional(),
     url: z.string().optional(),
     category: z.string(),
-    image: image(),
+    image: image().optional(),
   });
 
   return { buttonSchema, cardSchema, personSchema, partnerSchema };
@@ -93,7 +93,21 @@ const peopleCollection = defineCollection({
   schema: ({ image }) => createSchemas(image).personSchema,
 });
 
+const articlesCollection = defineCollection({
+  type: 'content',
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      authors: z.array(z.string()), // References to people collection IDs
+      published: z.enum(['draft', 'published']),
+      tags: z.array(z.string()),
+      publishedDate: z.date(),
+      backgroundImage: image().optional(),
+    }),
+});
+
 export const collections = {
   people: peopleCollection,
   pages: pagesCollection,
+  articles: articlesCollection,
 };
