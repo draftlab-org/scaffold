@@ -498,7 +498,7 @@ content:
         label: Published Date
         type: date
         options:
-          format: YYYY-MM-DD
+          format: yyyy-MM-dd
         required: true
         description: Date the article was published
 
