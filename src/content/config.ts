@@ -83,6 +83,7 @@ const pagesCollection = defineCollection({
     return z.object({
       title: z.string(),
       description: z.string().optional(),
+      heroImage: image().optional(),
       sections: z.array(sectionsSchema),
     });
   },
@@ -98,11 +99,12 @@ const articlesCollection = defineCollection({
   schema: ({ image }) =>
     z.object({
       title: z.string(),
+      excerpt: z.string().optional(),
       authors: z.array(z.string()), // References to people collection IDs
       published: z.enum(['draft', 'published']),
       tags: z.array(z.string()),
       publishedDate: z.date(),
-      backgroundImage: image().optional(),
+      heroImage: image().optional(),
     }),
 });
 

@@ -28,7 +28,8 @@ const {
 } = Astro.props;
 
 const currentYear = new Date().getFullYear();
-const copyrightText = copyright || `© ${currentYear} ${siteName}. All rights reserved.`;
+const copyrightText = copyright || `© ${currentYear} ${siteName}. Some rights reserved.`;
+const thanksText = `Background images by <a href="https://unsplash.com/@annamagenta82">Anna Magenta</a> (Unsplash). People images by <a href="https://openpeeps.com/">OpenPeeps</a> via <a href="https://www.dicebear.com/">DiceBear</a>`
 ---
 
 <footer class={`bg-highlight-950 text-white  ${className}`}>
@@ -69,6 +70,9 @@ const copyrightText = copyright || `© ${currentYear} ${siteName}. All rights re
 			<Text size="sm" class="text-center">
 				{copyrightText}
 			</Text>
+		</div>
+		<div class="pt-8">
+			<Text size="sm" class="text-center" set:html={thanksText} />
 		</div>
 	</div>
 </footer>

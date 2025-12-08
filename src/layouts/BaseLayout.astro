@@ -5,7 +5,7 @@ import Head from '@components/organisms/Head.astro';
 export interface Props {
   title: string;
   description?: string;
-  image?: string;
+  image?: ImageMetadata;
   lang?: string;
   class?: string;
 }
@@ -26,7 +26,12 @@ const canonicalURL = Astro.site
 <!doctype html>
 <html lang={lang}>
 	<head>
-		<Head title={title} description={description} canonicalURL={canonicalURL}>
+		<Head
+			title={title}
+			description={description}
+			canonicalURL={canonicalURL}
+			image={image}
+		>
 			<slot name="head" />
 		</Head>
 	</head>

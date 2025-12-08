@@ -1,7 +1,9 @@
 ---
 import { getCollection } from 'astro:content';
+import peopleBG from '@assets/backgrounds/anna-magenta-vKhd5bnnolg-unsplash.jpg'
 import Image from '@components/atoms/Image.astro';
-import Hero from '@components/organisms/Hero.astro';
+import HeroSection from '@components/sections/HeroSection.astro'
+
 import PageLayout from '@layouts/PageLayout.astro';
 
 // Get all people from the collection (images are automatically resolved)
@@ -12,13 +14,14 @@ const people = peopleEntries.map((entry) => entry.data);
 <PageLayout
 	title="People - Draftlab Scaffold"
 	description="Meet our team members"
+	image={peopleBG}
 >
 	<!-- Hero Section -->
-	<Hero
+	<HeroSection
 		title="Our Team"
 		subtitle="Meet the amazing people who make everything possible"
-		size="default"
-		background="white"
+		backgroundImage={peopleBG}
+		sectionLabel='hero'
 	/>
 
 	<!-- People Grid -->

@@ -10,7 +10,8 @@ export interface Props {
   padding?: boolean;
   class?: string;
   bgColor?: string;
-  bgImage?: ImageMetadata
+  bgImage?: ImageMetadata;
+	sectionLabel?: string
 }
 
 const {
@@ -19,7 +20,8 @@ const {
   padding = true,
   class: className = '',
   bgImage,
-  bgColor
+  bgColor,
+	sectionLabel = 'section'
 } = Astro.props;
 
 const maxWidths = {
@@ -40,7 +42,7 @@ const paddingClass = padding ? 'px-4 sm:px-6 lg:px-8 py-8' : '';
 	<DevOnly>
 		<span
 			class="absolute top-0 left-0 bg-primary-300 p-1 text-sm text-primary-600 uppercase"
-			>section</span
+			>{sectionLabel}</span
 		>
 	</DevOnly>
 	{

@@ -9,12 +9,13 @@ export interface Props {
   subtitle?: string;
   backgroundImage?: ImageMetadata;
   class?: string;
+	sectionLabel?: string
 }
 
-const { title, subtitle, backgroundImage, class: className = '' } = Astro.props;
+const { title, subtitle, backgroundImage, class: className = '', sectionLabel } = Astro.props;
 ---
 
-<SectionLayout bgImage={backgroundImage}>
+<SectionLayout bgImage={backgroundImage} sectionLabel={sectionLabel}>
 	<Hero
 		title={title}
 		subtitle={subtitle}

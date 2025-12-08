@@ -21,9 +21,16 @@ const { page } = Astro.props;
 ---
 
 <PageLayout title={page.data.title} description={page.data.description}>
+	<HeroSection
+		title={page.data.title}
+		subtitle={page.data.description}
+		backgroundImage={page.data.heroImage}
+		sectionLabel="hero"
+	/>
 	{
 		page.data.sections.map((section: any) => {
 			const content = (() => {
+				const sectionLabel = `section > ${section.type}`;
 				switch (section.type) {
 					case 'hero':
 						return (
@@ -31,6 +38,7 @@ const { page } = Astro.props;
 								title={section.title}
 								subtitle={section.subtitle}
 								backgroundImage={section.backgroundImage}
+								sectionLabel={sectionLabel}
 							/>
 						);
 					case 'richText':

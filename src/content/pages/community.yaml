@@ -1,12 +1,12 @@
-title: Community
+title: Welcome to our Community
 description: Join our vibrant community of developers, contributors, and partners
+heroImage: /src/assets/backgrounds/anna-magenta-YELG0ZVK5yw-unsplash.jpg
 
 sections:
   # 1. Hero Section
   - type: hero
-    title: Welcome to Our Community
+    title: This is a hero section
     subtitle: Connect, collaborate, and grow with fellow developers from around the world
-    backgroundImage: ../../assets/anna-magenta-YELG0ZVK5yw-unsplash.jpg
 
   # 2. Rich Text Section
   - type: richText

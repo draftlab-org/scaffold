@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import housesBG from '@assets/backgrounds/anna-magenta-XUCfqIEudBU-unsplash.jpg'
 import Button from '@components/atoms/Button.astro';
 import Tag from '@components/atoms/Tag.astro';
 import Card from '@components/molecules/Card.astro';
@@ -46,6 +47,8 @@ const formatDate = (date: Date) => {
 	<HeroSection
 		title="Articles"
 		subtitle="Insights, tutorials, and best practices from our team"
+		backgroundImage={housesBG}
+		sectionLabel="hero"
 	/>
 
 	<!-- Articles Grid -->
