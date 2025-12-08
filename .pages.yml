@@ -273,7 +273,7 @@ content:
     label: People
     type: collection
     path: src/content/people
-    extension: json
+    format: json
     filename: '{{fields.id}}'
     view:
       fields: [name, title]
@@ -390,7 +390,7 @@ content:
     label: Navigation Menus
     type: collection
     path: src/content/navigation
-    extension: json
+    format: json
     filename: '{{fields.slug}}'
     view:
       fields: [title]
@@ -441,8 +441,7 @@ content:
     label: Articles
     type: collection
     path: src/content/articles
-    extension: md
-    format: frontmatter-md
+    format: yaml-frontmatter
     filename: '{{fields.permalink}}'
     view:
       fields: [title, publishedDate, published]
