@@ -1,4 +1,4 @@
-# DraftLab Scaffold
+# Draftlab Scaffold
 
 A modern, content-focused web template built with Astro v5, Tailwind CSS v4, and React v19. This scaffold provides a flexible page-building system with reusable components, type-safe content collections, and an integrated headless CMS.
 
@@ -41,11 +41,10 @@ Components are organized from simple to complex in `src/components/`. Atoms like
 The `DevOnly` component and `devClass` utility help manage development-only UI elements. Wrap any content in `<DevOnly>` to remove it from production builds. Use `devClass('classes')` to apply Tailwind classes only in development.
 
 ```astro
-import DevOnly from '@components/atoms/DevOnly.astro';
-import { devClass } from '@utils/dev';
+import DevOnly from '@components/atoms/DevOnly.astro'; import {devClass} from '@utils/dev';
 
 <DevOnly><span>Debug info</span></DevOnly>
-<div class={`base ${devClass('border-2 border-red-500')}`} />
+<div class={`base ${devClass('border-2 border-red-500')}`}></div>
 ```
 
 ### Content Collections

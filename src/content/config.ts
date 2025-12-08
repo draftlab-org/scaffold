@@ -106,8 +106,33 @@ const articlesCollection = defineCollection({
     }),
 });
 
+const siteCollection = defineCollection({
+  type: 'data',
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      description: z.string(),
+      url: z.string().url(),
+      favicon: z.string().default('/favicon.svg'),
+      defaultOgImage: image().optional(),
+      social: z
+        .object({
+          bluesky: z.string().optional(),
+          github: z.string().optional(),
+          mastodon: z.string().optional(),
+          linkedin: z.string().optional(),
+          x: z.string().optional(),
+          facebook: z.string().optional(),
+          instagram: z.string().optional(),
+          youtube: z.string().optional(),
+        })
+        .optional(),
+    }),
+});
+
 export const collections = {
   people: peopleCollection,
   pages: pagesCollection,
   articles: articlesCollection,
+  site: siteCollection,
 };

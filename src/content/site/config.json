@@ -1,0 +1,14 @@
+{
+  "title": "Draftlab Scaffold",
+  "description": "Draftlab Scaffold - Our Web Development Starter",
+  "url": "https://scaffold.draftlab.org",
+  "favicon": "/favicon.svg",
+  "defaultOgImage": "/src/assets/draftlab-seo.png",
+  "social": {
+    "bluesky": "https://bsky.app/yourhandle",
+    "mastodon": "https://mastodon.social/@yourhandle",
+    "github": "https://github.com/yourorg",
+    "linkedin": "https://linkedin.com/company/yourcompany",
+    "x": "https://x.com/yourhandle"
+  }
+}

@@ -228,7 +228,11 @@ content:
         label: Permalink
         type: string
         description: The slug, without slashes or parents, like 'about-us' or 'omg-3'.
-        pattern: { message: "This must be a web-safe string like 'about-us' or 'omg-3'.", regex: '^[a-zA-Z0-9_-]*$' }
+        pattern:
+          {
+            message: "This must be a web-safe string like 'about-us' or 'omg-3'.",
+            regex: '^[a-zA-Z0-9_-]*$',
+          }
         required: true
 
       - name: description
@@ -302,3 +306,81 @@ content:
         type: string
         list: true
         description: Tags like "Leadership", "Engineering", etc.
+
+  # Site configuration (singleton)
+  - name: site-config
+    label: Site Settings
+    type: file
+    path: src/content/site/config.json
+    fields:
+      - name: title
+        label: Site Title
+        type: string
+        required: true
+        description: The name of your website
+
+      - name: description
+        label: Site Description
+        type: string
+        required: true
+        description: Default meta description for SEO
+
+      - name: url
+        label: Site URL
+        type: string
+        required: true
+        description: Your website's URL (e.g. https://example.com)
+
+      - name: favicon
+        label: Favicon Path
+        type: string
+        default: /favicon.svg
+        description: Path to your favicon file
+
+      - name: defaultOgImage
+        label: Default Open Graph Image
+        type: image
+        description: Default image for social media sharing
+
+      - name: social
+        label: Social Media Links
+        type: object
+        fields:
+          - name: bluesky
+            label: BlueSky URL
+            type: string
+            description: Full URL to your Bluesky profile
+          - name: mastodon
+            label: Mastodon URL
+            type: string
+            description: Full URL to your Mastodon profile
+
+          - name: github
+            label: GitHub URL
+            type: string
+            description: Full URL to your GitHub profile or organization
+
+          - name: linkedin
+            label: LinkedIn URL
+            type: string
+            description: Full URL to your LinkedIn profile or company page
+
+          - name: x
+            label: X URL
+            type: string
+            description: Full URL to your X profile
+
+          - name: facebook
+            label: Facebook URL
+            type: string
+            description: Full URL to your Facebook page
+
+          - name: instagram
+            label: Instagram URL
+            type: string
+            description: Full URL to your Instagram profile
+
+          - name: youtube
+            label: YouTube URL
+            type: string
+            description: Full URL to your YouTube channel

@@ -1,5 +1,15 @@
 ---
 import { Font } from 'astro:assets';
+import { getEntry } from 'astro:content';
+
+// Fetch site config from content collection
+const siteConfigEntry = await getEntry('site', 'config');
+
+if (!siteConfigEntry) {
+  throw new Error('Site configuration not found');
+}
+
+const siteConfig = siteConfigEntry.data;
 
 export interface Props {
   title: string;
@@ -10,17 +20,19 @@ export interface Props {
 
 const {
   title,
-  description = 'DraftLab Scaffold - Our Web Development Starter',
-  image = '/favicon.svg',
+  description = siteConfig.description,
+  image,
   canonicalURL,
 } = Astro.props;
 
-const imageURL = new URL(image, Astro.url).href;
+// Use the default OG image from content collection if no image provided
+const ogImage = image || siteConfig.defaultOgImage;
+const imageURL = ogImage ? new URL(ogImage.src, Astro.url).href : undefined;
 ---
 
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/svg+xml" href={siteConfig.favicon} />
 <meta name="generator" content={Astro.generator} />
 
 <!-- Local Font Declaration -->
