@@ -49,7 +49,17 @@ import DevOnly from '@components/atoms/DevOnly.astro'; import {devClass} from '@
 
 ### Content Collections
 
-Content lives in `src/content/` with schemas defined in `config.ts`. The Pages collection uses YAML files where each file becomes a route. Pages contain a sections array that you can populate with any combination of Hero, RichText, Card, People, or Partners sections. The People collection stores team member information as individual JSON files.
+Content lives in `src/content/` with schemas defined in `config.ts`. The scaffold includes five core collections:
+
+**Site Configuration** (`src/content/site/config.json`) - Global site settings including title, description, default SEO images, social media links, and favicon. This serves as the single source of truth for site-wide metadata and is fully editable through Pages CMS.
+
+**Pages** (`src/content/pages/`) - YAML files where each file becomes a route. Pages contain a sections array that you can populate with any combination of Hero, RichText, Card, People, or Partners sections.
+
+**Navigation** (`src/content/navigation/`) - JSON files defining menu structures. Includes main navigation and footer menus. Add new menus by creating additional JSON files.
+
+**People** (`src/content/people/`) - Team member information as individual JSON files with headshots, titles, and department tags.
+
+**Articles** (`src/content/articles/`) - Markdown blog posts with frontmatter including permalink, authors, tags, publish status, and hero images.
 
 Images use absolute paths from the project root (`/src/assets/...`) for consistency. The image() helper in content collections automatically resolves and optimizes these at build time.
 
@@ -59,6 +69,23 @@ The dynamic route at `src/pages/[...slug].astro` renders pages from the Pages co
 
 Section types are defined as a discriminated union in the content schema. Each section has its own structure and corresponding component in `src/components/sections/`. Hero sections display prominent titles, Rich text sections render markdown, Card sections show grids with optional images and buttons, People sections display team members, and Partners sections showcase logos with links.
 
+### API Endpoints
+
+Dynamic API endpoints automatically expose all content collections as JSON:
+
+- `/api/pages.json` - All page data
+- `/api/people.json` - All team members
+- `/api/articles.json` - All articles with metadata and content
+- `/api/navigation.json` - All navigation menus
+
+The endpoint implementation at `src/pages/api/[collection].json.ts` automatically generates these routes from your content collections. Add a new collection to `config.ts` and it becomes available as an API endpoint with no additional configuration.
+
+### Navigation & SEO
+
+Navigation menus are managed through the Navigation collection and automatically populate the header and footer. The PageLayout component fetches menu data at build time, so changes to navigation files immediately reflect across all pages.
+
+SEO defaults are defined in the Site Configuration collection. The Head component uses these as fallbacks when pages don't specify their own metadata. This includes default Open Graph images, site description, favicon, and social media links.
+
 ## Content Management
 
 ### Pages CMS
@@ -66,6 +93,13 @@ Section types are defined as a discriminated union in the content schema. Each s
 The template includes a complete configuration for Pages CMS in `.pages.yml`. This provides a visual interface for editing content without code.
 
 Access the CMS by logging into https://app.pagescms.org with your Github profile (the project repository must be hosted on Github).
+
+**Available in Pages CMS:**
+- **Site Settings** - Global configuration, SEO defaults, and social links
+- **Pages** - Page builder with drag-and-drop sections
+- **Navigation Menus** - Header and footer menu management
+- **Articles** - Blog post editor with markdown support
+- **People** - Team member profiles
 
 The interface lets you add, edit, and reorder page sections with a drag-and-drop builder. All components include validation and helpful descriptions.
 
@@ -89,20 +123,30 @@ src/
 ├── components/
 │   ├── atoms/       # Basic elements (Button, Image, Link, DevOnly)
 │   ├── molecules/   # Simple combinations (Card, NavItem)
-│   ├── organisms/   # Complex components (Hero, Person, Footer)
+│   ├── organisms/   # Complex components (Hero, Person, Footer, Head)
 │   └── sections/    # Page sections (HeroSection, CardSection, etc.)
 ├── content/
+│   ├── articles/    # Blog posts (Markdown)
+│   ├── navigation/  # Menu definitions (JSON)
 │   ├── pages/       # Page definitions (YAML)
 │   ├── people/      # Team members (JSON)
+│   ├── site/        # Global configuration (JSON)
 │   └── config.ts    # Content schemas with Zod validation
 ├── layouts/
 │   ├── BaseLayout.astro   # Document wrapper
 │   └── PageLayout.astro   # Page structure with header/footer
+├── lib/
+│   └── config.ts          # Site configuration helper
 ├── pages/
-│   ├── [...slug].astro    # Dynamic page renderer
+│   ├── api/
+│   │   └── [collection].json.ts  # Dynamic API endpoints
+│   ├── articles/
+│   │   ├── index.astro    # Articles list
+│   │   └── [id].astro     # Individual articles
 │   ├── people/
 │   │   ├── index.astro    # People directory
 │   │   └── [id].astro     # Individual profiles
+│   ├── [...slug].astro    # Dynamic page renderer
 │   └── index.astro
 ├── utils/
 │   └── dev.ts             # Development utilities
