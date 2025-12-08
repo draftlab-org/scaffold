@@ -1,4 +1,5 @@
 ---
+permalink: 'getting-started-with-astro'
 title: 'Getting Started with Astro: A Comprehensive Guide'
 authors: ['sarah-chen', 'david-kim']
 published: 'published'

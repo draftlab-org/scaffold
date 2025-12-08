@@ -1,4 +1,5 @@
 ---
+permalink: 'building-scalable-apis'
 title: 'Building Scalable APIs: Best Practices'
 authors: ['michael-brown', 'priya-sharma', 'jordan-lee']
 published: 'draft'

@@ -1,4 +1,5 @@
 ---
+permalink: 'modern-css-techniques'
 title: 'Modern CSS Techniques for Responsive Design'
 authors: ['emily-rodriguez']
 published: 'published'

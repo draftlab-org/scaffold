@@ -98,6 +98,7 @@ const articlesCollection = defineCollection({
   type: 'content',
   schema: ({ image }) =>
     z.object({
+      permalink: z.string(),
       title: z.string(),
       excerpt: z.string().optional(),
       authors: z.array(z.string()), // References to people collection IDs

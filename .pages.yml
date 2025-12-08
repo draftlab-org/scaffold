@@ -435,3 +435,74 @@ content:
             label: Description
             type: string
             description: Optional description for accessibility
+
+  # Articles collection
+  - name: articles
+    label: Articles
+    type: collection
+    path: src/content/articles
+    extension: md
+    format: frontmatter-md
+    filename: '{{fields.permalink}}'
+    view:
+      fields: [title, publishedDate, published]
+      primary: title
+    fields:
+      - name: permalink
+        label: Permalink
+        type: string
+        required: true
+        description: URL-friendly identifier (e.g. my-article-title)
+        pattern:
+          {
+            message: "Must be a web-safe string like 'my-article-title'.",
+            regex: '^[a-zA-Z0-9_-]*$',
+          }
+
+      - name: title
+        label: Title
+        type: string
+        required: true
+        description: Article title
+
+      - name: excerpt
+        label: Excerpt
+        type: string
+        description: Short summary of the article
+
+      - name: authors
+        label: Authors
+        type: string
+        list: true
+        required: true
+        description: Author IDs from the people collection
+
+      - name: published
+        label: Status
+        type: select
+        required: true
+        default: draft
+        options:
+          values:
+            - label: Draft
+              value: draft
+            - label: Published
+              value: published
+
+      - name: tags
+        label: Tags
+        type: string
+        list: true
+        required: true
+        description: Article tags/categories
+
+      - name: publishedDate
+        label: Published Date
+        type: datetime
+        required: true
+        description: Date the article was published
+
+      - name: heroImage
+        label: Hero Image
+        type: image
+        description: Featured image for the article
