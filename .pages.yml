@@ -496,7 +496,9 @@ content:
 
       - name: publishedDate
         label: Published Date
-        type: datetime
+        type: date
+        options:
+          format: YYYY-MM-DD
         required: true
         description: Date the article was published
 
@@ -504,3 +506,7 @@ content:
         label: Hero Image
         type: image
         description: Featured image for the article
+
+      - name: body
+        label: Body
+        type: rich-text
