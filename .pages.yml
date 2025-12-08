@@ -441,8 +441,7 @@ content:
     label: Articles
     type: collection
     path: src/content/articles
-    format: yaml-frontmatter
-    filename: '{{fields.permalink}}'
+    filename: '{{fields.permalink}}.md'
     view:
       fields: [title, publishedDate, published]
       primary: title
