@@ -4,7 +4,7 @@ authors: ['emily-rodriguez']
 published: 'published'
 tags: ['css', 'design', 'responsive']
 publishedDate: 2024-02-20
-backgroundImage: '/src/assets/anna-magenta-YELG0ZVK5yw-unsplash.jpg'
+heroImage: '/src/assets/backgrounds/anna-magenta-YELG0ZVK5yw-unsplash.jpg'
 ---
 
 # Modern CSS Techniques for Responsive Design

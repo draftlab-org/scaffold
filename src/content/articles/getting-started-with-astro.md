@@ -4,7 +4,7 @@ authors: ['sarah-chen', 'david-kim']
 published: 'published'
 tags: ['astro', 'web-development', 'tutorial']
 publishedDate: 2024-01-15
-backgroundImage: '/src/assets/anna-magenta-YELG0ZVK5yw-unsplash.jpg'
+heroImage: '/src/assets/backgrounds/anna-magenta-DJ7FzM_WZXs-unsplash.jpg'
 ---
 
 # Getting Started with Astro

@@ -2,12 +2,14 @@
 import { getCollection } from 'astro:content';
 import housesBG from '@assets/backgrounds/anna-magenta-XUCfqIEudBU-unsplash.jpg'
 import Button from '@components/atoms/Button.astro';
+import Image from '@components/atoms/Image.astro';
 import Tag from '@components/atoms/Tag.astro';
 import Card from '@components/molecules/Card.astro';
 import HeroSection from '@components/sections/HeroSection.astro';
 import PageLayout from '@layouts/PageLayout.astro';
 import SectionLayout from '@layouts/SectionLayout.astro';
 import { isDev } from '@utils/dev';
+
 
 // Fetch all articles
 const allArticles = await getCollection('articles');
@@ -65,6 +67,17 @@ const formatDate = (date: Date) => {
 					<div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
 						{articles.map((article) => (
 							<Card variant="bordered" class="flex h-full flex-col">
+								{article.data.heroImage && (
+									<div class="mb-4">
+										<Image
+											src={article.data.heroImage as ImageMetadata}
+											alt={article.data.title}
+											width={400}
+											height={300}
+											class="h-48 w-full rounded-lg object-cover"
+										/>
+									</div>
+								)}
 								<div class="flex h-full flex-col p-6">
 									{/* Draft badge (only visible in dev) */}
 									{isDev && article.data.published === 'draft' && (

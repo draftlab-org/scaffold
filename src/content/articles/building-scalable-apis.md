@@ -4,7 +4,7 @@ authors: ['michael-brown', 'priya-sharma', 'jordan-lee']
 published: 'draft'
 tags: ['api', 'backend', 'architecture']
 publishedDate: 2024-03-10
-backgroundImage: '/src/assets/anna-magenta-YELG0ZVK5yw-unsplash.jpg'
+heroImage: '/src/assets/backgrounds/anna-magenta-XUCfqIEudBU-unsplash.jpg'
 ---
 
 # Building Scalable APIs: Best Practices

@@ -41,15 +41,16 @@ const formatDate = (date: Date) => {
   }).format(date);
 };
 
-const {title, publishedDate, backgroundImage, tags, published } = article.data
+const {title, publishedDate, heroImage, tags, published } = article.data
 ---
 
 <PageLayout
 	title={article.data.title}
 	description={`Article by ${authors.map((a) => a?.name).join(', ')}`}
+	image={heroImage}
 >
 	<!-- Article Header -->
-	<HeroSection title={title} backgroundImage={backgroundImage}>
+	<HeroSection title={title} backgroundImage={heroImage} sectionLabel="hero">
 		{/* Draft badge (only visible in dev) */}
 		{
 			isDev && published === 'draft' && (
@@ -113,7 +114,11 @@ const {title, publishedDate, backgroundImage, tags, published } = article.data
 						{authors.map(
 							(author) =>
 								author && (
-									<div class="flex gap-4 rounded-lg bg-white p-6 shadow-sm">
+									<Link
+										variant="unstyled"
+										href={`/people/${author.id}`}
+										class="flex gap-4 rounded-lg bg-white p-6 no-underline transition hover:shadow-sm"
+									>
 										{author.headshot && (
 											<Image
 												src={author.headshot}
@@ -126,7 +131,7 @@ const {title, publishedDate, backgroundImage, tags, published } = article.data
 											<h3 class="mb-1 text-lg font-semibold">{author.name}</h3>
 											<p class="text-sm text-gray-600">{author.title}</p>
 										</div>
-									</div>
+									</Link>
 								)
 						)}
 					</div>

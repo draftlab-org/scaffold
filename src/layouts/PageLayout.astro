@@ -1,10 +1,39 @@
 ---
+import { getEntry } from 'astro:content';
 import type { FooterSection } from '@components/organisms/Footer.astro';
 import Footer from '@components/organisms/Footer.astro';
 import type { NavLink } from '@components/organisms/Navigation.astro';
 import Header from '@components/sections/Header.astro';
 import Main from '@components/sections/Main.astro';
 import BaseLayout from '@layouts/BaseLayout.astro';
+
+// Fetch navigation data from content collections
+const mainNav = await getEntry('navigation', 'main');
+const footerNav1 = await getEntry('navigation', 'footer-1');
+const footerNav2 = await getEntry('navigation', 'footer-2');
+
+// Map navigation data to component format
+const defaultNavLinks: NavLink[] = mainNav?.data.items.map(item => ({
+  href: item.href,
+  label: item.label,
+})) || [];
+
+const defaultFooterSections: FooterSection[] = [
+  footerNav1 && {
+    title: footerNav1.data.title,
+    links: footerNav1.data.items.map(item => ({
+      href: item.href,
+      label: item.label,
+    })),
+  },
+  footerNav2 && {
+    title: footerNav2.data.title,
+    links: footerNav2.data.items.map(item => ({
+      href: item.href,
+      label: item.label,
+    })),
+  },
+].filter(Boolean) as FooterSection[];
 
 export interface Props {
   title: string;
@@ -24,13 +53,8 @@ const {
   title,
   description,
   image,
-  navLinks = [
-    { href: '/about', label: 'About Us' },
-    { href: '/community', label: 'Feature Sandbox' },
-    { href: '/people', label: 'People' },
-    { href: '/articles', label: 'Articles' },
-  ],
-  footerSections = [],
+  navLinks = defaultNavLinks,
+  footerSections = defaultFooterSections,
   siteName = 'Draftlab Scaffold',
   stickyHeader = true,
   containerized = false,

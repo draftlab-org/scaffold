@@ -1,0 +1,26 @@
+{
+  "slug": "footer-1",
+  "title": "Footer Nav 1",
+  "items": [
+    {
+      "label": "Menu Item",
+      "href": "/about"
+    },
+    {
+      "label": "Menu Item",
+      "href": "/about"
+    },
+    {
+      "label": "Menu Item",
+      "href": "/about"
+    },
+    {
+      "label": "Menu Item",
+      "href": "/about"
+    },
+    {
+      "label": "Menu Item",
+      "href": "/about"
+    }
+  ]
+}

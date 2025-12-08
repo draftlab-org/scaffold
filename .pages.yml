@@ -384,3 +384,54 @@ content:
             label: YouTube URL
             type: string
             description: Full URL to your YouTube channel
+
+  # Navigation menus
+  - name: navigation
+    label: Navigation Menus
+    type: collection
+    path: src/content/navigation
+    extension: json
+    filename: '{{fields.slug}}'
+    view:
+      fields: [title]
+      primary: title
+    fields:
+      - name: slug
+        label: Menu ID
+        type: string
+        required: true
+        description: Unique identifier for this menu (e.g. main, footer-1, footer-2)
+        pattern:
+          {
+            message: "Must be a web-safe string like 'main' or 'footer-1'.",
+            regex: '^[a-zA-Z0-9_-]*$',
+          }
+
+      - name: title
+        label: Menu Title
+        type: string
+        required: true
+        description: Display title for this menu
+
+      - name: items
+        label: Menu Items
+        type: object
+        list: true
+        required: true
+        fields:
+          - name: label
+            label: Link Label
+            type: string
+            required: true
+            description: Text displayed for the link
+
+          - name: href
+            label: URL
+            type: string
+            required: true
+            description: Link destination (e.g. / or /about)
+
+          - name: description
+            label: Description
+            type: string
+            description: Optional description for accessibility

@@ -132,9 +132,25 @@ const siteCollection = defineCollection({
     }),
 });
 
+const navigationCollection = defineCollection({
+  type: 'data',
+  schema: z.object({
+    slug: z.string(),
+    title: z.string(),
+    items: z.array(
+      z.object({
+        label: z.string(),
+        href: z.string(),
+        description: z.string().optional(),
+      })
+    ),
+  }),
+});
+
 export const collections = {
   people: peopleCollection,
   pages: pagesCollection,
   articles: articlesCollection,
   site: siteCollection,
+  navigation: navigationCollection,
 };

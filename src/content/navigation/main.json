@@ -1,0 +1,23 @@
+{
+  "slug": "main",
+  "title": "Main Navigation",
+  "items": [
+    {
+      "label": "Home",
+      "href": "/"
+    },
+    {
+      "label": "About",
+      "href": "/about",
+      "description": "Learn more about us"
+    },
+    {
+      "label": "Community",
+      "href": "/community"
+    },
+    {
+      "label": "Articles",
+      "href": "/articles"
+    }
+  ]
+}

@@ -20,6 +20,7 @@ const { person } = Astro.props;
 <PageLayout
 	title={`${person.name} - Draftlab Scaffold`}
 	description={`${person.name}, ${person.title}`}
+	image={person.headshot}
 >
 	<!-- Hero Section -->
 	<Hero
