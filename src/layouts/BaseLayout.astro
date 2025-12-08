@@ -13,7 +13,7 @@ export interface Props {
 const {
   title,
   description = 'Draftlab Scaffold - Our Web Development Starter',
-  image = '/favicon.svg',
+  image,
   lang = 'en',
   class: className = '',
 } = Astro.props;
@@ -26,12 +26,7 @@ const canonicalURL = Astro.site
 <!doctype html>
 <html lang={lang}>
 	<head>
-		<Head
-			title={title}
-			description={description}
-			image={image}
-			canonicalURL={canonicalURL}
-		>
+		<Head title={title} description={description} canonicalURL={canonicalURL}>
 			<slot name="head" />
 		</Head>
 	</head>

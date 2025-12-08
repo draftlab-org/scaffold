@@ -11,10 +11,12 @@ if (!siteConfigEntry) {
 
 const siteConfig = siteConfigEntry.data;
 
+console.log(siteConfig)
+
 export interface Props {
   title: string;
   description?: string;
-  image?: string;
+  image?: ImageMetadata;
   canonicalURL?: URL;
 }
 
@@ -26,19 +28,16 @@ const {
 } = Astro.props;
 
 // Use the default OG image from content collection if no image provided
-const ogImage = image || siteConfig.defaultOgImage;
+const ogImage = image || siteConfig.defaultOgImage as ImageMetadata;
 const imageURL = ogImage ? new URL(ogImage.src, Astro.url).href : undefined;
+
+console.log(imageURL)
 ---
 
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="icon" type="image/svg+xml" href={siteConfig.favicon} />
 <meta name="generator" content={Astro.generator} />
-
-<!-- Local Font Declaration -->
-<Font cssVariable="--font-inter" preload />
-<Font cssVariable="--font-ibm-plex-serif" preload />
-<Font cssVariable="--font-rubik" preload />
 
 <!-- Primary Meta Tags -->
 <title>{title}</title>
@@ -59,6 +58,10 @@ const imageURL = ogImage ? new URL(ogImage.src, Astro.url).href : undefined;
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={imageURL} />
+
+<!-- Local Font Declaration -->
+<Font cssVariable="--font-ibm-plex-serif" preload />
+<Font cssVariable="--font-rubik" preload />
 
 <!-- Additional head content -->
 <slot />
