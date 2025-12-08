@@ -1,0 +1,76 @@
+---
+import { getEntry } from 'astro:content';
+import IconBluesky from '~icons/simple-icons/bluesky';
+import IconFacebook from '~icons/simple-icons/facebook';
+import IconGithub from '~icons/simple-icons/github';
+import IconInstagram from '~icons/simple-icons/instagram';
+import IconLinkedin from '~icons/simple-icons/linkedin';
+import IconMastodon from '~icons/simple-icons/mastodon';
+import IconX from '~icons/simple-icons/x';
+import IconYoutube from '~icons/simple-icons/youtube';
+
+// Fetch site config for social links
+const siteConfig = await getEntry('site', 'config');
+const social = siteConfig?.data.social;
+
+// Map of social network to icon component
+const iconMap = {
+  bluesky: IconBluesky,
+  github: IconGithub,
+  linkedin: IconLinkedin,
+  mastodon: IconMastodon,
+  x: IconX,
+  facebook: IconFacebook,
+  instagram: IconInstagram,
+  youtube: IconYoutube,
+};
+
+// Map of social network to label
+const labelMap = {
+  bluesky: 'Bluesky',
+  github: 'GitHub',
+  linkedin: 'LinkedIn',
+  mastodon: 'Mastodon',
+  x: 'X',
+  facebook: 'Facebook',
+  instagram: 'Instagram',
+  youtube: 'YouTube',
+};
+
+export interface Props {
+  class?: string;
+  iconClass?: string;
+}
+
+const { class: className = '', iconClass = 'w-5 h-5' } = Astro.props;
+
+// Build list of active social links
+const socialLinks = social
+  ? Object.entries(social)
+      .filter(([_, url]) => url && url.trim() !== '')
+      .map(([network, url]) => ({
+        network,
+        url,
+        icon: iconMap[network as keyof typeof iconMap],
+        label: labelMap[network as keyof typeof labelMap],
+      }))
+  : [];
+---
+
+{
+	socialLinks.length > 0 && (
+		<div class={`flex items-center gap-4 ${className}`}>
+			{socialLinks.map(({ network, url, icon: Icon, label }) => (
+				<a
+					href={url}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="text-gray-600 transition-colors hover:text-gray-900 dark:text-white dark:hover:text-primary-300"
+					aria-label={label}
+				>
+					<Icon class={iconClass} />
+				</a>
+			))}
+		</div>
+	)
+}

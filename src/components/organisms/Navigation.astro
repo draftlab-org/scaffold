@@ -29,45 +29,43 @@ const isActive = (href: string) => {
 ---
 
 <nav
-	class={`p-6 w-full bg-white inline-flex justify-between items-center ${className}`}
+	class={`p-6 w-full bg-white flex justify-between items-center ${className}`}
 >
-	<div class="flex items-center justify-start gap-10">
-		<div class="flex h-16 items-center justify-between">
-			<!-- Logo/Site Name -->
-			<div class="mr-6 shrink-0">
-				<Link
-					href="/"
-					variant="unstyled"
-					class="font-serif text-2xl font-bold text-gray-900 underline decoration-primary-300 decoration-dotted decoration-4 underline-offset-8"
-				>
-					{siteName}
-				</Link>
-			</div>
+	<!-- Left side: Logo + Nav Links -->
+	<div class="flex items-center gap-10">
+		<!-- Logo/Site Name -->
+		<div class="shrink-0">
+			<Link
+				href="/"
+				variant="unstyled"
+				class="font-serif text-2xl font-bold text-gray-900 underline decoration-primary-300 decoration-dotted decoration-4 underline-offset-8"
+			>
+				{siteName}
+			</Link>
+		</div>
 
-			<!-- Navigation Links -->
-			<div class="hidden md:block">
-				<div class="flex items-center space-x-1">
-					{
-						links.map((link) => (
-							<NavItem
-								href={link.href}
-								label={link.label}
-								active={isActive(link.href)}
-							/>
-						))
-					}
-				</div>
-			</div>
+		<!-- Navigation Links -->
+		<div class="hidden md:flex items-center space-x-1">
+			{
+				links.map((link) => (
+					<NavItem
+						href={link.href}
+						label={link.label}
+						active={isActive(link.href)}
+					/>
+				))
+			}
+		</div>
+	</div>
 
-			<!-- CTA or Actions Slot -->
-			<div class="flex items-center space-x-4">
-				<slot name="actions" />
-			</div>
+	<!-- Right side: Actions + Mobile Menu -->
+	<div class="flex items-center gap-4">
+		<!-- CTA or Actions Slot -->
+		<slot name="actions" />
 
-			<!-- Mobile Menu -->
-			<div class="md:hidden">
-				<MobileMenu client:load links={links} currentPath={currentPath} />
-			</div>
+		<!-- Mobile Menu -->
+		<div class="md:hidden">
+			<MobileMenu client:load links={links} currentPath={currentPath} />
 		</div>
 	</div>
 </nav>

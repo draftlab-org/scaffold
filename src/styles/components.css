@@ -36,6 +36,10 @@
   @apply rounded-xl px-8 py-4 text-xl;
 }
 
+.button-size-square {
+  @apply rounded-md p-1.5 text-base;
+}
+
 /*
   -------------
   Card

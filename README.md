@@ -2,6 +2,8 @@
 
 A modern, content-focused web template built with Astro v5, Tailwind CSS v4, and React v19. This scaffold provides a flexible page-building system with reusable components, type-safe content collections, and an integrated headless CMS.
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/9a10e2af-511b-48c6-8ed2-e450ae007148/deploy-status)](https://app.netlify.com/projects/draftlab-scaffold/deploys)
+
 ## Installation
 
 Create a new project using this template:
@@ -95,6 +97,7 @@ The template includes a complete configuration for Pages CMS in `.pages.yml`. Th
 Access the CMS by logging into https://app.pagescms.org with your Github profile (the project repository must be hosted on Github).
 
 **Available in Pages CMS:**
+
 - **Site Settings** - Global configuration, SEO defaults, and social links
 - **Pages** - Page builder with drag-and-drop sections
 - **Navigation Menus** - Header and footer menu management

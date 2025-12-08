@@ -1,7 +1,7 @@
 ---
 export interface Props {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'square';
   as?: 'button' | 'a';
   href?: string;
   type?: 'button' | 'submit' | 'reset';
@@ -34,6 +34,7 @@ const sizes = {
   md: 'button-size-md',
   lg: 'button-size-lg',
   xl: 'button-size-xl',
+  square: 'button-size-square'
 };
 
 const classes = `${baseStyles} ${variants[variant as keyof typeof variants]} ${sizes[size as keyof typeof sizes]} ${className}`;

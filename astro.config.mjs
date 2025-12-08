@@ -6,6 +6,7 @@ import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig, fontProviders } from 'astro/config';
+import Icons from 'unplugin-icons/vite';
 import { siteConfig } from './src/lib/config.ts';
 
 // https://astro.build/config
@@ -38,7 +39,12 @@ export default defineConfig({
     // @ts-expect-error
     // TODO #1 - remove expect error when Astro updates to Vite 7
     // https://github.com/withastro/astro/issues/14030#issuecomment-3027129338
-    plugins: [tailwindcss()],
+    plugins: [
+      tailwindcss(),
+      Icons({
+        compiler: 'astro',
+      }),
+    ],
   },
 
   integrations: [react(), sitemap(), mdx()],

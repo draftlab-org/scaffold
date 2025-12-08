@@ -1,6 +1,7 @@
 ---
 import Link from '@components/atoms/Link.astro';
 import Text from '@components/atoms/Text.astro';
+import SocialLinks from '@components/molecules/SocialLinks.astro';
 
 export interface FooterLink {
   href: string;
@@ -62,6 +63,11 @@ const thanksText = `Background images by <a href="https://unsplash.com/@annamage
 
 		<!-- Custom Content Slot -->
 		<slot />
+
+		<!-- Social Links -->
+		<div class="border-t border-white/10 pt-8">
+			<SocialLinks class="justify-center" iconClass="w-5 h-5" />
+		</div>
 
 		<!-- Copyright -->
 		<div class="pt-8">

@@ -1,6 +1,13 @@
 ---
+import { getEntry } from 'astro:content';
+import Button from '@components/atoms/Button.astro';
 import type { NavLink } from '@components/organisms/Navigation.astro';
 import Navigation from '@components/organisms/Navigation.astro';
+import IconGithub from '~icons/simple-icons/github';
+
+// Fetch GitHub URL from site config
+const siteConfig = await getEntry('site', 'config');
+const githubUrl = siteConfig?.data.social?.github;
 
 export interface Props {
   links: NavLink[];
@@ -24,6 +31,15 @@ const transparentClass = transparent ? 'bg-transparent border-transparent' : '';
 
 <header class={`${stickyClass} ${className}`}>
 	<Navigation links={links} siteName={siteName} class={transparentClass}>
-		<slot name="actions" slot="actions" />
+		<div slot="actions" class="flex items-center gap-4">
+			{
+				githubUrl && (
+					<Button variant="outline" as="a" size="square" href={githubUrl}>
+						<IconGithub class="h-5 w-5" />
+					</Button>
+				)
+			}
+			<slot name="actions" />
+		</div>
 	</Navigation>
 </header>

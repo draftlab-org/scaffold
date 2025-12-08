@@ -31,8 +31,10 @@
     "unist-util-visit": "^5.0.0"
   },
   "devDependencies": {
+    "@iconify/json": "^2.2.416",
     "@tailwindcss/typography": "^0.5.19",
     "prettier": "^3.6.2",
-    "prettier-plugin-tailwindcss": "^0.7.1"
+    "prettier-plugin-tailwindcss": "^0.7.1",
+    "unplugin-icons": "^22.5.0"
   }
 }
