@@ -1,0 +1,6 @@
+title: New test
+permalink: test-1
+sections:
+  - type: richText
+    background: white
+    content: asd
