@@ -12,12 +12,14 @@ import type { GetStaticPaths } from 'astro';
 export const getStaticPaths = (async () => {
   const pages = await getCollection('pages');
   return pages.map((page) => ({
-    params: { slug: page.id },
+    params: { path: page.id },
     props: { page },
   }));
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;
+
+console.log(page);
 ---
 
 <PageLayout title={page.data.title} description={page.data.description}>
