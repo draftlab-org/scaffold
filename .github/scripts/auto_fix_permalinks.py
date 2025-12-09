@@ -54,4 +54,19 @@ for root, _, files in os.walk(PAGES_DIR):
         # ----------------------------
         # ✅ CASE 2: permalink missing → insert ONLY that line
         # ----------------------------
-        inferred_permalink = safe_filename(fil
+        inferred_permalink = safe_filename(filename_without_ext)
+        new_line = f"permalink: {inferred_permalink}\n"
+
+        # Insert after first line if possible (safe default)
+        if lines:
+            lines.insert(1, new_line)
+        else:
+            lines.append(new_line)
+
+        try:
+            with open(file_path, "w", encoding="utf-8") as f:
+                f.writelines(lines)
+
+            print(f"✅ Added permalink to {file_path}: {inferred_permalink}")
+        except Exception:
+            continue  # silently ignore write failures
