@@ -1,0 +1,6 @@
+title: This is a test title
+permalink: test-permalink
+sections:
+  - type: richText
+    background: white
+    content: asd
