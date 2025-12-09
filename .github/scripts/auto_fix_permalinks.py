@@ -5,47 +5,113 @@ import subprocess
 PAGES_DIR = "src/content/pages"
 PERMALINK_REGEX = re.compile(r'^(\s*permalink\s*:\s*)(.+?)(\s*)$', re.IGNORECASE)
 
+def run(cmd):
+    try:
+        return subprocess.check_output(cmd, stderr=subprocess.DEVNULL).decode().strip()
+    except Exception:
+        return ""
+
 def safe_filename(text: str) -> str:
     return text.strip().replace(" ", "-")
 
-def run(cmd):
-    return subprocess.check_output(cmd, stderr=subprocess.DEVNULL).decode().strip()
+# -------------------------------------------------
+# ✅ Determine correct git diff base (PR vs push)
+# -------------------------------------------------
+BASE_REF = os.environ.get("GITHUB_BASE_REF")
 
-# ----------------------------
-# 🔎 Get changed YAML files from git
-# ----------------------------
-try:
-    diff_files = run([
-        "git", "diff", "--name-only", "HEAD~1", "HEAD"
-    ]).splitlines()
-except Exception:
-    diff_files = []
+if BASE_REF:
+    diff_base = f"origin/{BASE_REF}"
+else:
+    diff_base = "HEAD~1"
 
-yaml_files = [
-    f for f in diff_files
-    if f.startswith(PAGES_DIR) and f.endswith(".yaml")
-]
+# -------------------------------------------------
+# ✅ Get changed files INCLUDING renames
+# -------------------------------------------------
+diff_output = run([
+    "git", "diff", "--name-status", diff_base
+]).splitlines()
 
-for file_path in yaml_files:
-    if not os.path.exists(file_path):
-        continue  # deleted file
+changes = []
 
-    filename = os.path.basename(file_path)
-    root = os.path.dirname(file_path)
+for line in diff_output:
+    if not line:
+        continue
+
+    parts = line.split("\t")
+    status = parts[0]
+
+    if status.startswith("R"):  # Rename detected
+        old_path = parts[1]
+        new_path = parts[2]
+        changes.append(("rename", old_path, new_path))
+    elif status == "M":
+        changes.append(("modify", parts[1]))
+
+# -------------------------------------------------
+# ✅ HANDLE FILE RENAMES → UPDATE PERMALINK
+# -------------------------------------------------
+for change in changes:
+    if change[0] != "rename":
+        continue
+
+    old_path, new_path = change[1], change[2]
+
+    if not new_path.startswith(PAGES_DIR) or not new_path.endswith(".yaml"):
+        continue
+
+    filename = os.path.basename(new_path)
     filename_without_ext = os.path.splitext(filename)[0]
     inferred_permalink = safe_filename(filename_without_ext)
 
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(new_path, "r", encoding="utf-8") as f:
             lines = f.readlines()
     except Exception:
         continue
 
-    old_content = ""
+    updated = False
+
+    for i, line in enumerate(lines):
+        match = PERMALINK_REGEX.match(line)
+        if match:
+            prefix, _, suffix = match.groups()
+            lines[i] = f"{prefix}{inferred_permalink}{suffix}\n"
+            updated = True
+            break
+
+    if not updated:
+        if lines:
+            lines.insert(1, f"permalink: {inferred_permalink}\n")
+        else:
+            lines.append(f"permalink: {inferred_permalink}\n")
+
     try:
-        old_content = run(["git", "show", f"HEAD~1:{file_path}"])
+        with open(new_path, "w", encoding="utf-8") as f:
+            f.writelines(lines)
+        print(f"✅ Updated permalink from filename: {new_path} → {inferred_permalink}")
     except Exception:
         pass
+
+# -------------------------------------------------
+# ✅ HANDLE PERMALINK CHANGES → RENAME FILE
+# -------------------------------------------------
+for change in changes:
+    if change[0] != "modify":
+        continue
+
+    file_path = change[1]
+
+    if not file_path.startswith(PAGES_DIR) or not file_path.endswith(".yaml"):
+        continue
+
+    filename = os.path.basename(file_path)
+    root = os.path.dirname(file_path)
+
+    try:
+        new_content = run(["git", "show", f"HEAD:{file_path}"])
+        old_content = run(["git", "show", f"{diff_base}:{file_path}"])
+    except Exception:
+        continue
 
     old_permalink = None
     new_permalink = None
@@ -56,51 +122,21 @@ for file_path in yaml_files:
             old_permalink = match.group(2).strip().strip('"\'')
             break
 
-    permalink_line_index = None
-
-    for i, line in enumerate(lines):
+    for line in new_content.splitlines():
         match = PERMALINK_REGEX.match(line)
         if match:
             new_permalink = match.group(2).strip().strip('"\'')
-            permalink_line_index = i
             break
 
-    # --------------------------------------------------
-    # ✅ CASE 1: PERMALINK CHANGED → RENAME FILE
-    # --------------------------------------------------
+    # ✅ Only act when permalink actually changed
     if new_permalink and new_permalink != old_permalink:
         expected_filename = f"{safe_filename(new_permalink)}.yaml"
         expected_path = os.path.join(root, expected_filename)
 
-        if filename != expected_filename:
+        if os.path.basename(file_path) != expected_filename:
             if not os.path.exists(expected_path):
-                os.rename(file_path, expected_path)
-                print(f"✅ Renamed (permalink → filename): {file_path} → {expected_path}")
-            else:
-                print(f"⚠️ Rename skipped (conflict): {expected_path}")
-        continue
-
-    # --------------------------------------------------
-    # ✅ CASE 2: FILENAME CHANGED → UPDATE PERMALINK
-    # --------------------------------------------------
-    if old_permalink != inferred_permalink:
-
-        new_line = f"permalink: {inferred_permalink}\n"
-
-        if permalink_line_index is not None:
-            prefix_match = PERMALINK_REGEX.match(lines[permalink_line_index])
-            if prefix_match:
-                prefix, _, suffix = prefix_match.groups()
-                lines[permalink_line_index] = f"{prefix}{inferred_permalink}{suffix}\n"
-        else:
-            if lines:
-                lines.insert(1, new_line)
-            else:
-                lines.append(new_line)
-
-        try:
-            with open(file_path, "w", encoding="utf-8") as f:
-                f.writelines(lines)
-            print(f"✅ Updated permalink (filename → permalink): {file_path} → {inferred_permalink}")
-        except Exception:
-            pass
+                try:
+                    os.rename(file_path, expected_path)
+                    print(f"✅ Renamed from permalink: {file_path} → {expected_path}")
+                except Exception:
+                    pass
