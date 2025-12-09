@@ -3,10 +3,10 @@ name: Auto-Fix Page Permalinks
 on:
   push:
     paths:
-      - "pages/**/*.yaml"
+      - "src/content/pages/**/*.yaml"
   pull_request:
     paths:
-      - "pages/**/*.yaml"
+      - "src/content/pages/**/*.yaml"
 
 jobs:
   auto-fix:
@@ -37,7 +37,7 @@ jobs:
           if [[ -n "$(git status --porcelain)" ]]; then
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add pages
+            git add src/content/pages
             git commit -m "Auto-fix page permalinks and filenames"
             git push
           else
