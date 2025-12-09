@@ -1,5 +1,6 @@
 title: Test child 1
 permalink: test-child-1
+
 sections:
   - type: richText
     background: white
