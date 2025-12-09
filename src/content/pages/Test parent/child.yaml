@@ -1,0 +1,7 @@
+title: Test child
+permalink: child
+description: Lorem ipsum
+sections:
+  - type: richText
+    background: white
+    content: Test
