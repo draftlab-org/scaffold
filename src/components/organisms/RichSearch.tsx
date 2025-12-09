@@ -195,7 +195,7 @@ export default function RichSearch() {
               filteredUsers.length === 0 && (
                 <div className="px-6 py-14 text-center text-sm sm:px-14">
                   <ExclamationTriangleIcon
-                    className="mx-auto size-6 text-gray-400"
+                    class="mx-auto size-6 text-gray-400"
                     aria-hidden="true"
                   />
                   <p className="mt-4 font-semibold text-gray-900 dark:text-white">
