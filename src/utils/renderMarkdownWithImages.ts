@@ -19,7 +19,6 @@ const processImageNodes = () => async (tree: any) => {
   const imageNodes: any[] = [];
   visit(tree, 'element', (node) => {
     if (node.tagName === 'img') {
-      console.log(node);
       imageNodes.push(node);
     }
   });

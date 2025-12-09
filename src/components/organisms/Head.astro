@@ -11,7 +11,6 @@ if (!siteConfigEntry) {
 
 const siteConfig = siteConfigEntry.data;
 
-console.log(siteConfig)
 
 export interface Props {
   title: string;
@@ -31,7 +30,6 @@ const {
 const ogImage = image || siteConfig.defaultOgImage as ImageMetadata;
 const imageURL = ogImage ? new URL(ogImage.src, Astro.url).href : undefined;
 
-console.log(imageURL)
 ---
 
 <meta charset="utf-8" />
