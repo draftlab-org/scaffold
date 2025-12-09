@@ -228,13 +228,12 @@ content:
         label: Permalink
         type: string
         description: The slug, without slashes or parents, like 'about-us' or 'omg-3'.
-        ui:
-          fromFilename: true
         pattern:
           {
             message: "This must be a web-safe string like 'about-us' or 'omg-3'.",
             regex: '^[a-zA-Z0-9_-]*$',
           }
+        required: true
 
       - name: description
         label: Page Description
