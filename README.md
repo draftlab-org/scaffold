@@ -160,6 +160,57 @@ src/
     └── breakpoints.css    # Responsive breakpoints
 ```
 
+## Icons
+
+The scaffold uses [unplugin-icons](https://github.com/unplugin/unplugin-icons) with [@iconify/json](https://github.com/iconify/icon-sets) for access to thousands of icons. Icons work in both Astro and React/TSX components.
+
+### Usage in React/TSX Components
+
+```tsx
+import IconGithub from '~icons/simple-icons/github';
+import MagnifyingGlassIcon from '~icons/heroicons/magnifying-glass-20-solid';
+
+export default function MyComponent() {
+  return (
+    <div>
+      <IconGithub class="w-6 h-6" />
+      <MagnifyingGlassIcon class="w-5 h-5 text-gray-500" />
+    </div>
+  );
+}
+```
+
+**Note:** Icons use `class` (not `className`) in both Astro and React components.
+
+### Usage in Astro Components
+
+```astro
+---
+import IconGithub from '~icons/simple-icons/github';
+import MagnifyingGlassIcon from '~icons/heroicons/magnifying-glass-20-solid';
+---
+
+<div>
+  <IconGithub class="w-6 h-6" />
+  <MagnifyingGlassIcon class="w-5 h-5 text-gray-500" />
+</div>
+```
+
+### Finding Icons
+
+Browse available icons at [Icônes](https://icones.js.org/) or [Iconify](https://icon-sets.iconify.design/).
+
+**Popular icon sets:**
+- **Heroicons**: `~icons/heroicons/[icon-name]`
+- **Simple Icons** (brands): `~icons/simple-icons/[brand-name]`
+- **Material Design Icons**: `~icons/mdi/[icon-name]`
+- **Lucide**: `~icons/lucide/[icon-name]`
+- **Tabler Icons**: `~icons/tabler/[icon-name]`
+
+Import pattern: `~icons/[collection]/[icon-name]`
+
+Icons inherit text color and can be styled with Tailwind classes or standard CSS.
+
 ## Customization
 
 Tailwind CSS v4 uses @theme definitions in the style files. Update `src/styles/colors.css` for color schemes and `src/styles/typography.css` for text sizing. Components follow atomic design hierarchy, so start with atoms and compose upward when building new features.

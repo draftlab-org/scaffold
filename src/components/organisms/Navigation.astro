@@ -2,6 +2,7 @@
 import Link from '@components/atoms/Link.astro';
 import NavItem from '@components/molecules/NavItem.astro';
 import MobileMenu from '@components/organisms/MobileMenu';
+import RichSearch from '@components/organisms/RichSearch';
 
 export interface NavLink {
   href: string;
@@ -60,6 +61,18 @@ const isActive = (href: string) => {
 
 	<!-- Right side: Actions + Mobile Menu -->
 	<div class="flex items-center gap-4">
+		<!-- Search Button -->
+		<button
+			id="search-button"
+			type="button"
+			class="rounded-lg p-2 text-gray-700 hover:bg-gray-100 transition-colors"
+			aria-label="Search"
+		>
+			<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+			</svg>
+		</button>
+
 		<!-- CTA or Actions Slot -->
 		<slot name="actions" />
 
@@ -69,3 +82,24 @@ const isActive = (href: string) => {
 		</div>
 	</div>
 </nav>
+
+<!-- Rich Search Modal -->
+<RichSearch client:load />
+
+<script>
+	const searchButton = document.getElementById('search-button');
+
+	if (searchButton) {
+		searchButton.addEventListener('click', () => {
+			window.dispatchEvent(new CustomEvent('open-search'));
+		});
+	}
+
+	// Listen for CMD+K or CTRL+K to open search
+	document.addEventListener('keydown', (e) => {
+		if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+			e.preventDefault();
+			window.dispatchEvent(new CustomEvent('open-search'));
+		}
+	});
+</script>
