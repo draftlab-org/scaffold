@@ -234,6 +234,13 @@ content:
             regex: '^[a-zA-Z0-9_-]*$',
           }
         required: true
+      
+      - name: parent
+        label: Parent page
+        type: reference
+        description: Select a parent page to nest this page under (optional)
+        options:
+          collection: pages
 
       - name: description
         label: Page Description
