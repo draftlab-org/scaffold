@@ -1,5 +1,6 @@
 title: Test child 2
-permalink: test-child-2
+permalink: test-child-3
+
 sections:
   - type: richText
     background: white
