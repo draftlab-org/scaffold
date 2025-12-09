@@ -1,7 +1,0 @@
-title: Index page
-permalink: index
-description: test index page
-sections:
-  - type: richText
-    background: white
-    content: Lorem ipsum

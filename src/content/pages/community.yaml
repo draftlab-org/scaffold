@@ -1,71 +1,81 @@
 title: Welcome to our Community
-permalink: community
 description: Join our vibrant community of developers, contributors, and partners
+heroImage: /src/assets/backgrounds/anna-magenta-YELG0ZVK5yw-unsplash.jpg
+
 sections:
+  # 1. Hero Section
   - type: hero
     title: This is a hero section
     subtitle: Connect, collaborate, and grow with fellow developers from around the world
+
+  # 2. Rich Text Section
   - type: richText
     background: white
-    content: >-
+    content: |
       ## About Our Community
 
-
-      Our community is built on the principles of collaboration, innovation, and
-      mutual support. Whether you're a beginner or an experienced developer,
-      there's a place for you here.
-
+      Our community is built on the principles of collaboration, innovation, and mutual support.
+      Whether you're a beginner or an experienced developer, there's a place for you here.
 
       We believe in:
+      - **Open collaboration** - Working together to solve problems
+      - **Continuous learning** - Sharing knowledge and growing together
+      - **Inclusive culture** - Welcoming everyone regardless of background
 
-
-      *   **Open collaboration** - Working together to solve problems
-
-      *   **Continuous learning** - Sharing knowledge and growing together
-
-      *   **Inclusive culture** - Welcoming everyone regardless of background
+  # 3. Card Section with Cards
   - type: card
     title: Get Involved
     description: There are many ways to participate in our community
     cards:
       - title: Contribute Code
-        content: Help build and improve our projects by contributing code, fixing bugs,
-          and adding features.
+        content: Help build and improve our projects by contributing code, fixing bugs, and adding features.
+        # image: ../../assets/contribute-code.jpg
         button:
+          text: Contribute
           variant: primary
           size: md
           href: /contribute
       - title: Join Discussions
-        content: Share your ideas, ask questions, and help others in our community
-          forums and chat channels.
+        content: Share your ideas, ask questions, and help others in our community forums and chat channels.
+        # image: ../../assets/discussions.jpg
         button:
+          text: Join
           variant: secondary
           size: md
           href: /discussions
       - title: Write Documentation
-        content: Improve our docs by writing tutorials, guides, and helping others
-          understand our tools.
+        content: Improve our docs by writing tutorials, guides, and helping others understand our tools.
+        # image: ../../assets/docs.jpg
         button:
+          text: Learn More
           variant: primary
           size: md
           href: /docs
     buttons:
       - variant: primary
+        text: Get Started
         size: lg
         href: /get-started
+
+  # 4. Card Section with Buttons Only
   - type: card
     title: Community Resources
     description: Quick links to helpful resources
     buttons:
       - variant: primary
+        text: Forum
         size: md
         href: /forum
       - variant: secondary
+        text: Discord
         size: md
         href: /discord
       - variant: primary
         size: md
+        text: Newsletter
         href: /newsletter
+
+  # 5. People Section
   - type: people
     category: Community Leaders
     people:
@@ -90,6 +100,8 @@ sections:
         sections:
           - Community
           - Events
+
+  # 6. Partners Section
   - type: partners
     title: Our Community Partners
     partners:
@@ -113,12 +125,12 @@ sections:
         url: https://osf.example.com
         category: community
         image: /src/assets/partners/osf.png
+
+  # 7. Another Rich Text Section
   - type: richText
     background: gray
-    content: >-
+    content: |
       ## Join Us Today
 
-
-      Ready to become part of our community? Sign up for our newsletter, join
-      our Discord server, or start contributing on GitHub. We can't wait to see
-      what we'll build together!
+      Ready to become part of our community? Sign up for our newsletter, join our Discord server,
+      or start contributing on GitHub. We can't wait to see what we'll build together!
