@@ -1,14 +1,12 @@
 import os
-import yaml
+import re
 
 PAGES_DIR = "src/content/pages"
 
-def safe_filename(name: str) -> str:
-    return name.strip().replace(" ", "-")
+PERMALINK_REGEX = re.compile(r'^\s*permalink\s*:\s*(.+?)\s*$', re.IGNORECASE)
 
-def write_yaml(path, data):
-    with open(path, "w", encoding="utf-8") as f:
-        yaml.dump(data, f, sort_keys=False)
+def safe_filename(text: str) -> str:
+    return text.strip().replace(" ", "-")
 
 for root, _, files in os.walk(PAGES_DIR):
     for file in files:
@@ -20,21 +18,28 @@ for root, _, files in os.walk(PAGES_DIR):
 
         try:
             with open(file_path, "r", encoding="utf-8") as f:
-                data = yaml.safe_load(f) or {}
+                lines = f.readlines()
         except Exception:
-            continue  # silently ignore unreadable YAML
+            continue  # silently ignore unreadable files
 
-        if not isinstance(data, dict):
-            continue
-
-        permalink = data.get("permalink")
+        permalink_value = None
+        permalink_line_index = None
 
         # ----------------------------
-        # ✅ CASE 1: permalink exists → rename file
+        # 🔍 Find permalink line (TEXT ONLY)
         # ----------------------------
-        if isinstance(permalink, str) and permalink.strip():
-            permalink = safe_filename(permalink)
-            expected_filename = f"{permalink}.yaml"
+        for i, line in enumerate(lines):
+            match = PERMALINK_REGEX.match(line)
+            if match:
+                permalink_value = match.group(1).strip().strip('"\'')
+                permalink_line_index = i
+                break
+
+        # ----------------------------
+        # ✅ CASE 1: permalink exists → rename file ONLY
+        # ----------------------------
+        if permalink_value:
+            expected_filename = f"{safe_filename(permalink_value)}.yaml"
             expected_path = os.path.join(root, expected_filename)
 
             if expected_filename != file:
@@ -42,14 +47,11 @@ for root, _, files in os.walk(PAGES_DIR):
                     os.rename(file_path, expected_path)
                     print(f"✅ Renamed: {file_path} → {expected_path}")
                 else:
-                    print(f"⚠️ Rename skipped due to conflict: {expected_path}")
-            continue
+                    print(f"⚠️ Rename skipped (conflict): {expected_path}")
+
+            continue  # ⚠️ DO NOT MODIFY FILE CONTENT
 
         # ----------------------------
-        # ✅ CASE 2: permalink missing → infer from filename
+        # ✅ CASE 2: permalink missing → insert ONLY that line
         # ----------------------------
-        inferred_permalink = safe_filename(filename_without_ext)
-        data["permalink"] = inferred_permalink
-        write_yaml(file_path, data)
-
-        print(f"✅ Added permalink to {file_path}: {inferred_permalink}")
+        inferred_permalink = safe_filename(fil
