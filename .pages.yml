@@ -233,14 +233,6 @@ content:
             message: "This must be a web-safe string like 'about-us' or 'omg-3'.",
             regex: '^[a-zA-Z0-9_-]*$',
           }
-        required: true
-      
-      - name: parent
-        label: Parent page
-        type: reference
-        description: Select a parent page to nest this page under (optional)
-        options:
-          collection: pages
 
       - name: description
         label: Page Description
