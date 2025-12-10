@@ -7,42 +7,159 @@ import {
   DialogBackdrop,
   DialogPanel,
 } from '@headlessui/react';
-import { useEffect, useState } from 'react';
+import Fuse from 'fuse.js';
+import { useEffect, useMemo, useState } from 'react';
+import DocumentIcon from '~icons/heroicons/document-text';
 import ExclamationTriangleIcon from '~icons/heroicons/exclamation-triangle';
 import FolderIcon from '~icons/heroicons/folder';
 import LifebuoyIcon from '~icons/heroicons/lifebuoy';
 import MagnifyingGlassIcon from '~icons/heroicons/magnifying-glass-20-solid';
+import UserIcon from '~icons/heroicons/user';
 
-const projects = [
-  {
-    id: 1,
-    name: 'Workflow Inc. / Website Redesign',
-    category: 'Projects',
-    url: '#',
-  },
-  // More projects...
-];
+type SearchResult = {
+  id: string;
+  name: string;
+  url: string;
+  category: string;
+  imageUrl?: string;
+};
 
-const users = [
+type CategoryConfig = {
+  name: string;
+  apiEndpoint: string;
+  urlPrefix: string;
+  icon: React.ComponentType<{ class?: string; 'aria-hidden'?: string }>;
+  modifier: string;
+  transform: (item: any) => Omit<SearchResult, 'category'>;
+};
+
+// Configuration for search categories
+const SEARCH_CATEGORIES: CategoryConfig[] = [
   {
-    id: 1,
-    name: 'Leslie Alexander',
-    url: '#',
-    imageUrl:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Pages',
+    apiEndpoint: '/api/pages.json',
+    urlPrefix: '/',
+    icon: FolderIcon,
+    modifier: '#',
+    transform: (page: any) => ({
+      id: page.id,
+      name: page.title,
+      url: `/${page.id}`,
+      imageUrl: page.heroImage?.src,
+    }),
   },
-  // More users...
+  {
+    name: 'People',
+    apiEndpoint: '/api/people.json',
+    urlPrefix: '/people/',
+    icon: UserIcon,
+    modifier: '>',
+    transform: (person: any) => ({
+      id: person.id,
+      name: person.name,
+      url: `/people/${person.id}`,
+      imageUrl: person.headshot?.src,
+    }),
+  },
+  {
+    name: 'Articles',
+    apiEndpoint: '/api/articles.json',
+    urlPrefix: '/articles/',
+    icon: DocumentIcon,
+    modifier: '@',
+    transform: (article: any) => ({
+      id: article.id,
+      name: article.data.title,
+      url: `/articles/${article.slug || article.id}`,
+      imageUrl: article.data.heroImage?.src,
+    }),
+  },
 ];
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
+// Helper function to create fuzzy search results
+function fuzzySearch(
+  items: SearchResult[],
+  query: string,
+  threshold: number = 0.4
+): SearchResult[] {
+  const fuse = new Fuse(items, {
+    keys: ['name'],
+    threshold,
+    includeScore: true,
+  });
+  return fuse.search(query).map((result) => result.item);
+}
+
 export default function RichSearch() {
   const [open, setOpen] = useState(false);
   const [rawQuery, setRawQuery] = useState('');
-  const query = rawQuery.toLowerCase().replace(/^[#>]/, '');
+  const [results, setResults] = useState<SearchResult[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [defaultImage, setDefaultImage] = useState<string | undefined>();
+  const query = rawQuery.toLowerCase().replace(/^[#>@]/, '');
 
+  // Fetch data dynamically from all configured categories
+  useEffect(() => {
+    async function fetchSearchData() {
+      setLoading(true);
+      try {
+        // Fetch site config for default image and all category endpoints
+        const responses = await Promise.all([
+          fetch('/api/site.json'),
+          ...SEARCH_CATEGORIES.map((category) => fetch(category.apiEndpoint)),
+        ]);
+
+        const [siteData, ...categoryDataArrays] = await Promise.all(
+          responses.map((res) => res.json())
+        );
+
+        // Extract default OG image from site config
+        const siteConfig = siteData[0]; // site collection returns array with single item
+        const defaultImageUrl = siteConfig?.defaultOgImage?.src;
+        setDefaultImage(defaultImageUrl);
+
+        // Transform and combine results from all categories
+        const searchResults: SearchResult[] = [];
+
+        categoryDataArrays.forEach((data, index) => {
+          const category = SEARCH_CATEGORIES[index];
+          const items = data
+            // Filter out unpublished articles if applicable
+            .filter((item: any) =>
+              category.name === 'Articles'
+                ? item.data?.published === 'published'
+                : true
+            )
+            .map((item: any) => {
+              const transformed = category.transform(item);
+              // Use hero image if available, otherwise use default
+              const imageUrl = transformed.imageUrl || defaultImageUrl;
+              return {
+                ...transformed,
+                imageUrl,
+                category: category.name,
+              };
+            });
+
+          searchResults.push(...items);
+        });
+
+        setResults(searchResults);
+      } catch (error) {
+        console.error('Failed to fetch search data:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchSearchData();
+  }, []);
+
+  // Open/close event listener
   useEffect(() => {
     const handleOpenSearch = () => {
       setOpen(true);
@@ -55,21 +172,40 @@ export default function RichSearch() {
     };
   }, []);
 
-  const filteredProjects =
-    rawQuery === '#'
-      ? projects
-      : query === '' || rawQuery.startsWith('>')
-        ? []
-        : projects.filter((project) =>
-            project.name.toLowerCase().includes(query)
-          );
+  // Dynamically filter results for each category
+  const filteredResultsByCategory = useMemo(() => {
+    const filtered: Record<string, SearchResult[]> = {};
 
-  const filteredUsers =
-    rawQuery === '>'
-      ? users
-      : query === '' || rawQuery.startsWith('#')
-        ? []
-        : users.filter((user) => user.name.toLowerCase().includes(query));
+    SEARCH_CATEGORIES.forEach((category) => {
+      const categoryResults = results.filter(
+        (r) => r.category === category.name
+      );
+
+      // If modifier is used, show all items from that category
+      if (rawQuery === category.modifier) {
+        filtered[category.name] = categoryResults;
+        return;
+      }
+
+      // If query is empty or another modifier is active, show nothing
+      const otherModifiers = SEARCH_CATEGORIES.filter(
+        (c) => c.modifier !== category.modifier
+      ).map((c) => c.modifier);
+
+      if (
+        query === '' ||
+        otherModifiers.some((mod) => rawQuery.startsWith(mod))
+      ) {
+        filtered[category.name] = [];
+        return;
+      }
+
+      // Otherwise, use fuzzy search
+      filtered[category.name] = fuzzySearch(categoryResults, query);
+    });
+
+    return filtered;
+  }, [rawQuery, query, results]);
 
   return (
     <Dialog
@@ -82,13 +218,13 @@ export default function RichSearch() {
     >
       <DialogBackdrop
         transition
-        className="fixed inset-0 bg-gray-500/25 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in dark:bg-gray-900/50"
+        className="fixed inset-0 bg-gray-500/25 transition-opacity data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-100 data-leave:ease-in dark:bg-gray-900/50"
       />
 
       <div className="fixed inset-0 z-10 w-screen overflow-y-auto p-4 sm:p-6 md:p-20">
         <DialogPanel
           transition
-          className="mx-auto max-w-xl transform divide-y divide-gray-100 overflow-hidden rounded-xl bg-white shadow-2xl outline-1 outline-black/5 transition-all data-closed:scale-95 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in dark:divide-white/10 dark:bg-gray-900 dark:-outline-offset-1 dark:outline-white/10"
+          className="mx-auto max-w-xl transform divide-y divide-gray-100 overflow-hidden rounded-lg border-4 border-dotted border-primary-300 bg-white shadow-2xl outline-1 outline-black/5 transition-all data-closed:scale-95 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in dark:divide-white/10 dark:bg-gray-900 dark:-outline-offset-1 dark:outline-white/10"
         >
           <Combobox
             onChange={(item) => {
@@ -111,63 +247,58 @@ export default function RichSearch() {
               />
             </div>
 
-            {(filteredProjects.length > 0 || filteredUsers.length > 0) && (
+            {Object.values(filteredResultsByCategory).some(
+              (arr) => arr.length > 0
+            ) && (
               <ComboboxOptions
                 static
                 as="ul"
                 className="max-h-80 transform-gpu scroll-py-10 scroll-pb-2 space-y-4 overflow-y-auto p-4 pb-2"
               >
-                {filteredProjects.length > 0 && (
-                  <li>
-                    <h2 className="text-xs font-semibold text-gray-900 dark:text-white">
-                      Projects
-                    </h2>
-                    <ul className="-mx-4 mt-2 text-sm text-gray-700 dark:text-gray-300">
-                      {filteredProjects.map((project) => (
-                        <ComboboxOption
-                          as="li"
-                          key={project.id}
-                          value={project}
-                          className="group data-focus:bg-indigo-600 dark:data-focus:bg-indigo-500 flex cursor-default items-center px-4 py-2 select-none data-focus:text-white data-focus:outline-hidden"
-                        >
-                          <FolderIcon
-                            class="size-6 flex-none text-gray-400 group-data-focus:text-white dark:text-gray-500 forced-colors:group-data-focus:text-[Highlight]"
-                            aria-hidden="true"
-                          />
-                          <span className="ml-3 flex-auto truncate">
-                            {project.name}
-                          </span>
-                        </ComboboxOption>
-                      ))}
-                    </ul>
-                  </li>
-                )}
-                {filteredUsers.length > 0 && (
-                  <li>
-                    <h2 className="text-xs font-semibold text-gray-900 dark:text-white">
-                      Users
-                    </h2>
-                    <ul className="-mx-4 mt-2 text-sm text-gray-700 dark:text-gray-300">
-                      {filteredUsers.map((user) => (
-                        <ComboboxOption
-                          as="li"
-                          key={user.id}
-                          value={user}
-                          className="data-focus:bg-indigo-600 dark:data-focus:bg-indigo-500 flex cursor-default items-center px-4 py-2 select-none data-focus:text-white"
-                        >
-                          <img
-                            src={user.imageUrl}
-                            alt=""
-                            className="size-6 flex-none rounded-full bg-gray-100 outline -outline-offset-1 outline-black/5 dark:bg-gray-800 dark:outline-white/10"
-                          />
-                          <span className="ml-3 flex-auto truncate">
-                            {user.name}
-                          </span>
-                        </ComboboxOption>
-                      ))}
-                    </ul>
-                  </li>
-                )}
+                {SEARCH_CATEGORIES.map((category) => {
+                  const items = filteredResultsByCategory[category.name] || [];
+                  if (items.length === 0) return null;
+
+                  const Icon = category.icon;
+
+                  return (
+                    <li key={category.name}>
+                      <h2 className="text-xs font-semibold text-gray-900 dark:text-white">
+                        {category.name}
+                      </h2>
+                      <ul className="-mx-4 mt-2 text-sm text-gray-700 dark:text-gray-300">
+                        {items.map((item) => (
+                          <ComboboxOption
+                            as="li"
+                            key={item.id}
+                            value={item}
+                            className="group data-focus:bg-indigo-600 dark:data-focus:bg-indigo-500 flex cursor-default items-center px-4 py-2 select-none data-focus:text-white data-focus:outline-hidden"
+                          >
+                            {item.imageUrl ? (
+                              <img
+                                src={item.imageUrl}
+                                alt=""
+                                className={
+                                  category.name === 'People'
+                                    ? 'size-6 flex-none rounded-full bg-gray-100 outline -outline-offset-1 outline-black/5 dark:bg-gray-800 dark:outline-white/10'
+                                    : 'size-6 flex-none rounded bg-gray-100 object-cover outline -outline-offset-1 outline-black/5 dark:bg-gray-800 dark:outline-white/10'
+                                }
+                              />
+                            ) : (
+                              <Icon
+                                class="size-6 flex-none text-gray-400 group-data-focus:text-white dark:text-gray-500 forced-colors:group-data-focus:text-[Highlight]"
+                                aria-hidden="true"
+                              />
+                            )}
+                            <span className="ml-3 flex-auto truncate">
+                              {item.name}
+                            </span>
+                          </ComboboxOption>
+                        ))}
+                      </ul>
+                    </li>
+                  );
+                })}
               </ComboboxOptions>
             )}
 
@@ -181,18 +312,18 @@ export default function RichSearch() {
                   Help with searching
                 </p>
                 <p className="mt-2 text-gray-500 dark:text-gray-400">
-                  Use this tool to quickly search for users and projects across
-                  our entire platform. You can also use the search modifiers
-                  found in the footer below to limit the results to just users
-                  or projects.
+                  Use this tool to quickly search for pages, people, and
+                  articles. You can also use the search modifiers found in the
+                  footer below to limit the results to specific categories.
                 </p>
               </div>
             )}
 
             {query !== '' &&
               rawQuery !== '?' &&
-              filteredProjects.length === 0 &&
-              filteredUsers.length === 0 && (
+              Object.values(filteredResultsByCategory).every(
+                (arr) => arr.length === 0
+              ) && (
                 <div className="px-6 py-14 text-center text-sm sm:px-14">
                   <ExclamationTriangleIcon
                     class="mx-auto size-6 text-gray-400"
@@ -209,29 +340,29 @@ export default function RichSearch() {
 
             <div className="flex flex-wrap items-center bg-gray-50 px-4 py-2.5 text-xs text-gray-700 dark:bg-gray-800/50 dark:text-gray-300">
               Type{' '}
-              <kbd
-                className={classNames(
-                  'mx-1 flex size-5 items-center justify-center rounded-sm border bg-white font-semibold sm:mx-2 dark:bg-gray-800',
-                  rawQuery.startsWith('#')
-                    ? 'border-indigo-600 text-indigo-600 dark:border-indigo-500 dark:text-indigo-500'
-                    : 'border-gray-400 text-gray-900 dark:border-white/10 dark:text-white'
-                )}
-              >
-                #
-              </kbd>{' '}
-              <span className="sm:hidden">for projects,</span>
-              <span className="hidden sm:inline">to access projects,</span>
-              <kbd
-                className={classNames(
-                  'mx-1 flex size-5 items-center justify-center rounded-sm border bg-white font-semibold sm:mx-2 dark:bg-gray-800',
-                  rawQuery.startsWith('>')
-                    ? 'border-indigo-600 text-indigo-600 dark:border-indigo-500 dark:text-indigo-500'
-                    : 'border-gray-400 text-gray-900 dark:border-white/10 dark:text-white'
-                )}
-              >
-                &gt;
-              </kbd>{' '}
-              for users, and{' '}
+              {SEARCH_CATEGORIES.map((category, index) => (
+                <span key={category.name} className="inline-flex items-center">
+                  <kbd
+                    className={classNames(
+                      'mx-1 flex size-5 items-center justify-center rounded-sm border bg-white font-semibold sm:mx-2 dark:bg-gray-800',
+                      rawQuery.startsWith(category.modifier)
+                        ? 'border-indigo-600 text-indigo-600 dark:border-indigo-500 dark:text-indigo-500'
+                        : 'border-gray-400 text-gray-900 dark:border-white/10 dark:text-white'
+                    )}
+                  >
+                    {category.modifier}
+                  </kbd>{' '}
+                  <span className="sm:hidden">
+                    for {category.name.toLowerCase()}
+                    {', '}
+                  </span>
+                  <span className="hidden sm:inline">
+                    to access {category.name.toLowerCase()}
+                    {', '}
+                  </span>
+                </span>
+              ))}{' '}
+              and{' '}
               <kbd
                 className={classNames(
                   'mx-1 flex size-5 items-center justify-center rounded-sm border bg-white font-semibold sm:mx-2 dark:bg-gray-800',
