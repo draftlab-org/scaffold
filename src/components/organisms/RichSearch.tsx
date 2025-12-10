@@ -24,11 +24,17 @@ type SearchResult = {
   imageUrl?: string;
 };
 
+// Type for unplugin-icons components which use 'class' instead of 'className'
+type IconComponent = React.ComponentType<{
+  class?: string;
+  'aria-hidden'?: 'true' | 'false';
+}>;
+
 type CategoryConfig = {
   name: string;
   apiEndpoint: string;
   urlPrefix: string;
-  icon: React.ComponentType<{ class?: string; 'aria-hidden'?: string }>;
+  icon: IconComponent;
   modifier: string;
   transform: (item: any) => Omit<SearchResult, 'category'>;
 };
@@ -98,8 +104,7 @@ export default function RichSearch() {
   const [open, setOpen] = useState(false);
   const [rawQuery, setRawQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [defaultImage, setDefaultImage] = useState<string | undefined>();
+  const [loading, setLoading] = useState(true);
   const query = rawQuery.toLowerCase().replace(/^[#>@]/, '');
 
   // Fetch data dynamically from all configured categories
@@ -120,7 +125,6 @@ export default function RichSearch() {
         // Extract default OG image from site config
         const siteConfig = siteData[0]; // site collection returns array with single item
         const defaultImageUrl = siteConfig?.defaultOgImage?.src;
-        setDefaultImage(defaultImageUrl);
 
         // Transform and combine results from all categories
         const searchResults: SearchResult[] = [];
@@ -218,16 +222,16 @@ export default function RichSearch() {
     >
       <DialogBackdrop
         transition
-        className="fixed inset-0 bg-gray-500/25 transition-opacity data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-100 data-leave:ease-in dark:bg-gray-900/50"
+        className="fixed inset-0 bg-gray-500/25 transition-opacity data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-100 data-leave:ease-in"
       />
 
       <div className="fixed inset-0 z-10 w-screen overflow-y-auto p-4 sm:p-6 md:p-20">
         <DialogPanel
           transition
-          className="mx-auto max-w-xl transform divide-y divide-gray-100 overflow-hidden rounded-lg border-4 border-dotted border-primary-300 bg-white shadow-2xl outline-1 outline-black/5 transition-all data-closed:scale-95 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in dark:divide-white/10 dark:bg-gray-900 dark:-outline-offset-1 dark:outline-white/10"
+          className="mx-auto max-w-xl transform divide-y divide-gray-100 overflow-hidden rounded-lg border-6 border-dotted border-primary-300 bg-white shadow-lg transition-all data-closed:scale-95 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"
         >
           <Combobox
-            onChange={(item) => {
+            onChange={(item: any) => {
               if (item) {
                 window.location = item.url;
               }
@@ -236,90 +240,114 @@ export default function RichSearch() {
             <div className="grid grid-cols-1">
               <ComboboxInput
                 autoFocus
-                className="col-start-1 row-start-1 h-12 w-full pr-4 pl-11 text-base text-gray-900 outline-hidden placeholder:text-gray-400 sm:text-sm dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-500"
+                className="col-start-1 row-start-1 h-12 w-full bg-white pr-4 pl-11 text-base text-gray-900 outline-hidden placeholder:text-gray-400 sm:text-sm"
                 placeholder="Search..."
                 onChange={(event) => setRawQuery(event.target.value)}
                 onBlur={() => setRawQuery('')}
               />
               <MagnifyingGlassIcon
-                class="pointer-events-none col-start-1 row-start-1 ml-4 size-5 self-center text-gray-400 dark:text-gray-500"
+                class="pointer-events-none col-start-1 row-start-1 ml-4 size-5 self-center text-gray-400"
                 aria-hidden="true"
               />
             </div>
 
-            {Object.values(filteredResultsByCategory).some(
-              (arr) => arr.length > 0
-            ) && (
-              <ComboboxOptions
-                static
-                as="ul"
-                className="max-h-80 transform-gpu scroll-py-10 scroll-pb-2 space-y-4 overflow-y-auto p-4 pb-2"
-              >
-                {SEARCH_CATEGORIES.map((category) => {
-                  const items = filteredResultsByCategory[category.name] || [];
-                  if (items.length === 0) return null;
-
-                  const Icon = category.icon;
-
-                  return (
-                    <li key={category.name}>
-                      <h2 className="text-xs font-semibold text-gray-900 dark:text-white">
-                        {category.name}
-                      </h2>
-                      <ul className="-mx-4 mt-2 text-sm text-gray-700 dark:text-gray-300">
-                        {items.map((item) => (
-                          <ComboboxOption
-                            as="li"
-                            key={item.id}
-                            value={item}
-                            className="group data-focus:bg-indigo-600 dark:data-focus:bg-indigo-500 flex cursor-default items-center px-4 py-2 select-none data-focus:text-white data-focus:outline-hidden"
-                          >
-                            {item.imageUrl ? (
-                              <img
-                                src={item.imageUrl}
-                                alt=""
-                                className={
-                                  category.name === 'People'
-                                    ? 'size-6 flex-none rounded-full bg-gray-100 outline -outline-offset-1 outline-black/5 dark:bg-gray-800 dark:outline-white/10'
-                                    : 'size-6 flex-none rounded bg-gray-100 object-cover outline -outline-offset-1 outline-black/5 dark:bg-gray-800 dark:outline-white/10'
-                                }
-                              />
-                            ) : (
-                              <Icon
-                                class="size-6 flex-none text-gray-400 group-data-focus:text-white dark:text-gray-500 forced-colors:group-data-focus:text-[Highlight]"
-                                aria-hidden="true"
-                              />
-                            )}
-                            <span className="ml-3 flex-auto truncate">
-                              {item.name}
-                            </span>
-                          </ComboboxOption>
-                        ))}
-                      </ul>
-                    </li>
-                  );
-                })}
-              </ComboboxOptions>
+            {loading && query === '' && (
+              <div className="space-y-4 p-4">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="space-y-2">
+                    <div className="h-4 w-16 animate-pulse rounded bg-primary-100" />
+                    <div className="space-y-2">
+                      {[1, 2].map((j) => (
+                        <div
+                          key={j}
+                          className="flex items-center gap-3 px-4 py-2"
+                        >
+                          <div className="size-6 animate-pulse rounded bg-primary-100" />
+                          <div className="h-4 flex-1 animate-pulse rounded bg-gray-100" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
             )}
 
-            {rawQuery === '?' && (
+            {!loading &&
+              Object.values(filteredResultsByCategory).some(
+                (arr) => arr.length > 0
+              ) && (
+                <ComboboxOptions
+                  static
+                  as="ul"
+                  className="max-h-80 transform-gpu scroll-py-10 scroll-pb-2 space-y-4 overflow-y-auto p-4 pb-2"
+                >
+                  {SEARCH_CATEGORIES.map((category) => {
+                    const items =
+                      filteredResultsByCategory[category.name] || [];
+                    if (items.length === 0) return null;
+
+                    const Icon = category.icon;
+
+                    return (
+                      <li key={category.name}>
+                        <h2 className="text-xs font-semibold tracking-wide text-gray-900 uppercase">
+                          {category.name}
+                        </h2>
+                        <ul className="-mx-4 mt-2 text-sm text-gray-700">
+                          {items.map((item) => (
+                            <ComboboxOption
+                              as="li"
+                              key={item.id}
+                              value={item}
+                              className="group flex cursor-pointer items-center rounded px-4 py-2 transition-colors select-none hover:bg-primary-100 data-focus:bg-primary-300 data-focus:outline-hidden"
+                            >
+                              {item.imageUrl ? (
+                                <img
+                                  src={item.imageUrl}
+                                  alt=""
+                                  className={
+                                    category.name === 'People'
+                                      ? 'size-6 flex-none rounded-full border-2 border-gray-200 bg-gray-100'
+                                      : 'aspect-video h-6 flex-none rounded border-2 border-gray-200 bg-gray-100 object-cover'
+                                  }
+                                />
+                              ) : (
+                                <Icon
+                                  class="size-6 flex-none text-gray-500 group-data-focus:text-gray-700"
+                                  aria-hidden="true"
+                                />
+                              )}
+                              <span className="ml-3 flex-auto truncate">
+                                {item.name}
+                              </span>
+                            </ComboboxOption>
+                          ))}
+                        </ul>
+                      </li>
+                    );
+                  })}
+                </ComboboxOptions>
+              )}
+
+            {!loading && rawQuery === '?' && (
               <div className="px-6 py-14 text-center text-sm sm:px-14">
                 <LifebuoyIcon
-                  class="mx-auto size-6 text-gray-400 dark:text-gray-500"
+                  class="mx-auto size-6 text-gray-400"
                   aria-hidden="true"
                 />
-                <p className="mt-4 font-semibold text-gray-900 dark:text-white">
+                <p className="mt-4 font-semibold text-gray-900">
                   Help with searching
                 </p>
-                <p className="mt-2 text-gray-500 dark:text-gray-400">
-                  Use this tool to quickly search for pages, people, and
-                  articles. You can also use the search modifiers found in the
-                  footer below to limit the results to specific categories.
+                <p className="mt-2 text-gray-600">
+                  Quickly search through site content and get results divided by
+                  category. You can also use search modifiers in the footer to
+                  search and show all results from a single category.
                 </p>
               </div>
             )}
 
-            {query !== '' &&
+            {!loading &&
+              query !== '' &&
               rawQuery !== '?' &&
               Object.values(filteredResultsByCategory).every(
                 (arr) => arr.length === 0
@@ -329,46 +357,40 @@ export default function RichSearch() {
                     class="mx-auto size-6 text-gray-400"
                     aria-hidden="true"
                   />
-                  <p className="mt-4 font-semibold text-gray-900 dark:text-white">
+                  <p className="mt-4 font-semibold text-gray-900">
                     No results found
                   </p>
-                  <p className="mt-2 text-gray-500 dark:text-gray-400">
-                    We couldn’t find anything with that term. Please try again.
+                  <p className="mt-2 text-gray-600">
+                    We couldn't find anything with that term. Please try again.
                   </p>
                 </div>
               )}
 
-            <div className="flex flex-wrap items-center bg-gray-50 px-4 py-2.5 text-xs text-gray-700 dark:bg-gray-800/50 dark:text-gray-300">
+            <div className="flex flex-wrap items-center border-t border-gray-100 bg-gray-50 px-4 py-2.5 text-xs text-gray-600">
               Type{' '}
-              {SEARCH_CATEGORIES.map((category, index) => (
+              {SEARCH_CATEGORIES.map((category) => (
                 <span key={category.name} className="inline-flex items-center">
                   <kbd
                     className={classNames(
-                      'mx-1 flex size-5 items-center justify-center rounded-sm border bg-white font-semibold sm:mx-2 dark:bg-gray-800',
+                      'mx-1 flex size-5 items-center justify-center rounded-sm border-2 bg-white font-semibold sm:mx-2',
                       rawQuery.startsWith(category.modifier)
-                        ? 'border-indigo-600 text-indigo-600 dark:border-indigo-500 dark:text-indigo-500'
-                        : 'border-gray-400 text-gray-900 dark:border-white/10 dark:text-white'
+                        ? 'border-primary-400 bg-primary-50 text-primary-700'
+                        : 'border-gray-300 text-gray-700'
                     )}
                   >
                     {category.modifier}
                   </kbd>{' '}
-                  <span className="sm:hidden">
-                    for {category.name.toLowerCase()}
-                    {', '}
-                  </span>
-                  <span className="hidden sm:inline">
-                    to access {category.name.toLowerCase()}
-                    {', '}
+                  <span className="">
+                    {`for ${category.name.toLowerCase()}, `}
                   </span>
                 </span>
-              ))}{' '}
-              and{' '}
+              ))}
               <kbd
                 className={classNames(
-                  'mx-1 flex size-5 items-center justify-center rounded-sm border bg-white font-semibold sm:mx-2 dark:bg-gray-800',
+                  'mx-1 flex size-5 items-center justify-center rounded-sm border-2 bg-white font-semibold sm:mx-2',
                   rawQuery === '?'
-                    ? 'border-indigo-600 text-indigo-600 dark:border-indigo-500 dark:text-indigo-500'
-                    : 'border-gray-400 text-gray-900 dark:border-white/10 dark:text-white'
+                    ? 'border-primary-400 bg-primary-50 text-primary-700'
+                    : 'border-gray-300 text-gray-700'
                 )}
               >
                 ?
