@@ -327,7 +327,7 @@ content:
     type: collection
     path: src/content/partners
     format: json
-    filename: '{{fields.id}}'
+    filename: '{{fields.id}}.json'
     view:
       fields: [name, category, affiliation]
       primary: name
