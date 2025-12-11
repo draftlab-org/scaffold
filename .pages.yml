@@ -34,6 +34,11 @@ components:
               value: lg
         required: true
         default: md
+      - name: text
+        label: Text
+        type: string
+        required: true
+        description: The text displayed on the button
       - name: href
         label: Link URL
         type: string
@@ -157,7 +162,7 @@ components:
     type: object
     fields:
       - name: title
-        label: Title
+        label: Title (Optional)
         type: string
         required: false
       - name: buttons
