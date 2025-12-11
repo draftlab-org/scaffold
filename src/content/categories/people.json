@@ -1,0 +1,14 @@
+{
+  "id": "people",
+  "name": "People Categories",
+  "categories": [
+    "Leadership",
+    "Engineering",
+    "Product",
+    "Design",
+    "Marketing",
+    "Sales",
+    "Operations",
+    "Community"
+  ]
+}

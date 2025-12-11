@@ -1,0 +1,11 @@
+{
+  "id": "partners",
+  "name": "Partner Categories",
+  "categories": [
+    "sponsor",
+    "infrastructure",
+    "community",
+    "technology",
+    "media"
+  ]
+}

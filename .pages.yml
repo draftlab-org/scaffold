@@ -340,7 +340,7 @@ content:
         label: Sections/Departments
         type: string
         list: true
-        description: Tags like "Leadership", "Engineering", etc.
+        description: Tags like "Leadership", "Engineering", etc. Must match categories defined in Categories > people
 
   # Partners collection
   - name: partners
@@ -390,7 +390,7 @@ content:
               value: technology
             - label: Media
               value: media
-        description: Partner category for filtering
+        description: Partner category for filtering. Must match categories defined in Categories > partners
 
       - name: image
         label: Logo
@@ -402,6 +402,36 @@ content:
         type: number
         default: 999
         description: Lower numbers appear first (1, 2, 3...)
+
+  # Categories collection
+  - name: categories
+    label: Categories
+    type: collection
+    path: src/content/categories
+    format: json
+    filename: '{{fields.id}}.json'
+    view:
+      fields: [name, id]
+      primary: name
+    fields:
+      - name: id
+        label: ID
+        type: string
+        required: true
+        description: Unique identifier (e.g. people, partners, articles)
+
+      - name: name
+        label: Name
+        type: string
+        required: true
+        description: Display name for this category group
+
+      - name: categories
+        label: Categories
+        type: string
+        list: true
+        required: true
+        description: List of valid categories for this type
 
   # Site configuration (singleton)
   - name: site-config
@@ -588,7 +618,7 @@ content:
         type: string
         list: true
         required: true
-        description: Article tags/categories
+        description: Article tags/categories. Must match categories defined in Categories > articles
 
       - name: publishedDate
         label: Published Date

@@ -1,0 +1,14 @@
+{
+  "id": "articles",
+  "name": "Article Categories",
+  "categories": [
+    "Technology",
+    "Development",
+    "Design",
+    "Product",
+    "Business",
+    "Tutorial",
+    "News",
+    "Opinion"
+  ]
+}

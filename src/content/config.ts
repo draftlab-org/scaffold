@@ -1,4 +1,7 @@
 import { defineCollection, type ImageFunction, z } from 'astro:content';
+import articleCategories from './categories/articles.json';
+import partnerCategories from './categories/partners.json';
+import peopleCategories from './categories/people.json';
 
 // Helper to create schemas with image support
 const createSchemas = (image: ImageFunction) => {
@@ -26,7 +29,9 @@ const createSchemas = (image: ImageFunction) => {
     name: z.string(),
     headshot: image(),
     title: z.string(),
-    sections: z.array(z.string()),
+    sections: z.array(
+      z.enum(peopleCategories.categories as [string, ...string[]])
+    ),
   });
 
   //  Partner
@@ -34,7 +39,7 @@ const createSchemas = (image: ImageFunction) => {
     name: z.string(),
     affiliation: z.string().optional(),
     url: z.string().optional(),
-    category: z.string(),
+    category: z.enum(partnerCategories.categories as [string, ...string[]]),
     image: image().optional(),
   });
 
@@ -43,14 +48,25 @@ const createSchemas = (image: ImageFunction) => {
     type: z.string(),
   });
 
-  return { buttonSchema, cardSchema, personSchema, partnerSchema, sectionSchema };
+  return {
+    buttonSchema,
+    cardSchema,
+    personSchema,
+    partnerSchema,
+    sectionSchema,
+  };
 };
 
 const pagesCollection = defineCollection({
   type: 'data',
   schema: ({ image }) => {
-    const { buttonSchema, cardSchema, personSchema, partnerSchema, sectionSchema } =
-      createSchemas(image);
+    const {
+      buttonSchema,
+      cardSchema,
+      personSchema,
+      partnerSchema,
+      sectionSchema,
+    } = createSchemas(image);
 
     // Sections defined as a union type so they can be used as variable components
     const sectionsSchema = z.discriminatedUnion('type', [
@@ -129,7 +145,9 @@ const articlesCollection = defineCollection({
       excerpt: z.string().optional(),
       authors: z.array(z.string()), // References to people collection IDs
       published: z.enum(['draft', 'published']),
-      tags: z.array(z.string()),
+      tags: z.array(
+        z.enum(articleCategories.categories as [string, ...string[]])
+      ),
       publishedDate: z.date(),
       heroImage: image().optional(),
     }),
@@ -174,6 +192,15 @@ const navigationCollection = defineCollection({
   }),
 });
 
+const categoriesCollection = defineCollection({
+  type: 'data',
+  schema: z.object({
+    id: z.string(),
+    name: z.string(),
+    categories: z.array(z.string()),
+  }),
+});
+
 export const collections = {
   people: peopleCollection,
   pages: pagesCollection,
@@ -181,4 +208,5 @@ export const collections = {
   site: siteCollection,
   navigation: navigationCollection,
   partners: partnersCollection,
+  categories: categoriesCollection,
 };
