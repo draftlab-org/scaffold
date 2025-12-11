@@ -2,6 +2,7 @@ import { defineCollection, type ImageFunction, z } from 'astro:content';
 import articleCategories from './categories/articles.json';
 import partnerCategories from './categories/partners.json';
 import peopleCategories from './categories/people.json';
+import FlexiSection from '@components/sections/FlexiSection.astro';
 
 // Helper to create schemas with image support
 const createSchemas = (image: ImageFunction) => {
@@ -43,17 +44,11 @@ const createSchemas = (image: ImageFunction) => {
     image: image().optional(),
   });
 
-  //  Section
-  const sectionSchema = z.object({
-    type: z.string(),
-  });
-
   return {
     buttonSchema,
     cardSchema,
     personSchema,
     partnerSchema,
-    sectionSchema,
   };
 };
 
@@ -65,7 +60,6 @@ const pagesCollection = defineCollection({
       cardSchema,
       personSchema,
       partnerSchema,
-      sectionSchema,
     } = createSchemas(image);
 
     // Sections defined as a union type so they can be used as variable components
@@ -102,20 +96,21 @@ const pagesCollection = defineCollection({
         title: z.string(),
         category: z.string().optional(),
       }),
-      z.object({
-        type: z.literal('flexi'),
-        title: z.string(),
-        description: z.string().optional(),
-        sections: z.array(sectionSchema).optional(),
-      }),
       // Add more section types as needed
     ]);
+
+    const flexiSectionSchema = z.object({
+      type: z.literal('flexi'),
+      title: z.string(),
+      description: z.string().optional(),
+      sections: z.array(sectionsSchema),
+    });
 
     return z.object({
       title: z.string(),
       description: z.string().optional(),
       heroImage: image().optional(),
-      sections: z.array(sectionsSchema),
+      sections: z.union([...sectionsSchema.options, flexiSectionSchema]).array().optional(),
     });
   },
 });
