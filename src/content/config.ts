@@ -145,7 +145,8 @@ const articlesCollection = defineCollection({
       excerpt: z.string().optional(),
       authors: z.array(z.string()), // References to people collection IDs
       published: z.enum(['draft', 'published']),
-      tags: z.array(
+      tags: z.array(z.string()),
+      categories: z.array(
         z.enum(articleCategories.categories as [string, ...string[]])
       ),
       publishedDate: z.date(),
