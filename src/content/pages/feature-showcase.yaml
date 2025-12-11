@@ -29,6 +29,13 @@ sections:
     title: This is a Flexi Section!
     description: Weeeee
     sections:
-      - type: hero
-        title: a test hero
-        backgroundImage: /src/assets/hero.png
+      - type: richText
+        background: white
+        content: Some text!
+      - type: button
+        title: Buttons
+        buttons:
+          - variant: primary
+            size: md
+            text: Button 1
+            href: google.com
