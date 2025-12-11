@@ -450,7 +450,6 @@ content:
         type: string
         list: true
         required: true
-        description: List of valid categories for this type
 
   # Site configuration (singleton)
   - name: site-config
