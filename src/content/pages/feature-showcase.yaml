@@ -25,3 +25,10 @@ sections:
         size: md
         text: Button 2
         href: google.com
+  - type: flexi
+    title: This is a Flexi Section!
+    description: Weeeee
+    sections:
+      - type: hero
+        title: a test hero
+        backgroundImage: /src/assets/hero.png
