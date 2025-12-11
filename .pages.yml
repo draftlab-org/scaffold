@@ -120,6 +120,37 @@ components:
         required: true
         description: Absolute path to partner logo (e.g. /src/assets/partners/logo.png)
 
+  # Section component (for nested flexi sections)
+  section:
+    type: block
+    blockKey: type
+    description: Add and arrange page sections in any order
+    blocks:
+      - name: hero
+        label: Hero Section
+        component: hero_section
+
+      - name: richText
+        label: Rich Text Section
+        component: richtext_section
+      
+      - name: button
+        label: Button Section
+        component: button_section
+
+      - name: card
+        label: Card Section
+        component: card_section
+
+      - name: people
+        label: People Section
+        component: people_section
+
+      - name: partners
+        label: Partners Section
+        component: partners_section
+      
+
   # Section components for block variants
   hero_section:
     type: object
