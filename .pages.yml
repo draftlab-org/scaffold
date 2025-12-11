@@ -126,10 +126,6 @@ components:
     blockKey: type
     description: Add and arrange page sections in any order
     blocks:
-      - name: hero
-        label: Hero Section
-        component: hero_section
-
       - name: richText
         label: Rich Text Section
         component: richtext_section
@@ -141,14 +137,6 @@ components:
       - name: card
         label: Card Section
         component: card_section
-
-      - name: people
-        label: People Section
-        component: people_section
-
-      - name: partners
-        label: Partners Section
-        component: partners_section
       
 
   # Section components for block variants
