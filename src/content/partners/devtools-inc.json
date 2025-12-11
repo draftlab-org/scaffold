@@ -1,0 +1,9 @@
+{
+  "id": "devtools-inc",
+  "name": "DevTools Inc",
+  "affiliation": "Gold Sponsor",
+  "url": "https://devtools.example.com",
+  "category": "sponsor",
+  "image": "/src/assets/partners/rings-1.png",
+  "order": 2
+}

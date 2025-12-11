@@ -1,0 +1,9 @@
+{
+  "id": "tech-podcast",
+  "name": "Tech Talk Podcast",
+  "affiliation": "Media Partner",
+  "url": "https://techtalk.example.com",
+  "category": "media",
+  "image": "/src/assets/partners/rings-9.png",
+  "order": 10
+}

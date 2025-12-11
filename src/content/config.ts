@@ -74,13 +74,12 @@ const pagesCollection = defineCollection({
       }),
       z.object({
         type: z.literal('people'),
-        category: z.string(),
-        people: z.array(personSchema),
+        category: z.string().optional(),
       }),
       z.object({
         type: z.literal('partners'),
         title: z.string(),
-        partners: z.array(partnerSchema),
+        category: z.string().optional(),
       }),
       // Add more section types as needed
     ]);
@@ -97,6 +96,17 @@ const pagesCollection = defineCollection({
 const peopleCollection = defineCollection({
   type: 'data',
   schema: ({ image }) => createSchemas(image).personSchema,
+});
+
+const partnersCollection = defineCollection({
+  type: 'data',
+  schema: ({ image }) => {
+    const { partnerSchema } = createSchemas(image);
+    return partnerSchema.extend({
+      id: z.string(),
+      order: z.number().optional().default(999),
+    });
+  },
 });
 
 const articlesCollection = defineCollection({
@@ -159,4 +169,5 @@ export const collections = {
   articles: articlesCollection,
   site: siteCollection,
   navigation: navigationCollection,
+  partners: partnersCollection,
 };

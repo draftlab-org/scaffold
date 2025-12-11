@@ -1,30 +1,27 @@
 ---
+import { getCollection } from 'astro:content';
 import Heading from '@components/atoms/Heading.astro';
 import type { Person as PersonType } from '@components/organisms/Person.astro';
 import Person from '@components/organisms/Person.astro';
-import sections from '@content/sections.json';
 
 export interface Props {
-  people: PersonType[];
-  section: string;
-  validateSection?: boolean;
+  category?: string;
   class?: string;
-	customSection?: boolean
 }
 
-const { people, section, validateSection = true, class: className = '', customSection= false } = Astro.props;
+const { category, class: className = '' } = Astro.props;
 
-// Optionally validate section exists in sections list
-if (validateSection && !sections.includes(section)) {
-  throw new Error(`Invalid section: ${section}. Must be one of: ${sections.join(', ')}`);
-}
+// Query all people from the collection
+const peopleEntries = await getCollection('people');
+const allPeople: PersonType[] = peopleEntries.map((entry) => entry.data);
 
-// Filter people by section
-const filteredPeople = people.filter((person) =>
-  person.sections.includes(section)
-);
+// If category specified, filter by that category; otherwise show all
+const peopleGrid = category
+  ? allPeople.filter((person) => person.sections.includes(category))
+  : allPeople;
 
-const peopleGrid = customSection ? people : filteredPeople
+// Determine the section title
+const sectionTitle = category || 'Our Team';
 
 
 ---
@@ -34,7 +31,7 @@ const peopleGrid = customSection ? people : filteredPeople
 		<!-- Section Headline -->
 		<div class="mb-12 text-center">
 			<Heading level={2} class="mb-4">
-				{section}
+				{sectionTitle}
 			</Heading>
 		</div>
 

@@ -1,0 +1,9 @@
+{
+  "id": "dev-magazine",
+  "name": "Developer Magazine",
+  "affiliation": "Media Partner",
+  "url": "https://devmagazine.example.com",
+  "category": "media",
+  "image": "/src/assets/partners/rings-6.png",
+  "order": 7
+}

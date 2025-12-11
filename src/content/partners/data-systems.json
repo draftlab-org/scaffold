@@ -1,0 +1,9 @@
+{
+  "id": "data-systems",
+  "name": "Data Systems Inc",
+  "affiliation": "Silver Sponsor",
+  "url": "https://datasystems.example.com",
+  "category": "sponsor",
+  "image": "/src/assets/partners/rings-4.png",
+  "order": 5
+}

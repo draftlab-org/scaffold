@@ -70,17 +70,14 @@ console.log(page);
 					case 'people':
 						return (
 							<PeopleSection
-								people={section.people}
-								section={section.category}
-								validateSection={false}
-								customSection={true}
+								category={section.category}
 							/>
 						);
 					case 'partners':
 						return (
 							<PartnersSection
 								title={section.title}
-								partners={section.partners}
+								category={section.category}
 							/>
 						);
 					default:

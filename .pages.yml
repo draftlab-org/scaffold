@@ -196,14 +196,7 @@ components:
       - name: category
         label: Category
         type: string
-        required: true
-        description: Section title (e.g. "Community Leaders")
-      - name: people
-        label: People
-        type: object
-        list: true
-        component: person
-        required: true
+        description: Filter people by section/department (e.g. "Engineering", "Leadership"). Leave empty to show all people.
 
   partners_section:
     type: object
@@ -212,12 +205,10 @@ components:
         label: Title
         type: string
         required: true
-      - name: partners
-        label: Partners
-        type: object
-        list: true
-        component: partner
-        required: true
+      - name: category
+        label: Category
+        type: string
+        description: Filter partners by category (e.g. "sponsor", "technology"). Leave empty to show all partners.
 
 # Content collections
 content:
@@ -320,6 +311,67 @@ content:
         type: string
         list: true
         description: Tags like "Leadership", "Engineering", etc.
+
+  # Partners collection
+  - name: partners
+    label: Partners
+    type: collection
+    path: src/content/partners
+    format: json
+    filename: '{{fields.id}}'
+    view:
+      fields: [name, category, affiliation]
+      primary: name
+    fields:
+      - name: id
+        label: ID
+        type: string
+        required: true
+        description: Unique identifier (slug format, e.g. tech-corp)
+
+      - name: name
+        label: Partner Name
+        type: string
+        required: true
+
+      - name: affiliation
+        label: Affiliation
+        type: string
+        description: e.g. "Platinum Sponsor", "Technology Partner"
+
+      - name: url
+        label: Website URL
+        type: string
+        description: Partner's website URL
+
+      - name: category
+        label: Category
+        type: select
+        required: true
+        options:
+          values:
+            - label: Sponsor
+              value: sponsor
+            - label: Infrastructure
+              value: infrastructure
+            - label: Community
+              value: community
+            - label: Technology
+              value: technology
+            - label: Media
+              value: media
+        description: Partner category for filtering
+
+      - name: image
+        label: Logo
+        type: image
+        description: Absolute path to partner logo (e.g. /src/assets/partners/logo.png)
+
+      - name: order
+        label: Display Order
+        type: number
+        default: 999
+        description: Lower numbers appear first (1, 2, 3...)
 
   # Site configuration (singleton)
   - name: site-config

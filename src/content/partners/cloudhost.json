@@ -1,0 +1,9 @@
+{
+  "id": "cloudhost",
+  "name": "CloudHost",
+  "affiliation": "Infrastructure Partner",
+  "url": "https://cloudhost.example.com",
+  "category": "infrastructure",
+  "image": "/src/assets/partners/rings-2.png",
+  "order": 3
+}

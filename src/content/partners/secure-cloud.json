@@ -1,0 +1,9 @@
+{
+  "id": "secure-cloud",
+  "name": "SecureCloud Services",
+  "affiliation": "Infrastructure Partner",
+  "url": "https://securecloud.example.com",
+  "category": "infrastructure",
+  "image": "/src/assets/partners/rings-8.png",
+  "order": 9
+}

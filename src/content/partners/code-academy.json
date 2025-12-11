@@ -1,0 +1,9 @@
+{
+  "id": "code-academy",
+  "name": "Code Academy Network",
+  "affiliation": "Education Partner",
+  "url": "https://codeacademy.example.com",
+  "category": "community",
+  "image": "/src/assets/partners/rings-7.png",
+  "order": 8
+}

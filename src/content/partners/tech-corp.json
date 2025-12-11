@@ -1,0 +1,9 @@
+{
+  "id": "tech-corp",
+  "name": "Tech Corp",
+  "affiliation": "Platinum Sponsor",
+  "url": "https://techcorp.example.com",
+  "category": "sponsor",
+  "image": "/src/assets/partners/rings-0.png",
+  "order": 1
+}

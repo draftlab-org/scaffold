@@ -1,0 +1,9 @@
+{
+  "id": "open-source-foundation",
+  "name": "Open Source Foundation",
+  "affiliation": "Community Partner",
+  "url": "https://osf.example.com",
+  "category": "community",
+  "image": "/src/assets/partners/rings-3.png",
+  "order": 4
+}

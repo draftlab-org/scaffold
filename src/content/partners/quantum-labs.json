@@ -1,0 +1,9 @@
+{
+  "id": "quantum-labs",
+  "name": "Quantum Labs",
+  "affiliation": "Technology Partner",
+  "url": "https://quantumlabs.example.com",
+  "category": "technology",
+  "image": "/src/assets/partners/rings-10.png",
+  "order": 11
+}

@@ -1,22 +1,36 @@
 ---
-import type { ImageMetadata } from 'astro';
 import Image from '@components/atoms/Image.astro';
+import { getCollection } from 'astro:content';
+import type { ImageMetadata } from 'astro';
 
 export interface Partner {
   name: string;
   affiliation?: string;
   url?: string;
   category: string;
-  image: ImageMetadata;
+  image?: ImageMetadata;
 }
 
 export interface Props {
   title: string;
-  partners: Partner[];
+  category?: string;
   class?: string;
 }
 
-const { title, partners, class: className = '' } = Astro.props;
+const { title, category, class: className = '' } = Astro.props;
+
+// Query partners collection
+const allPartners = await getCollection('partners');
+
+// Filter by category if specified, otherwise show all
+const filteredPartners = category
+  ? allPartners.filter(p => p.data.category === category)
+  : allPartners;
+
+// Sort by order field
+const partners = filteredPartners
+  .sort((a, b) => (a.data.order || 999) - (b.data.order || 999))
+  .map(entry => entry.data);
 ---
 
 <section class={`py-16 ${className}`}>
@@ -39,15 +53,17 @@ const { title, partners, class: className = '' } = Astro.props;
 								class="group"
 								data-component
 							>
-								<div class="mb-4 flex h-32 w-full items-center justify-center rounded-lg bg-white p-6 shadow-sm transition-shadow group-hover:shadow-md">
-									<Image
-										src={partner.image}
-										alt={partner.name}
-										width={200}
-										height={128}
-										class="max-h-full max-w-full object-contain"
-									/>
-								</div>
+								{partner.image && (
+									<div class="mb-4 flex h-32 w-full items-center justify-center rounded-lg bg-white p-6 shadow-sm transition-shadow group-hover:shadow-md">
+										<Image
+											src={partner.image}
+											alt={partner.name}
+											width={200}
+											height={128}
+											class="max-h-full max-w-full object-contain"
+										/>
+									</div>
+								)}
 								<h4 class="mb-2">{partner.name}</h4>
 								{partner.affiliation && (
 									<p class="text-gray-600">{partner.affiliation}</p>
@@ -55,15 +71,17 @@ const { title, partners, class: className = '' } = Astro.props;
 							</a>
 						) : (
 							<>
-								<div class="mb-4 flex h-32 w-full items-center justify-center rounded-lg bg-white p-6 shadow-sm">
-									<Image
-										src={partner.image}
-										alt={partner.name}
-										width={200}
-										height={128}
-										class="max-h-full max-w-full object-contain"
-									/>
-								</div>
+								{partner.image && (
+									<div class="mb-4 flex h-32 w-full items-center justify-center rounded-lg bg-white p-6 shadow-sm">
+										<Image
+											src={partner.image}
+											alt={partner.name}
+											width={200}
+											height={128}
+											class="max-h-full max-w-full object-contain"
+										/>
+									</div>
+								)}
 								<h4 class="mb-2">{partner.name}</h4>
 								{partner.affiliation && (
 									<p class="text-gray-600">{partner.affiliation}</p>

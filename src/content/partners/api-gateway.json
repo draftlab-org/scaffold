@@ -1,0 +1,9 @@
+{
+  "id": "api-gateway",
+  "name": "API Gateway Solutions",
+  "affiliation": "Technology Partner",
+  "url": "https://apigateway.example.com",
+  "category": "technology",
+  "image": "/src/assets/partners/rings-5.png",
+  "order": 6
+}
