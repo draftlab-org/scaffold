@@ -1,5 +1,4 @@
 ---
-import { Image } from 'astro:assets';
 
 import SectionLayout from '@layouts/SectionLayout.astro';
 import renderMarkdownWithImages from '@utils/renderMarkdownWithImages';
@@ -27,8 +26,5 @@ const html = await renderMarkdownWithImages(content);
 <SectionLayout bgColor={bgClass}>
 	<div class="mx-auto prose max-w-3xl">
 		<Fragment set:html={html} />
-
-    <p>Generated via Astro Image for comparison </p>
-    <Image src="/src/assets/hero.png" alt="Hero image" />
 	</div>
 </SectionLayout>

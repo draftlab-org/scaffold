@@ -3,7 +3,5 @@
   "name": "Alex Turner",
   "headshot": "/src/assets/people/alex-turner.png",
   "title": "DevOps Engineer",
-  "sections": [
-    "Engineering"
-  ]
+  "sections": ["Engineering", "Community"]
 }
