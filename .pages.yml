@@ -153,6 +153,20 @@ components:
         required: true
         description: Markdown content for this section
 
+  button_section:
+    type: object
+    fields:
+      - name: title
+        label: Title
+        type: string
+        required: false
+      - name: buttons
+        label: Buttons
+        type: object
+        list: true
+        component: button
+        description: Buttons
+
   card_section:
     type: object
     fields:

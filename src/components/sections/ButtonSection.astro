@@ -1,0 +1,55 @@
+---
+import Button from '@components/atoms/Button.astro';
+import SectionLayout from '@layouts/SectionLayout.astro';
+
+export interface ButtonType {
+  variant: string;
+  size: string;
+  href: string;
+	text: string;
+}
+
+export interface Props {
+  title?: string;
+  buttons?: ButtonType[];
+  class?: string;
+}
+
+const {
+  title,
+  buttons = [],
+  class: className = '',
+} = Astro.props;
+---
+
+<SectionLayout>
+	<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+		<!-- Section Header -->
+		{
+			title && (
+				<div class="mb-12 text-center">
+					{title && <h2 class="mb-4">{title}</h2>}
+				</div>
+			)
+		}
+
+		<!-- Buttons -->
+		{
+			buttons.length > 0 && (
+				<div class="flex flex-wrap justify-center gap-4">
+					{buttons.map((button) => (
+						<Button
+							type="button"
+							as="a"
+							variant={button.variant as any}
+							size={button.size as any}
+							href={button.href}
+						>
+							{button.text}
+						</Button>
+					))}
+				</div>
+			)
+		}
+	</div>
+</SectionLayout>

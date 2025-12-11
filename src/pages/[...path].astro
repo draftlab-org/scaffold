@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import ButtonSection from '@components/sections/ButtonSection.astro';
 import CardSection from '@components/sections/CardSection.astro';
 import HeroSection from '@components/sections/HeroSection.astro';
 import PartnersSection from '@components/sections/PartnersSection.astro';
@@ -34,6 +35,13 @@ console.log(page);
 			const content = (() => {
 				const sectionLabel = `section > ${section.type}`;
 				switch (section.type) {
+					case 'button':
+						return (
+							<ButtonSection
+								title={section.title}
+								buttons={section.buttons}
+							/>
+						);
 					case 'hero':
 						return (
 							<HeroSection

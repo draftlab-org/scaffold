@@ -61,6 +61,11 @@ const pagesCollection = defineCollection({
         content: z.string(),
       }),
       z.object({
+        type: z.literal('button'),
+        title: z.string(),
+        buttons: z.array(buttonSchema).optional(),
+      }),
+      z.object({
         type: z.literal('card'),
         title: z.string(),
         description: z.string().optional(),
