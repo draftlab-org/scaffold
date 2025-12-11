@@ -288,7 +288,7 @@ content:
     type: collection
     path: src/content/people
     format: json
-    filename: '{{fields.id}}'
+    filename: '{{fields.id}}.json'
     view:
       fields: [name, title]
       primary: name
