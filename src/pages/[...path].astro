@@ -1,12 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
-import ButtonSection from '@components/sections/ButtonSection.astro';
-import CardSection from '@components/sections/CardSection.astro';
 import HeroSection from '@components/sections/HeroSection.astro';
-import PartnersSection from '@components/sections/PartnersSection.astro';
-import PeopleSection from '@components/sections/PeopleSection.astro';
-import RichTextSection from '@components/sections/RichTextSection.astro';
 import PageLayout from '@layouts/PageLayout.astro';
+import Sections from '@components/sections/Sections.astro';
 import type { GetStaticPaths } from 'astro';
 
 // Generate static paths from pages collection
@@ -20,7 +16,6 @@ export const getStaticPaths = (async () => {
 
 const { page } = Astro.props;
 
-console.log(page);
 ---
 
 <PageLayout title={page.data.title} description={page.data.description}>
@@ -30,62 +25,5 @@ console.log(page);
 		backgroundImage={page.data.heroImage}
 		sectionLabel="hero"
 	/>
-	{
-		page.data.sections.map((section: any) => {
-			const content = (() => {
-				const sectionLabel = `section > ${section.type}`;
-				switch (section.type) {
-					case 'button':
-						return (
-							<ButtonSection
-								title={section.title}
-								buttons={section.buttons}
-							/>
-						);
-					case 'hero':
-						return (
-							<HeroSection
-								title={section.title}
-								subtitle={section.subtitle}
-								backgroundImage={section.backgroundImage}
-								sectionLabel={sectionLabel}
-							/>
-						);
-					case 'richText':
-						return (
-							<RichTextSection
-								background={section.background}
-								content={section.content}
-							/>
-						);
-					case 'card':
-						return (
-							<CardSection
-								title={section.title}
-								description={section.description}
-								cards={section.cards}
-								buttons={section.buttons}
-							/>
-						);
-					case 'people':
-						return (
-							<PeopleSection
-								category={section.category}
-							/>
-						);
-					case 'partners':
-						return (
-							<PartnersSection
-								title={section.title}
-								category={section.category}
-							/>
-						);
-					default:
-						return null;
-				}
-			})();
-
-			return <div class="section-container">{content}</div>;
-		})
-	}
+	<Sections sectionItems={page.data.sections} />
 </PageLayout>
