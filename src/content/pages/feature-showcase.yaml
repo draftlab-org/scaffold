@@ -15,3 +15,13 @@ sections:
       This is some content
 
       ![image text](/src/assets/hero.png)
+  - type: button
+    buttons:
+      - variant: primary
+        size: md
+        text: Button 1
+        href: google.com
+      - variant: secondary
+        size: md
+        text: Button 2
+        href: google.com
