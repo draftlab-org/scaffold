@@ -38,13 +38,18 @@ const createSchemas = (image: ImageFunction) => {
     image: image().optional(),
   });
 
-  return { buttonSchema, cardSchema, personSchema, partnerSchema };
+  //  Section
+  const sectionSchema = z.object({
+    type: z.string(),
+  });
+
+  return { buttonSchema, cardSchema, personSchema, partnerSchema, sectionSchema };
 };
 
 const pagesCollection = defineCollection({
   type: 'data',
   schema: ({ image }) => {
-    const { buttonSchema, cardSchema, personSchema, partnerSchema } =
+    const { buttonSchema, cardSchema, personSchema, partnerSchema, sectionSchema } =
       createSchemas(image);
 
     // Sections defined as a union type so they can be used as variable components
@@ -80,6 +85,12 @@ const pagesCollection = defineCollection({
         type: z.literal('partners'),
         title: z.string(),
         category: z.string().optional(),
+      }),
+      z.object({
+        type: z.literal('flexi'),
+        title: z.string(),
+        description: z.string().optional(),
+        sections: z.array(sectionSchema).optional(),
       }),
       // Add more section types as needed
     ]);

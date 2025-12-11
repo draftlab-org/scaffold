@@ -195,6 +195,23 @@ components:
         component: button
         description: Buttons at the bottom of the section
 
+  flexi_section:
+    type: object
+    fields:
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: description
+        label: Description
+        type: rich-text
+      - name: sections
+        label: Sections
+        type: object
+        list: true
+        component: section
+        description: Nested sections within this flexi section
+
   people_section:
     type: object
     fields:
@@ -281,6 +298,10 @@ content:
           - name: partners
             label: Partners Section
             component: partners_section
+          
+          - name: flexi
+            label: Flexi Section
+            component: flexi_section
 
   # People collection
   - name: people
