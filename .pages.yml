@@ -260,6 +260,10 @@ content:
           - name: richText
             label: Rich Text Section
             component: richtext_section
+          
+          - name: button
+            label: Button Section
+            component: button_section
 
           - name: card
             label: Card Section
