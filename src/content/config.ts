@@ -62,7 +62,7 @@ const pagesCollection = defineCollection({
       }),
       z.object({
         type: z.literal('button'),
-        title: z.string(),
+        title: z.string().optional(),
         buttons: z.array(buttonSchema).optional(),
       }),
       z.object({
