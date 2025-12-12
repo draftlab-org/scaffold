@@ -137,6 +137,19 @@ components:
       - name: card
         label: Card Section
         component: card_section
+  
+  background_select:
+    type: select
+    options:
+      values:
+        - label: White
+          value: white
+        - label: Gray
+          value: gray
+        - label: Gradient
+          value: gradient
+    default: white
+    description: Select a background color for this section
       
 
   # Section components for block variants
@@ -160,17 +173,7 @@ components:
     fields:
       - name: background
         label: Background Color
-        type: select
-        options:
-          values:
-            - label: White
-              value: white
-            - label: Gray
-              value: gray
-            - label: Gradient
-              value: gradient
-        required: true
-        default: white
+        component: background_select
       - name: content
         label: Content
         type: rich-text
