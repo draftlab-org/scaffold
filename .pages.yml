@@ -142,7 +142,7 @@ components:
     type: object
     fields:
       - name: bgColor
-        label: Section Background
+        label: Color
         type: select
         options:
           values:
@@ -154,9 +154,8 @@ components:
               value: gradient
         default: white
         description: Select a section background for this section
-        width: 50%
       - name: bgType
-        label: Background Type
+        label: Type
         type: select
         options:
           values:
@@ -166,7 +165,6 @@ components:
               value: contained
         default: full
         description: Select the background type for this section
-        width: 50%
       
 
   # Section components for block variants
