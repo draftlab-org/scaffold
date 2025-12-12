@@ -56,36 +56,39 @@ const pagesCollection = defineCollection({
   schema: ({ image }) => {
     const { buttonSchema, cardSchema } = createSchemas(image);
 
+    const SectionCommonSchema = z.object({
+      background: z.string(),
+    });
+
     // Sections defined as a union type so they can be used as variable components
     const sectionsSchema = z.discriminatedUnion('type', [
-      z.object({
+      SectionCommonSchema.extend({
         type: z.literal('hero'),
         title: z.string(),
         subtitle: z.string().optional(),
         backgroundImage: image().optional(),
       }),
-      z.object({
+      SectionCommonSchema.extend({
         type: z.literal('richText'),
-        background: z.string(),
         content: z.string(),
       }),
-      z.object({
+      SectionCommonSchema.extend({
         type: z.literal('button'),
         title: z.string().optional(),
         buttons: z.array(buttonSchema).optional(),
       }),
-      z.object({
+      SectionCommonSchema.extend({
         type: z.literal('card'),
         title: z.string(),
         description: z.string().optional(),
         cards: z.array(cardSchema).optional(),
         buttons: z.array(buttonSchema).optional(),
       }),
-      z.object({
+      SectionCommonSchema.extend({
         type: z.literal('people'),
         category: z.string().optional(),
       }),
-      z.object({
+      SectionCommonSchema.extend({
         type: z.literal('partners'),
         title: z.string(),
         category: z.string().optional(),
@@ -93,7 +96,7 @@ const pagesCollection = defineCollection({
       // Add more section types as needed
     ]);
 
-    const flexiSectionSchema = z.object({
+    const flexiSectionSchema = SectionCommonSchema.extend({
       type: z.literal('flexi'),
       title: z.string(),
       description: z.string().optional(),
