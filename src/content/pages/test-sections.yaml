@@ -2,12 +2,28 @@ title: Test sections
 permalink: test-sections
 sections:
   - type: richText
-    background: gray
+    background:
+      bgColor: white
+      bgType: full
     content: rich text content
   - type: button
+    background:
+      bgColor: white
+      bgType: full
     title: Buttons
     buttons:
       - variant: primary
         size: md
         text: Button 1
         href: google.com
+  - type: flexi
+    background:
+      bgColor: gray
+      bgType: full
+    title: This is a Flexi Section!
+    sections:
+      - type: richText
+        background:
+          bgColor: white
+          bgType: full
+        content: Within the flexi content
