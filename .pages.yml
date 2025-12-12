@@ -183,6 +183,9 @@ components:
   button_section:
     type: object
     fields:
+      - name: background
+        label: Background Color
+        component: background_select
       - name: title
         label: Title (Optional)
         type: string
@@ -197,6 +200,9 @@ components:
   card_section:
     type: object
     fields:
+      - name: background
+        label: Background Color
+        component: background_select
       - name: title
         label: Title
         type: string
@@ -220,6 +226,9 @@ components:
   flexi_section:
     type: object
     fields:
+      - name: background
+        label: Background Color
+        component: background_select
       - name: title
         label: Title
         type: string
@@ -237,6 +246,9 @@ components:
   people_section:
     type: object
     fields:
+      - name: background
+        label: Background Color
+        component: background_select
       - name: category
         label: Category
         type: string
@@ -245,6 +257,9 @@ components:
   partners_section:
     type: object
     fields:
+      - name: background
+        label: Background Color
+        component: background_select
       - name: title
         label: Title
         type: string
