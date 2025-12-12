@@ -15,7 +15,6 @@ export interface Partner {
 export interface Props {
   title: string;
   category?: string;
-  class?: string;
   sectionLabel?: string;
 }
 
@@ -34,8 +33,7 @@ const partners = filteredPartners
   .sort((a, b) => (a.data.order || 999) - (b.data.order || 999))
   .map(entry => entry.data);
 ---
-
-<SectionLayout class={className} sectionLabel={sectionLabel}>
+<div>
 	<!-- Section Header -->
 	<div class="mb-12 text-center">
 		<h2 class="mb-4">{title}</h2>
@@ -93,4 +91,4 @@ const partners = filteredPartners
 			))
 		}
 	</div>
-</SectionLayout>
+</div>

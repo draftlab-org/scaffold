@@ -6,6 +6,7 @@ import HeroSection from '@components/sections/HeroSection.astro';
 import PartnersSection from '@components/sections/PartnersSection.astro';
 import PeopleSection from '@components/sections/PeopleSection.astro';
 import RichTextSection from '@components/sections/RichTextSection.astro';
+import SectionLayout from '@layouts/SectionLayout.astro';
 
 const { sectionItems } = Astro.props;
 
@@ -13,8 +14,9 @@ const { sectionItems } = Astro.props;
 
 {
   sectionItems.map((section: any) => {
+    const sectionLabel = `section > ${section.type}`;
+
     const content = (() => {
-      const sectionLabel = `section > ${section.type}`;
       switch (section.type) {
         case 'button':
           return (
@@ -36,8 +38,6 @@ const { sectionItems } = Astro.props;
             <HeroSection
               title={section.title}
               subtitle={section.subtitle}
-              backgroundImage={section.backgroundImage}
-              sectionLabel={sectionLabel}
             />
           );
         case 'richText':
@@ -74,6 +74,15 @@ const { sectionItems } = Astro.props;
       }
     })();
 
-    return <div class="section-container">{content}</div>;
+    return (
+      <SectionLayout
+        bgColor={section.background}
+        bgImage={section.backgroundImage}
+        class={section.class}
+        sectionLabel={sectionLabel}
+      >
+        {content}
+      </SectionLayout>
+    );
   })
 }

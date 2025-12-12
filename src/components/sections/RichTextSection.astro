@@ -4,27 +4,16 @@ import SectionLayout from '@layouts/SectionLayout.astro';
 import renderMarkdownWithImages from '@utils/renderMarkdownWithImages';
 
 export interface Props {
-  background: string;
   content: string;
-  class?: string;
 }
 
-const { background, content, class: className = '' } = Astro.props;
+const { content } = Astro.props;
 
-const backgrounds = {
-  white: 'bg-white',
-  gray: 'bg-gray-50',
-  gradient: 'bg-gradient-to-br from-blue-50 to-indigo-100',
-};
-
-const bgClass = backgrounds[background as keyof typeof backgrounds] || backgrounds.white;
 
 const html = await renderMarkdownWithImages(content);
 
 ---
 
-<SectionLayout bgColor={bgClass}>
-	<div class="mx-auto prose max-w-3xl">
-		<Fragment set:html={html} />
-	</div>
-</SectionLayout>
+<div class="mx-auto prose max-w-3xl">
+  <Fragment set:html={html} />
+</div>

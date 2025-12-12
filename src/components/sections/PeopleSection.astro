@@ -7,12 +7,10 @@ import Person from '@components/organisms/Person.astro';
 
 export interface Props {
   category?: string;
-  class?: string;
   sectionLabel?: string;
 }
 
-const { category, class: className = '', sectionLabel = 'People' } = Astro.props;
-
+const { category } = Astro.props;
 // Query all people from the collection
 const peopleEntries = await getCollection('people');
 const allPeople: PersonType[] = peopleEntries.map((entry) => entry.data);
@@ -28,7 +26,7 @@ const sectionTitle = category || 'Our Team';
 
 ---
 
-<SectionLayout class={className} sectionLabel={sectionLabel}>
+<div>
 	<!-- Section Headline -->
 	<div class="mb-12 text-center">
 		<Heading level={2} class="mb-4">
@@ -49,4 +47,4 @@ const sectionTitle = category || 'Our Team';
 			</div>
 		)
 	}
-</SectionLayout>
+</div>
