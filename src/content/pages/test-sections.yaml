@@ -1,0 +1,13 @@
+title: Test sections
+permalink: test-sections
+sections:
+  - type: richText
+    background: gray
+    content: rich text content
+  - type: button
+    title: Buttons
+    buttons:
+      - variant: primary
+        size: md
+        text: Button 1
+        href: google.com
