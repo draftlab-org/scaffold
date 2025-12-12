@@ -2,7 +2,6 @@ import { defineCollection, type ImageFunction, z } from 'astro:content';
 import articleCategories from './categories/articles.json';
 import partnerCategories from './categories/partners.json';
 import peopleCategories from './categories/people.json';
-import FlexiSection from '@components/sections/FlexiSection.astro';
 
 // Helper to create schemas with image support
 const createSchemas = (image: ImageFunction) => {
@@ -55,12 +54,7 @@ const createSchemas = (image: ImageFunction) => {
 const pagesCollection = defineCollection({
   type: 'data',
   schema: ({ image }) => {
-    const {
-      buttonSchema,
-      cardSchema,
-      personSchema,
-      partnerSchema,
-    } = createSchemas(image);
+    const { buttonSchema, cardSchema } = createSchemas(image);
 
     // Sections defined as a union type so they can be used as variable components
     const sectionsSchema = z.discriminatedUnion('type', [
@@ -110,7 +104,10 @@ const pagesCollection = defineCollection({
       title: z.string(),
       description: z.string().optional(),
       heroImage: image().optional(),
-      sections: z.union([...sectionsSchema.options, flexiSectionSchema]).array().optional(),
+      sections: z
+        .union([...sectionsSchema.options, flexiSectionSchema])
+        .array()
+        .optional(),
     });
   },
 });
@@ -141,9 +138,9 @@ const articlesCollection = defineCollection({
       authors: z.array(z.string()), // References to people collection IDs
       published: z.enum(['draft', 'published']),
       tags: z.array(z.string()),
-      categories: z.array(
-        z.enum(articleCategories.categories as [string, ...string[]])
-      ),
+      categories: z
+        .array(z.enum(articleCategories.categories as [string, ...string[]]))
+        .optional(),
       publishedDate: z.date(),
       heroImage: image().optional(),
     }),
