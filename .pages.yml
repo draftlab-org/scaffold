@@ -693,8 +693,8 @@ content:
           multiple: true
           search: "title"
           value: "{permalink}"
-          label: "{title}"
-          image: "{heroImage}"
+          label: "title"
+          image: "heroImage"
 
       - name: body
         label: Body
