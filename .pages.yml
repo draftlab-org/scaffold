@@ -691,10 +691,10 @@ content:
         options:
           collection: articles
           multiple: true
-          search: "title"
+          search: "{title}"
           value: "{permalink}"
           label: "{title}"
-          image: "{fields.heroImage}"
+          image: "{heroImage}"
 
       - name: body
         label: Body
