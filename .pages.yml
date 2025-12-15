@@ -647,10 +647,16 @@ content:
 
       - name: authors
         label: Authors
-        type: string
-        list: true
-        required: true
-        description: Author IDs from the people collection
+        type: reference
+        options:
+          collection: people
+          multiple: true
+      # - name: authors
+      #   label: Authors
+      #   type: string
+      #   list: true
+      #   required: true
+      #   description: Author IDs from the people collection
 
       - name: published
         label: Status
