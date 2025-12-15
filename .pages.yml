@@ -693,7 +693,6 @@ content:
           multiple: true
           value: "{permalink}"
           label: "{title}"
-          image: "{fields.heroImage}"
 
       - name: body
         label: Body
