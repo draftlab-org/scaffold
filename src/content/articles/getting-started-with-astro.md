@@ -1,13 +1,19 @@
 ---
-permalink: 'getting-started-with-astro'
-title: 'Getting Started with Astro: A Comprehensive Guide'
-authors: ['sarah-chen', 'david-kim']
-published: 'published'
-tags: ['astro', 'web-development', 'tutorial']
+permalink: getting-started-with-astro
+title: "Getting Started with Astro: A Comprehensive Guide"
+authors:
+  - sarah-chen
+  - david-kim
+published: published
+tags:
+  - astro
+  - web-development
+  - tutorial
 publishedDate: 2024-01-15
-heroImage: '/src/assets/backgrounds/anna-magenta-DJ7FzM_WZXs-unsplash.jpg'
+heroImage: /src/assets/backgrounds/anna-magenta-DJ7FzM_WZXs-unsplash.jpg
+relatedArticles:
+  - building-scalable-apis
 ---
-
 # Getting Started with Astro
 
 Astro is a modern web framework that delivers fast, content-focused websites. In this guide, we'll explore the fundamentals of building with Astro.
@@ -16,9 +22,9 @@ Astro is a modern web framework that delivers fast, content-focused websites. In
 
 Astro stands out for its unique approach to building websites:
 
-- **Zero JavaScript by default**: Only ship the JavaScript you need
-- **Component Islands**: Hydrate interactive components on demand
-- **Framework agnostic**: Use React, Vue, Svelte, or any framework
+*   **Zero JavaScript by default**: Only ship the JavaScript you need
+*   **Component Islands**: Hydrate interactive components on demand
+*   **Framework agnostic**: Use React, Vue, Svelte, or any framework
 
 ## Your First Astro Project
 
@@ -53,8 +59,8 @@ const title = "My Page";
 
 Now that you understand the basics, explore:
 
-- Content collections for managing markdown
-- Component frameworks integration
-- Deployment options
+*   Content collections for managing markdown
+*   Component frameworks integration
+*   Deployment options
 
 Happy building with Astro!
