@@ -651,6 +651,7 @@ content:
         options:
           collection: people
           multiple: true
+          label: "{fields.name}"
       # - name: authors
       #   label: Authors
       #   type: string
