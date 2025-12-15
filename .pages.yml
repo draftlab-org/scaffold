@@ -652,13 +652,6 @@ content:
           collection: people
           multiple: true
           label: "{fields.name}"
-          image: "{headshot}"
-      # - name: authors
-      #   label: Authors
-      #   type: string
-      #   list: true
-      #   required: true
-      #   description: Author IDs from the people collection
 
       - name: published
         label: Status
