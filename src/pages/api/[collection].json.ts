@@ -46,7 +46,10 @@ export const GET: APIRoute = async ({ params }) => {
     // Special handling for categories collection - return as object instead of array
     if (collection === 'categories') {
       const categoriesObject = collectionData.reduce((acc: any, entry: any) => {
-        acc[entry.id] = entry;
+        acc[entry.id] = {
+          ...entry,
+          categories: entry.categories?.map((cat: string) => ({ name: cat })) || [],
+        };
         return acc;
       }, {});
 
