@@ -695,6 +695,7 @@ content:
           multiple: true
           value: "{permalink}"
           label: "{title}"
+          image: heroImage
       - name: categories
         label: Categories
         type: select
