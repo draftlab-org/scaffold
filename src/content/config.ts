@@ -57,10 +57,12 @@ const pagesCollection = defineCollection({
     const { buttonSchema, cardSchema } = createSchemas(image);
 
     const SectionCommonSchema = z.object({
-      background: z.object({
-        bgColor: z.string().optional(),
-        bgType: z.string().optional(),
-      }).optional(),
+      background: z
+        .object({
+          bgColor: z.string().optional(),
+          bgType: z.string().optional(),
+        })
+        .optional(),
     });
 
     // Sections defined as a union type so they can be used as variable components
@@ -161,6 +163,8 @@ const siteCollection = defineCollection({
       url: z.string().url(),
       favicon: z.string().default('/favicon.svg'),
       defaultOgImage: image().optional(),
+      defaultLogoLight: image().optional(),
+      defaultLogoDark: image().optional(),
       social: z
         .object({
           bluesky: z.string().optional(),
@@ -173,6 +177,10 @@ const siteCollection = defineCollection({
           youtube: z.string().optional(),
         })
         .optional(),
+      footer: z.object({
+        description: z.string().optional(),
+        bottom: z.string(),
+      }),
     }),
 });
 

@@ -59,15 +59,27 @@ const processImageNodes = () => async (tree: any) => {
   await Promise.all(imagePromises);
 };
 
-const renderMarkdownWithImages = async (markdown: string) => {
-  const html = await unified()
+// Extract base markdown processor (no image processing)
+const createMarkdownProcessor = () => {
+  return unified()
     .use(remarkParse)
     .use(remarkRehype)
-    .use(processImageNodes)
-    .use(rehypeStringify, { allowDangerousHtml: true })
-    .process(markdown);
+    .use(rehypeStringify, { allowDangerousHtml: true });
+};
 
+// New: Plain markdown rendering (no image processing)
+export const renderMarkdown = async (markdown: string): Promise<string> => {
+  const html = await createMarkdownProcessor().process(markdown);
   return String(html);
 };
 
+// Existing: Markdown with image optimization
+export const renderMarkdownWithImages = async (markdown: string): Promise<string> => {
+  const html = await createMarkdownProcessor()
+    .use(processImageNodes)
+    .process(markdown);
+  return String(html);
+};
+
+// Default export for backward compatibility
 export default renderMarkdownWithImages;

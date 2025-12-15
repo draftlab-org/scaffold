@@ -1,7 +1,18 @@
 ---
+import { getEntry } from 'astro:content';
 import Link from '@components/atoms/Link.astro';
 import Text from '@components/atoms/Text.astro';
 import SocialLinks from '@components/molecules/SocialLinks.astro';
+import { renderMarkdown } from '@utils/renderMarkdown';
+
+// Fetch site config from content collection
+const siteConfigEntry = await getEntry('site', 'config');
+
+if (!siteConfigEntry) {
+  throw new Error('Site configuration not found');
+}
+
+const siteConfig = siteConfigEntry.data;
 
 export interface FooterLink {
   href: string;
@@ -29,8 +40,7 @@ const {
 } = Astro.props;
 
 const currentYear = new Date().getFullYear();
-const copyrightText = copyright || `© ${currentYear} ${siteName}. Some rights reserved.`;
-const thanksText = `Background images by <a href="https://unsplash.com/@annamagenta82">Anna Magenta</a> (Unsplash). People images by <a href="https://openpeeps.com/">OpenPeeps</a> via <a href="https://www.dicebear.com/">DiceBear</a>`
+const copyrightText = copyright || `© ${currentYear} ${siteConfig.title}.`;
 ---
 
 <footer class={`bg-highlight-950 text-white  ${className}`}>
@@ -70,13 +80,11 @@ const thanksText = `Background images by <a href="https://unsplash.com/@annamage
 		</div>
 
 		<!-- Copyright -->
-		<div class="pt-8">
-			<Text size="sm" class="text-center">
-				{copyrightText}
-			</Text>
-		</div>
-		<div class="pt-8">
-			<Text size="sm" class="text-center" set:html={thanksText} />
+		<div
+			class="pt-8 text-center *:text-sm"
+			set:html={renderMarkdown(siteConfig.footer.bottom)}
+		>
+			<p>{copyrightText}</p>
 		</div>
 	</div>
 </footer>
