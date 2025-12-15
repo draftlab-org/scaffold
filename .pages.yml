@@ -703,8 +703,8 @@ content:
           fetch:
             url: https://scaffold.draftlab.org/api/categories.json
             results: articles.categories
-            values: .
-            labels: .
+            value: .
+            label: .
             
 
       - name: body
