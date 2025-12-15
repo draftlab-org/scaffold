@@ -694,8 +694,7 @@ content:
           search: "title"
           value: "{permalink}"
           label: "{title}"
-          image: {heroImage}
-
+          image: "{fields.heroImage}"
 
       - name: body
         label: Body
