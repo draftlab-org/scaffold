@@ -696,6 +696,8 @@ content:
           value: "{permalink}"
           label: "{title}"
       - name: categories
+        label: Categories
+        type: select
         options:
           multiple: true
           fetch:
