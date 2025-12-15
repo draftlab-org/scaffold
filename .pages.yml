@@ -695,6 +695,13 @@ content:
           multiple: true
           value: "{permalink}"
           label: "{title}"
+      - name: categories
+        options:
+          multiple: true
+          fetch:
+            url: https://scaffold.draftlab.org/api/categories.json
+            results: items
+            
 
       - name: body
         label: Body
