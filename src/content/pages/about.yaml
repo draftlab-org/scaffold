@@ -3,9 +3,9 @@ description: We are a group of people who don't exist really! We're just here to
 heroImage: /src/assets/backgrounds/anna-magenta-vKhd5bnnolg-unsplash.jpg
 sections:
   - type: people
-    category: Leadership
-  - type: people
     category: Engineering
+  - type: people
+    category: Leadership
   - type: people
     category: Product
   - type: people
