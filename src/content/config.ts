@@ -57,7 +57,10 @@ const pagesCollection = defineCollection({
     const { buttonSchema, cardSchema } = createSchemas(image);
 
     const SectionCommonSchema = z.object({
-      background: z.string().optional(),
+      background: z.object({
+        bgColor: z.string().optional(),
+        bgType: z.string().optional(),
+      }).optional(),
     });
 
     // Sections defined as a union type so they can be used as variable components

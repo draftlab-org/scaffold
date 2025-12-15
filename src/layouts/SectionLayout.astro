@@ -10,6 +10,7 @@ export interface Props {
   padding?: boolean;
   class?: string;
   bgColor?: string;
+  bgType?: string;
   bgImage?: ImageMetadata;
 	sectionLabel?: string
 }
@@ -21,6 +22,7 @@ const {
   class: className = '',
   bgImage,
   bgColor,
+  bgType = 'full',
 	sectionLabel = 'section'
 } = Astro.props;
 
@@ -42,10 +44,12 @@ const backgrounds = {
 };
 
 const bgClass = backgrounds[bgColor as keyof typeof backgrounds] || backgrounds.white;
+const sectionBgClass = bgType === 'full' ? bgClass : '';
+const containerBgClass = bgType === 'contained' ? bgClass : '';
 ---
 
 <section
-	class={`relative ${bgClass} ${devClass('border-t border-b border-gray-300 border-dotted')}`}
+	class={`relative ${sectionBgClass} ${devClass('border-t border-b border-gray-300 border-dotted')}`}
 >
 	<DevOnly>
 		<span
@@ -64,7 +68,7 @@ const bgClass = backgrounds[bgColor as keyof typeof backgrounds] || backgrounds.
 		)
 	}
 	<div
-		class={`section-container relative ${containerClass} ${paddingClass} ${className}`}
+		class={`section-container relative ${containerClass} ${paddingClass} ${containerBgClass} ${className}`}
 	>
 		<slot />
 	</div>

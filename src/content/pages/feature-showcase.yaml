@@ -8,7 +8,9 @@ description: >-
   template.
 sections:
   - type: richText
-    background: gray
+    background:
+      bgColor: gray
+      bgType: full
     content: |-
       # Rich Text
 
@@ -30,7 +32,9 @@ sections:
     description: Weeeee
     sections:
       - type: richText
-        background: white
+        background:
+          bgColor: white
+          bgType: full
         content: Some text!
       - type: button
         title: Buttons

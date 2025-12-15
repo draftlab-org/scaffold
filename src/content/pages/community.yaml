@@ -8,7 +8,9 @@ sections:
       Connect, collaborate, and grow with fellow developers from around the
       world
   - type: richText
-    background: white
+    background:
+      bgColor: white
+      bgType: full
     content: "## About Our Community
 
 
@@ -86,7 +88,9 @@ sections:
     title: Our Community Partners
     # No category specified = show all partners
   - type: richText
-    background: gray
+    background:
+      bgColor: gray
+      bgType: full
     content: "## Join Us Today
 
 
