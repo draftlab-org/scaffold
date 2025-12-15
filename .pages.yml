@@ -692,7 +692,7 @@ content:
           collection: articles
           multiple: true
           value: "{permalink}"
-          label: "{name}"
+          label: "{title}"
           image: "{heroImage}"
 
       - name: body
