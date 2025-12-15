@@ -1,90 +1,121 @@
 ---
+import { Image } from 'astro:assets';
 import { getEntry } from 'astro:content';
 import Link from '@components/atoms/Link.astro';
-import Text from '@components/atoms/Text.astro';
 import SocialLinks from '@components/molecules/SocialLinks.astro';
 import { renderMarkdown } from '@utils/renderMarkdown';
 
-// Fetch site config from content collection
-const siteConfigEntry = await getEntry('site', 'config');
-
-if (!siteConfigEntry) {
-  throw new Error('Site configuration not found');
-}
-
-const siteConfig = siteConfigEntry.data;
-
-export interface FooterLink {
-  href: string;
-  label: string;
-  external?: boolean;
-}
-
-export interface FooterSection {
-  title: string;
-  links: FooterLink[];
-}
-
+// Fetch all data internally - no props needed except className
 export interface Props {
-  sections?: FooterSection[];
-  siteName?: string;
-  copyright?: string;
   class?: string;
 }
 
-const {
-  sections = [],
-  siteName = 'Draftlab Scaffold',
-  copyright,
-  class: className = '',
-} = Astro.props;
+const { class: className = '' } = Astro.props;
 
+// Fetch site config
+const siteConfigEntry = await getEntry('site', 'config');
+if (!siteConfigEntry) {
+  throw new Error('Site configuration not found');
+}
+const siteConfig = siteConfigEntry.data;
+
+// Fetch footer navigation menus
+const footerNav1 = await getEntry('navigation', 'footer-1');
+const footerNav2 = await getEntry('navigation', 'footer-2');
+
+// Prepare description with fallback logic
+const description = siteConfig.footer?.description || siteConfig.description;
+
+// Prepare copyright
 const currentYear = new Date().getFullYear();
-const copyrightText = copyright || `© ${currentYear} ${siteConfig.title}.`;
+const copyrightText = `© ${currentYear} ${siteConfig.title}.`;
 ---
 
-<footer class={`bg-highlight-950 text-white  ${className}`}>
+<footer class={`bg-highlight-950 text-white ${className}`}>
 	<div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-		<!-- Footer Sections -->
-		{
-			sections.length > 0 && (
-				<div class="mb-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-					{sections.map((section) => (
+		<!-- Main footer content: 3 columns on desktop, stack on mobile -->
+		<div class="mb-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
+			<!-- Left side: Content Section (50% on desktop) -->
+			<div class="space-y-6">
+				<!-- Logo -->
+				<div>
+					{
+						siteConfig.defaultLogoLight ? (
+							<Image
+								src={siteConfig.defaultLogoLight}
+								alt={siteConfig.title}
+								class="h-12 w-auto"
+							/>
+						) : (
+							<Link
+								href="/"
+								variant="unstyled"
+								class="font-serif text-2xl font-bold text-white"
+							>
+								{siteConfig.title}
+							</Link>
+						)
+					}
+				</div>
+
+				<!-- Description -->
+				<p class="max-w-md text-white/80">
+					{description}
+				</p>
+
+				<!-- Social Links -->
+				<SocialLinks class="justify-start" iconClass="w-5 h-5" />
+			</div>
+
+			<!-- Right side: Two menu sections (25% each on desktop) -->
+			<div class="grid grid-cols-1 gap-8 sm:grid-cols-2">
+				<!-- Menu Section 1 -->
+				{
+					footerNav1 && (
 						<div>
-							<h3 class="mb-4">{section.title}</h3>
+							<h3 class="mb-4 font-semibold">{footerNav1.data.title}</h3>
 							<ul class="space-y-3">
-								{section.links.map((link) => (
+								{footerNav1.data.items.map((item) => (
 									<li>
-										<Link
-											href={link.href}
-											variant="footer"
-											external={link.external}
-										>
-											{link.label}
+										<Link href={item.href} variant="footer">
+											{item.label}
 										</Link>
 									</li>
 								))}
 							</ul>
 						</div>
-					))}
-				</div>
-			)
-		}
+					)
+				}
 
-		<!-- Custom Content Slot -->
-		<slot />
-
-		<!-- Social Links -->
-		<div class="border-t border-white/10 pt-8">
-			<SocialLinks class="justify-center" iconClass="w-5 h-5" />
+				<!-- Menu Section 2 -->
+				{
+					footerNav2 && (
+						<div>
+							<h3 class="mb-4 font-semibold">{footerNav2.data.title}</h3>
+							<ul class="space-y-3">
+								{footerNav2.data.items.map((item) => (
+									<li>
+										<Link href={item.href} variant="footer">
+											{item.label}
+										</Link>
+									</li>
+								))}
+							</ul>
+						</div>
+					)
+				}
+			</div>
 		</div>
 
-		<!-- Copyright -->
-		<div
-			class="pt-8 text-center *:text-sm"
-			set:html={renderMarkdown(siteConfig.footer.bottom)}
-		>
-			<p>{copyrightText}</p>
+		<!-- Bottom Section: Copyright and footer content -->
+		<div class="border-t border-white/10 pt-8">
+			<div class="space-y-2 text-center *:text-sm">
+				<p class="">{copyrightText}</p>
+				<div
+					class="*:text-sm"
+					set:html={await renderMarkdown(siteConfig.footer.bottom)}
+				/>
+			</div>
 		</div>
 	</div>
 </footer>

@@ -1,6 +1,5 @@
 ---
 import { getEntry } from 'astro:content';
-import type { FooterSection } from '@components/organisms/Footer.astro';
 import Footer from '@components/organisms/Footer.astro';
 import type { NavLink } from '@components/organisms/Navigation.astro';
 import Header from '@components/sections/Header.astro';
@@ -9,8 +8,6 @@ import BaseLayout from '@layouts/BaseLayout.astro';
 
 // Fetch navigation data from content collections
 const mainNav = await getEntry('navigation', 'main');
-const footerNav1 = await getEntry('navigation', 'footer-1');
-const footerNav2 = await getEntry('navigation', 'footer-2');
 
 // Map navigation data to component format
 const defaultNavLinks: NavLink[] = mainNav?.data.items.map(item => ({
@@ -18,29 +15,11 @@ const defaultNavLinks: NavLink[] = mainNav?.data.items.map(item => ({
   label: item.label,
 })) || [];
 
-const defaultFooterSections: FooterSection[] = [
-  footerNav1 && {
-    title: footerNav1.data.title,
-    links: footerNav1.data.items.map(item => ({
-      href: item.href,
-      label: item.label,
-    })),
-  },
-  footerNav2 && {
-    title: footerNav2.data.title,
-    links: footerNav2.data.items.map(item => ({
-      href: item.href,
-      label: item.label,
-    })),
-  },
-].filter(Boolean) as FooterSection[];
-
 export interface Props {
   title: string;
   description?: string;
   image?: ImageMetadata;
   navLinks?: NavLink[];
-  footerSections?: FooterSection[];
   siteName?: string;
   stickyHeader?: boolean;
   containerized?: boolean;
@@ -54,7 +33,6 @@ const {
   description,
   image,
   navLinks = defaultNavLinks,
-  footerSections = defaultFooterSections,
   siteName = 'Draftlab Scaffold',
   stickyHeader = true,
   containerized = false,
@@ -84,8 +62,6 @@ const {
 		</Main>
 
 		<!-- Footer -->
-		<Footer sections={footerSections} siteName={siteName} class="mt-auto">
-			<slot name="footer-content" />
-		</Footer>
+		<Footer class="mt-auto" />
 	</div>
 </BaseLayout>

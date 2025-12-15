@@ -4,7 +4,7 @@
   "url": "https://scaffold.draftlab.org",
   "favicon": "/favicon.svg",
   "defaultOgImage": "/src/assets/draftlab-seo.png",
-  "defaultImage": "/src/assets/draftlab-logo.png",
+  "defaultLogoLight": "/src/assets/draftlab-logo.png",
   "social": {
     "bluesky": "https://bsky.app/yourhandle",
     "mastodon": "https://mastodon.social/@yourhandle",
