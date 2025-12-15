@@ -705,8 +705,6 @@ content:
             results: articles.categories
             value: "{name}"
             label: "{name}"
-            minlength: 3
-
             
 
       - name: body
