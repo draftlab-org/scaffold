@@ -702,7 +702,6 @@ content:
           multiple: true
           fetch:
             url: https://scaffold.draftlab.org/api/categories.json
-            results: categories
             
 
       - name: body
