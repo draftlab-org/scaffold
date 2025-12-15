@@ -43,6 +43,19 @@ export const GET: APIRoute = async ({ params }) => {
       };
     });
 
+    // Special handling for categories collection - return as object instead of array
+    if (collection === 'categories') {
+      const categoriesObject = collectionData.reduce((acc: any, entry: any) => {
+        acc[entry.id] = entry;
+        return acc;
+      }, {});
+
+      return new Response(JSON.stringify(categoriesObject), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
     return new Response(JSON.stringify(collectionData), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
