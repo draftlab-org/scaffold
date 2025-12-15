@@ -692,6 +692,9 @@ content:
           collection: articles
           multiple: true
           search: "title"
+          value: "{permalink}"
+          label: "{title}"
+          image: "{{heroImage}}"
 
 
       - name: body
