@@ -1,6 +1,6 @@
 ---
 permalink: building-scalable-apis
-title: 'Building Scalable APIs: Best Practices'
+title: "Building Scalable APIs: Best Practices"
 authors:
   - michael-brown
   - priya-sharma
@@ -15,8 +15,9 @@ heroImage: /src/assets/backgrounds/anna-magenta-XUCfqIEudBU-unsplash.jpg
 relatedArticles:
   - getting-started-with-astro
   - modern-css-techniques
+categories:
+  - Technology
 ---
-
 # Building Scalable APIs: Best Practices
 
 Creating APIs that can scale to handle millions of requests requires careful planning and implementation.
@@ -26,19 +27,20 @@ Creating APIs that can scale to handle millions of requests requires careful pla
 Start with solid design principles:
 
 1.  **RESTful conventions**: Use standard HTTP methods and status codes
-
+    
 2.  **Versioning**: Plan for API evolution from day one
-
+    
 3.  **Documentation**: Auto-generate docs from code when possible
+    
 
 ## Performance Optimization
 
 Key strategies for API performance:
 
-| this    | is    | A Table |
-| ------- | ----- | ------- |
+| this | is  | A Table |
+| --- | --- | --- |
 | Example | table | content |
-| More    | table | content |
+| More | table | content |
 
 ### Caching
 
@@ -54,11 +56,12 @@ app.get('/api/data', (req, res) => {
 
 ### Database Optimization
 
-- Use connection pooling
-
-- Add appropriate indexes
-
-- Implement query result caching
+*   Use connection pooling
+    
+*   Add appropriate indexes
+    
+*   Implement query result caching
+    
 
 ### Rate Limiting
 
@@ -79,11 +82,12 @@ app.use('/api/', limiter);
 
 Implement comprehensive monitoring:
 
-- Request/response logging
-
-- Performance metrics
-
-- Error tracking and alerting
+*   Request/response logging
+    
+*   Performance metrics
+    
+*   Error tracking and alerting
+    
 
 ## Conclusion
 
