@@ -652,6 +652,7 @@ content:
           collection: people
           multiple: true
           label: "{fields.name}"
+          image: "{headshot}"
       # - name: authors
       #   label: Authors
       #   type: string
