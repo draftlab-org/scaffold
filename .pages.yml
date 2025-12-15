@@ -620,7 +620,7 @@ content:
     path: src/content/articles
     filename: '{{fields.permalink}}.md'
     view:
-      fields: [title, publishedDate, published]
+      fields: [heroImage, title, publishedDate, published]
       primary: title
     fields:
       - name: permalink
