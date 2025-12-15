@@ -151,6 +151,7 @@ const articlesCollection = defineCollection({
         .optional(),
       publishedDate: z.date(),
       heroImage: image().optional(),
+      relatedArticles: z.array(z.string()).max(3).optional(), // Array of article permalinks (max 3)
     }),
 });
 

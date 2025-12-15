@@ -684,6 +684,12 @@ content:
         type: image
         description: Featured image for the article
 
+      - name: relatedArticles
+        label: Related Articles
+        type: string
+        list: true
+        description: Select up to 3 related article permalinks (e.g., getting-started-with-astro, modern-css-techniques)
+
       - name: body
         label: Body
         type: rich-text
