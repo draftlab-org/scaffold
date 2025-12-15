@@ -16,6 +16,7 @@ export interface Props {
   title: string;
   category?: string;
   sectionLabel?: string;
+	class?: string
 }
 
 const { title, category, class: className = '', sectionLabel = 'Partners' } = Astro.props;
@@ -33,6 +34,7 @@ const partners = filteredPartners
   .sort((a, b) => (a.data.order || 999) - (b.data.order || 999))
   .map(entry => entry.data);
 ---
+
 <div>
 	<!-- Section Header -->
 	<div class="mb-12 text-center">
