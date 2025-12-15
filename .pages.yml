@@ -686,9 +686,15 @@ content:
 
       - name: relatedArticles
         label: Related Articles
-        type: string
-        list: true
-        description: Select up to 3 related article permalinks (e.g., getting-started-with-astro, modern-css-techniques)
+        type: reference
+        description: Select up to 3 related articles
+        options:
+          collection: articles
+          multiple: true
+          search: "title"
+          value: "{permalink}"
+          label: "{title}"
+          image: "{heroImage}"
 
       - name: body
         label: Body
