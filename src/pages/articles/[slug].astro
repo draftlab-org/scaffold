@@ -39,8 +39,7 @@ const relatedArticles = article.data.relatedArticles
       .filter(permalink => permalink !== article.data.permalink) // Don't show current article
       .map((permalink) => {
         const relatedArticle = allArticles.find(
-          (a) => a.data.permalink === permalink &&
-                 (isDev || a.data.published === 'published')
+          (a) => a.data.permalink === permalink && (isDev || a.data.published === 'published')
         );
         if (!relatedArticle) {
           console.warn(`Related article not found: ${permalink}`);
@@ -78,50 +77,52 @@ const {title, publishedDate, heroImage, tags, published } = article.data
 	image={heroImage}
 >
 	<!-- Article Header -->
-	<HeroSection title={title} backgroundImage={heroImage} sectionLabel="hero">
-		{/* Draft badge (only visible in dev) */}
-		{
-			isDev && published === 'draft' && (
-				<div class="mb-4">
-					<Tag variant="highlight" size="md" class="font-bold">
-						DRAFT
-					</Tag>
-				</div>
-			)
-		}
-		{/* Tags */}
-		<div class="mb-4 flex flex-wrap gap-2">
+	<SectionLayout bgImage={heroImage} sectionLabel="hero">
+		<HeroSection title={title}>
+			{/* Draft badge (only visible in dev) */}
 			{
-				tags.map((tag) => (
-					<Tag variant="primary" size="md">
-						{tag}
-					</Tag>
-				))
+				isDev && published === 'draft' && (
+					<div class="mb-4">
+						<Tag variant="highlight" size="md" class="font-bold">
+							DRAFT
+						</Tag>
+					</div>
+				)
 			}
-		</div>
+			{/* Tags */}
+			<div class="mb-4 flex flex-wrap gap-2">
+				{
+					tags.map((tag) => (
+						<Tag variant="primary" size="md">
+							{tag}
+						</Tag>
+					))
+				}
+			</div>
 
-		{/* Metadata */}
-		<div class="flex flex-wrap items-center gap-4 text-gray-700">
-			<p class="text-base">
-				By <span class="font-medium"
-					>{
-						authors.map((a, i) => (
-							<>
-								<Link variant="unstyled" href={`/people/${a?.id}`}>
-									{a?.name}
-								</Link>
-								{i < authors.length - 1 && '•'}
-							</>
-						))
-					}</span
-				>
-			</p>
-			<span class="text-gray-400">•</span>
-			<p class="text-base">
-				{formatDate(publishedDate)}
-			</p>
-		</div>
-	</HeroSection>
+			{/* Metadata */}
+			<div class="flex flex-wrap items-center gap-4 text-gray-700">
+				<p class="text-base">
+					By <span class="font-medium"
+						>{
+							authors.map((a, i) => (
+								<>
+									<Link variant="unstyled" href={`/people/${a?.id}`}>
+										{a?.name}
+									</Link>
+									{i < authors.length - 1 && '•'}
+								</>
+							))
+						}</span
+					>
+				</p>
+				<span class="text-gray-400">•</span>
+				<p class="text-base">
+					{formatDate(publishedDate)}
+				</p>
+			</div>
+		</HeroSection>
+	</SectionLayout>
 
 	<!-- Article Content -->
 	<SectionLayout>
@@ -175,7 +176,8 @@ const {title, publishedDate, heroImage, tags, published } = article.data
 											{relatedArticle.resolvedAuthors.map((a, i) => (
 												<>
 													{a?.name}
-													{i < relatedArticle.resolvedAuthors.length - 1 && ', '}
+													{i < relatedArticle.resolvedAuthors.length - 1 &&
+														', '}
 												</>
 											))}
 										</p>

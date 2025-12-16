@@ -47,7 +47,12 @@ const {
 
 	<div class="flex min-h-screen flex-col">
 		<!-- Header -->
-		<Header links={navLinks} siteName={siteName} sticky={stickyHeader}>
+		<Header
+			links={navLinks}
+			siteName={siteName}
+			sticky={stickyHeader}
+			transition:persist
+		>
 			<slot name="header-actions" slot="actions" />
 		</Header>
 
@@ -62,6 +67,6 @@ const {
 		</Main>
 
 		<!-- Footer -->
-		<Footer class="mt-auto" />
+		<Footer class="mt-auto" transition:persist />
 	</div>
 </BaseLayout>

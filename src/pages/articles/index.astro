@@ -46,12 +46,12 @@ const formatDate = (date: Date) => {
 	description="Explore our latest articles on web development, design, and technology"
 >
 	<!-- Header Section -->
-	<HeroSection
-		title="Articles"
-		subtitle="Insights, tutorials, and best practices from our team"
-		backgroundImage={housesBG}
-		sectionLabel="hero"
-	/>
+	<SectionLayout bgImage={housesBG} sectionLabel="hero">
+		<HeroSection
+			title="Articles"
+			subtitle="Insights, tutorials, and best practices from our team"
+		/>
+	</SectionLayout>
 
 	<!-- Articles Grid -->
 	<SectionLayout>

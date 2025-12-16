@@ -43,7 +43,7 @@ const backgrounds = {
   gradient: 'bg-gradient-to-br from-blue-50 to-indigo-100',
 };
 
-const bgClass = backgrounds[bgColor as keyof typeof backgrounds] || backgrounds.white;
+const bgClass = backgrounds[bgColor as keyof typeof backgrounds] || "";
 const sectionBgClass = bgType === 'full' ? bgClass : '';
 const containerBgClass = bgType === 'contained' ? bgClass : '';
 ---
