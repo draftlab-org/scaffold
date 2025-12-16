@@ -12,6 +12,9 @@ import { siteConfig } from './src/lib/config.ts';
 // https://astro.build/config
 export default defineConfig({
   site: siteConfig.url,
+  devToolbar: {
+    enabled: false,
+  },
   experimental: {
     fonts: [
       {

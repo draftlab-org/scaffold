@@ -28,6 +28,28 @@ npm run dev
 
 The template combines Astro v5 for static site generation with Tailwind CSS v4 for styling and React v19 for interactive components. Content is managed through Astro's type-safe content collections with Pages CMS providing a visual editing interface. The build includes automatic image optimization and is preconfigured for Netlify deployment.
 
+## Screenshots
+
+### Homepage
+The homepage showcases the component architecture with a clean hero section and visual representation of atomic design principles.
+
+![Homepage](./src/assets/readme/homepage.png)
+
+### Articles
+The articles page displays blog posts in a card grid layout with hero images, tags, author information, and publication dates.
+
+![Articles Page](./src/assets/readme/articles.png)
+
+### People Directory
+The people page features team members in a responsive grid with avatars, names, and titles.
+
+![People Page](./src/assets/readme/people.png)
+
+### Rich Search
+The rich search module provides fuzzy search across all content types with keyboard shortcuts and category filters.
+
+![Rich Search](./src/assets/readme/search.png)
+
 ## Architecture
 
 ### Component System
@@ -105,6 +127,15 @@ Access the CMS by logging into https://app.pagescms.org with your Github profile
 - **People** - Team member profiles
 
 The interface lets you add, edit, and reorder page sections with a drag-and-drop builder. All components include validation and helpful descriptions.
+
+### Automatic Permalink Synchronization
+
+The repository includes GitHub Actions automation that keeps page filenames and permalinks synchronized. When changes are pushed or submitted via pull request:
+
+- **Renaming a page file** automatically updates its `permalink` field to match the new filename
+- **Changing a `permalink` field** automatically renames the file to match the new permalink value
+
+This bidirectional sync runs via `.github/workflows/auto-fix-permalinks.yml` using the Python script at `.github/scripts/auto_fix_permalinks.py`. The automation commits any changes back to the repository, ensuring filenames and permalinks always stay in sync without manual intervention.
 
 ### Extending
 
