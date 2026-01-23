@@ -127,7 +127,7 @@ const { html: footerBottomHtml } = await renderMarkdown(siteConfig.footer.bottom
 		<div class="border-t border-white/10 pt-8">
 			<div class="space-y-2 text-center *:text-sm">
 				<p class="">{copyrightText}</p>
-				<div class="*:text-sm" set:html={footerBottomHtml} />
+				<div class="*:text-sm [&_a]:text-white" set:html={footerBottomHtml} />
 			</div>
 		</div>
 	</div>
