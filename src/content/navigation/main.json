@@ -3,21 +3,51 @@
   "title": "Main Navigation",
   "items": [
     {
+      "type": "link",
       "label": "Home",
-      "href": "/"
+      "link": {
+        "type": "internal",
+        "pageRef": "/"
+      }
     },
     {
+      "type": "link",
       "label": "About",
-      "href": "/about",
+      "link": {
+        "type": "internal",
+        "pageRef": "/about"
+      },
       "description": "Learn more about us"
     },
     {
+      "type": "dropdown",
       "label": "Community",
-      "href": "/community"
+      "children": [
+        {
+          "label": "Community Hub",
+          "link": {
+            "type": "internal",
+            "pageRef": "/community"
+          },
+          "description": "Join our community"
+        },
+        {
+          "label": "GitHub",
+          "link": {
+            "type": "external",
+            "url": "https://github.com"
+          },
+          "description": "View our code on GitHub"
+        }
+      ]
     },
     {
+      "type": "link",
       "label": "Articles",
-      "href": "/articles"
+      "link": {
+        "type": "internal",
+        "pageRef": "/articles"
+      }
     }
   ]
 }

@@ -76,6 +76,7 @@ const pagesCollection = defineCollection({
       SectionCommonSchema.extend({
         type: z.literal('richText'),
         content: z.string(),
+        withTOC: z.boolean().optional().default(false),
       }),
       SectionCommonSchema.extend({
         type: z.literal('button'),
@@ -185,18 +186,49 @@ const siteCollection = defineCollection({
     }),
 });
 
+// Flexible link schema - supports internal page refs and external URLs
+const flexibleLinkSchema = z.discriminatedUnion('type', [
+  z.object({
+    type: z.literal('internal'),
+    pageRef: z.string(),
+  }),
+  z.object({
+    type: z.literal('external'),
+    url: z.string().url(),
+  }),
+]);
+
+// Navigation item schema - supports single links and dropdowns
+const navItemLinkSchema = z.object({
+  type: z.literal('link'),
+  label: z.string(),
+  link: flexibleLinkSchema,
+  description: z.string().optional(),
+});
+
+const navItemDropdownSchema = z.object({
+  type: z.literal('dropdown'),
+  label: z.string(),
+  children: z.array(
+    z.object({
+      label: z.string(),
+      link: flexibleLinkSchema,
+      description: z.string().optional(),
+    })
+  ),
+});
+
+const navigationItemSchema = z.discriminatedUnion('type', [
+  navItemLinkSchema,
+  navItemDropdownSchema,
+]);
+
 const navigationCollection = defineCollection({
   type: 'data',
   schema: z.object({
     slug: z.string(),
     title: z.string(),
-    items: z.array(
-      z.object({
-        label: z.string(),
-        href: z.string(),
-        description: z.string().optional(),
-      })
-    ),
+    items: z.array(navigationItemSchema),
   }),
 });
 

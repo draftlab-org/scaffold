@@ -1,19 +1,38 @@
 ---
-
-import SectionLayout from '@layouts/SectionLayout.astro';
+import TOC from '@components/organisms/TOC';
 import renderMarkdownWithImages from '@utils/renderMarkdown';
 
 export interface Props {
   content: string;
+  withTOC?: boolean;
+  id?: string;
 }
 
-const { content } = Astro.props;
+const { content, withTOC = false, id } = Astro.props;
 
+// Generate a unique ID for heading prefixes if not provided
+const sectionId = id || `richtext-${Math.random().toString(36)}`;
 
-const html = await renderMarkdownWithImages(content);
+const { html, toc } = await renderMarkdownWithImages(content, withTOC, withTOC ? sectionId : undefined);
 
+const hasTOC = withTOC && toc && toc.length > 0;
 ---
 
-<div class="mx-auto prose max-w-3xl">
-  <Fragment set:html={html} />
-</div>
+{
+	hasTOC ? (
+		<div class="mx-auto max-w-6xl">
+			<div class="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_250px]">
+				<div class="prose max-w-3xl">
+					<Fragment set:html={html} />
+				</div>
+				<aside class="hidden lg:block">
+					<TOC client:load entries={toc!} />
+				</aside>
+			</div>
+		</div>
+	) : (
+		<div class="mx-auto prose max-w-3xl">
+			<Fragment set:html={html} />
+		</div>
+	)
+}

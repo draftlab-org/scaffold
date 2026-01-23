@@ -1,0 +1,21 @@
+---
+import Button from '@components/atoms/Button.astro';
+import HeroSection from '@components/sections/HeroSection.astro';
+import SectionLayout from '@layouts/SectionLayout.astro';
+import PageLayout from '@layouts/PageLayout.astro';
+---
+
+<PageLayout title="Page Not Found" description="The page you're looking for doesn't exist.">
+  <SectionLayout>
+    <HeroSection title="404" subtitle="Page not found">
+      <p class="mt-4 text-lg text-gray-600">
+        The page you're looking for doesn't exist or has been moved.
+      </p>
+      <div class="mt-8">
+        <Button href="/" variant="primary" size="lg">
+          Go back home
+        </Button>
+      </div>
+    </HeroSection>
+  </SectionLayout>
+</PageLayout>

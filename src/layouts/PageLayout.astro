@@ -1,25 +1,25 @@
 ---
 import { getEntry } from 'astro:content';
 import Footer from '@components/organisms/Footer.astro';
-import type { NavLink } from '@components/organisms/Navigation.astro';
 import Header from '@components/sections/Header.astro';
 import Main from '@components/sections/Main.astro';
 import BaseLayout from '@layouts/BaseLayout.astro';
+import type { NavItem } from '@utils/navigation';
+import { convertNavigationItems } from '@utils/navigation';
 
 // Fetch navigation data from content collections
 const mainNav = await getEntry('navigation', 'main');
 
-// Map navigation data to component format
-const defaultNavLinks: NavLink[] = mainNav?.data.items.map(item => ({
-  href: item.href,
-  label: item.label,
-})) || [];
+// Convert navigation data to component format
+const defaultNavItems: NavItem[] = mainNav?.data.items
+  ? convertNavigationItems(mainNav.data.items)
+  : [];
 
 export interface Props {
   title: string;
   description?: string;
   image?: ImageMetadata;
-  navLinks?: NavLink[];
+  navItems?: NavItem[];
   siteName?: string;
   stickyHeader?: boolean;
   containerized?: boolean;
@@ -32,7 +32,7 @@ const {
   title,
   description,
   image,
-  navLinks = defaultNavLinks,
+  navItems = defaultNavItems,
   siteName = 'Draftlab Scaffold',
   stickyHeader = true,
   containerized = false,
@@ -48,7 +48,7 @@ const {
 	<div class="flex min-h-screen flex-col">
 		<!-- Header -->
 		<Header
-			links={navLinks}
+			items={navItems}
 			siteName={siteName}
 			sticky={stickyHeader}
 			transition:persist

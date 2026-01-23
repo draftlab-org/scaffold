@@ -3,24 +3,44 @@
   "title": "Footer Nav 1",
   "items": [
     {
+      "type": "link",
       "label": "Menu Item",
-      "href": "/about"
+      "link": {
+        "type": "internal",
+        "pageRef": "/about"
+      }
     },
     {
+      "type": "link",
       "label": "Menu Item",
-      "href": "/about"
+      "link": {
+        "type": "internal",
+        "pageRef": "/about"
+      }
     },
     {
+      "type": "link",
       "label": "Menu Item",
-      "href": "/about"
+      "link": {
+        "type": "internal",
+        "pageRef": "/about"
+      }
     },
     {
+      "type": "link",
       "label": "Menu Item",
-      "href": "/about"
+      "link": {
+        "type": "internal",
+        "pageRef": "/about"
+      }
     },
     {
+      "type": "link",
       "label": "Menu Item",
-      "href": "/about"
+      "link": {
+        "type": "internal",
+        "pageRef": "/about"
+      }
     }
   ]
 }

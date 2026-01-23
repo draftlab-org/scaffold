@@ -1,17 +1,18 @@
 ---
 import Link from '@components/atoms/Link.astro';
+import NavItemDropdown from '@components/molecules/NavItemDropdown';
+import type { NavItem } from '@utils/navigation';
+import { isExternalLink, resolveFlexibleLink } from '@utils/navigation';
 
 export type Props = {
-  href: string;
+  item: NavItem;
   active?: boolean;
-  label: string;
   class?: string;
 }
 
 const {
-  href,
+  item,
   active = false,
-  label,
   class: className = '',
 } = Astro.props;
 
@@ -19,10 +20,21 @@ const activeStyles = active
   ? 'decoration-primary-300'
   : 'decoration-white transition transition-300 hover:decoration-gray-100';
 
-const classes = `underline underline-offset-8  decoration-dotted decoration-4 inline-flex items-center px-3 py-2  ${activeStyles} ${className}`;
+const classes = `underline underline-offset-8 decoration-dotted decoration-4 inline-flex items-center px-3 py-2 ${activeStyles} ${className}`;
 ---
 
-<Link href={href} variant="nav" class={classes}>
-	{label}
-	<slot />
-</Link>
+{
+	item.type === 'dropdown' ? (
+		<NavItemDropdown client:load item={item} active={active} />
+	) : (
+		<Link
+			href={resolveFlexibleLink(item.link)}
+			variant="nav"
+			class={classes}
+			external={isExternalLink(item.link)}
+		>
+			{item.label}
+			<slot />
+		</Link>
+	)
+}

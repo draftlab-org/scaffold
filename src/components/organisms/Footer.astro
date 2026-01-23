@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 import { getEntry } from 'astro:content';
 import Link from '@components/atoms/Link.astro';
 import SocialLinks from '@components/molecules/SocialLinks.astro';
+import { isExternalLink, resolveFlexibleLink } from '@utils/navigation';
 import { renderMarkdown } from '@utils/renderMarkdown';
 
 // Fetch all data internally - no props needed except className
@@ -29,6 +30,9 @@ const description = siteConfig.footer?.description || siteConfig.description;
 // Prepare copyright
 const currentYear = new Date().getFullYear();
 const copyrightText = `© ${currentYear} ${siteConfig.title}.`;
+
+// Render footer bottom content
+const { html: footerBottomHtml } = await renderMarkdown(siteConfig.footer.bottom);
 ---
 
 <footer class={`bg-highlight-950 text-white ${className}`}>
@@ -75,13 +79,19 @@ const copyrightText = `© ${currentYear} ${siteConfig.title}.`;
 						<div>
 							<h3 class="mb-4 font-semibold">{footerNav1.data.title}</h3>
 							<ul class="space-y-3">
-								{footerNav1.data.items.map((item) => (
-									<li>
-										<Link href={item.href} variant="footer">
-											{item.label}
-										</Link>
-									</li>
-								))}
+								{footerNav1.data.items.map((item) => {
+									// Only render link items in footer (no dropdowns)
+									if (item.type !== 'link') return null;
+									const href = resolveFlexibleLink(item.link);
+									const external = isExternalLink(item.link);
+									return (
+										<li>
+											<Link href={href} variant="footer" external={external}>
+												{item.label}
+											</Link>
+										</li>
+									);
+								})}
 							</ul>
 						</div>
 					)
@@ -93,13 +103,19 @@ const copyrightText = `© ${currentYear} ${siteConfig.title}.`;
 						<div>
 							<h3 class="mb-4 font-semibold">{footerNav2.data.title}</h3>
 							<ul class="space-y-3">
-								{footerNav2.data.items.map((item) => (
-									<li>
-										<Link href={item.href} variant="footer">
-											{item.label}
-										</Link>
-									</li>
-								))}
+								{footerNav2.data.items.map((item) => {
+									// Only render link items in footer (no dropdowns)
+									if (item.type !== 'link') return null;
+									const href = resolveFlexibleLink(item.link);
+									const external = isExternalLink(item.link);
+									return (
+										<li>
+											<Link href={href} variant="footer" external={external}>
+												{item.label}
+											</Link>
+										</li>
+									);
+								})}
 							</ul>
 						</div>
 					)
@@ -111,10 +127,7 @@ const copyrightText = `© ${currentYear} ${siteConfig.title}.`;
 		<div class="border-t border-white/10 pt-8">
 			<div class="space-y-2 text-center *:text-sm">
 				<p class="">{copyrightText}</p>
-				<div
-					class="*:text-sm"
-					set:html={await renderMarkdown(siteConfig.footer.bottom)}
-				/>
+				<div class="*:text-sm" set:html={footerBottomHtml} />
 			</div>
 		</div>
 	</div>

@@ -4,29 +4,34 @@ import Link from '@components/atoms/Link.astro';
 import NavItem from '@components/molecules/NavItem.astro';
 import MobileMenu from '@components/organisms/MobileMenu';
 import RichSearch from '@components/organisms/RichSearch';
+import type { NavItem as NavItemType } from '@utils/navigation';
+import { resolveFlexibleLink } from '@utils/navigation';
 import MagnifyingGlassIcon from '~icons/heroicons/magnifying-glass-20-solid';
 
-
-export interface NavLink {
-  href: string;
-  label: string;
-}
-
 export interface Props {
-  links: NavLink[];
+  items: NavItemType[];
   currentPath?: string;
   siteName?: string;
   class?: string;
 }
 
 const {
-  links,
+  items,
   currentPath = Astro.url.pathname,
   siteName = 'Draftlab Scaffold',
   class: className = '',
 } = Astro.props;
 
-const isActive = (href: string) => {
+const isActive = (item: NavItemType) => {
+  if (item.type === 'dropdown') {
+    // Check if any child is active
+    return item.children.some((child) => {
+      const href = resolveFlexibleLink(child.link);
+      if (href === '/') return currentPath === '/';
+      return currentPath.startsWith(href);
+    });
+  }
+  const href = resolveFlexibleLink(item.link);
   if (href === '/') return currentPath === '/';
   return currentPath.startsWith(href);
 };
@@ -51,11 +56,10 @@ const isActive = (href: string) => {
 		<!-- Navigation Links -->
 		<div class="hidden items-center space-x-1 md:flex">
 			{
-				links.map((link) => (
+				items.map((item) => (
 					<NavItem
-						href={link.href}
-						label={link.label}
-						active={isActive(link.href)}
+						item={item}
+						active={isActive(item)}
 					/>
 				))
 			}
@@ -74,7 +78,7 @@ const isActive = (href: string) => {
 
 		<!-- Mobile Menu -->
 		<div class="md:hidden">
-			<MobileMenu client:load links={links} currentPath={currentPath} />
+			<MobileMenu client:load items={items} currentPath={currentPath} />
 		</div>
 	</div>
 </nav>
