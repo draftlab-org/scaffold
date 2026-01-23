@@ -6,6 +6,7 @@ import MobileMenu from '@components/organisms/MobileMenu';
 import RichSearch from '@components/organisms/RichSearch';
 import type { NavItem as NavItemType } from '@utils/navigation';
 import { resolveFlexibleLink } from '@utils/navigation';
+import Image from 'astro/components/Image.astro';
 import MagnifyingGlassIcon from '~icons/heroicons/magnifying-glass-20-solid';
 
 export interface Props {
@@ -13,6 +14,7 @@ export interface Props {
   currentPath?: string;
   siteName?: string;
   class?: string;
+	logo?: ImageMetadata
 }
 
 const {
@@ -20,6 +22,7 @@ const {
   currentPath = Astro.url.pathname,
   siteName = 'Draftlab Scaffold',
   class: className = '',
+	logo,
 } = Astro.props;
 
 const isActive = (item: NavItemType) => {
@@ -48,8 +51,13 @@ const isActive = (item: NavItemType) => {
 				href="/"
 				variant="unstyled"
 				class="font-serif text-2xl font-bold text-gray-900 underline decoration-primary-300 decoration-dotted decoration-4 underline-offset-8"
-			>
-				{siteName}
+				>{
+					logo ? (
+						<Image src={logo} alt={siteName} class="w-45" />
+					) : (
+						<span>{siteName}</span>
+					)
+				}
 			</Link>
 		</div>
 

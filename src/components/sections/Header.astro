@@ -31,7 +31,12 @@ const transparentClass = transparent ? 'bg-transparent border-transparent' : '';
 ---
 
 <header class={`${stickyClass} ${className}`}>
-	<Navigation items={items} siteName={siteName} class={transparentClass}>
+	<Navigation
+		items={items}
+		siteName={siteName}
+		logo={siteConfig?.data.defaultLogoLight}
+		class={transparentClass}
+	>
 		<div slot="actions" class="flex items-center gap-4">
 			{
 				githubUrl && (
