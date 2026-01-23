@@ -6,6 +6,7 @@ import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig, fontProviders } from 'astro/config';
+import expressiveCode from 'astro-expressive-code';
 import Icons from 'unplugin-icons/vite';
 import { siteConfig } from './src/lib/config.ts';
 
@@ -39,11 +40,12 @@ export default defineConfig({
   },
 
   vite: {
-    // @ts-expect-error
     // TODO #1 - remove expect error when Astro updates to Vite 7
     // https://github.com/withastro/astro/issues/14030#issuecomment-3027129338
     plugins: [
+      // @ts-expect-error
       tailwindcss(),
+      // @ts-expect-error
       Icons({
         compiler: 'jsx',
         jsx: 'react',
@@ -51,6 +53,16 @@ export default defineConfig({
     ],
   },
 
-  integrations: [react(), sitemap(), mdx()],
+  integrations: [react(), sitemap(), expressiveCode({
+      themes: ['catppuccin-frappe'],
+      defaultProps: {
+        // Enable word wrap by default
+        wrap: true,
+        // Disable wrapped line indentation for terminal languages
+        overridesByLang: {
+          'bash,ps,sh': { preserveIndent: false },
+        },
+      },
+    }), mdx()],
   adapter: netlify(),
 });

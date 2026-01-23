@@ -36,7 +36,10 @@ const transparentClass = transparent ? 'bg-transparent border-transparent' : '';
 			{
 				githubUrl && (
 					<Button variant="outline" as="a" size="square" href={githubUrl}>
-						<IconGithub class="h-5 w-5" />
+						<>
+							<IconGithub class="h-5 w-5" aria-label={githubUrl} />
+							<span class="sr-only">{githubUrl}</span>
+						</>
 					</Button>
 				)
 			}

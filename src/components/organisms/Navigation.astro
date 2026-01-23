@@ -55,21 +55,20 @@ const isActive = (item: NavItemType) => {
 
 		<!-- Navigation Links -->
 		<div class="hidden items-center space-x-1 md:flex">
-			{
-				items.map((item) => (
-					<NavItem
-						item={item}
-						active={isActive(item)}
-					/>
-				))
-			}
+			{items.map((item) => <NavItem item={item} active={isActive(item)} />)}
 		</div>
 	</div>
 
 	<!-- Right side: Actions + Mobile Menu -->
 	<div class="flex items-center gap-4">
 		<!-- Search Button -->
-		<Button variant="outline" size="square" type="button" id="search-button">
+		<Button
+			variant="outline"
+			size="square"
+			type="button"
+			id="search-button"
+			aria-label="Open Menu"
+		>
 			<MagnifyingGlassIcon />
 		</Button>
 
