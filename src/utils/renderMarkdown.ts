@@ -1,12 +1,14 @@
 import { getImage } from 'astro:assets';
+import rehypeTableAlign from '@lib/rehype-table-align';
+import rehypeExtractToc from '@stefanprobst/rehype-extract-toc';
 import rehypeExternalLinks from 'rehype-external-links';
 import rehypeSlug from 'rehype-slug';
 import rehypeStringify from 'rehype-stringify';
+import remarkGfm from 'remark-gfm';
 import remarkParse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
 import { unified } from 'unified';
 import { visit } from 'unist-util-visit';
-import rehypeExtractToc from '@stefanprobst/rehype-extract-toc';
 
 // TOC entry type from rehype-extract-toc
 export interface TocEntry {
@@ -103,8 +105,10 @@ const createMarkdownProcessor = (withTOC = false, idPrefix?: string): any => {
   // Using any type to avoid complex generic inference issues with unified's plugin system
   let processor: any = unified()
     .use(remarkParse)
+    .use(remarkGfm) // Enable GFM tables with alignment
     .use(remarkRehype)
     .use(rehypeSlug)
+    .use(rehypeTableAlign) // Apply alignment classes to table cells
     .use(rehypeExternalLinks, {
       target: '_blank',
       rel: ['noopener', 'noreferrer'],

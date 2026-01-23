@@ -1,14 +1,26 @@
 ---
 import { getCollection } from 'astro:content';
-import peopleBG from '@assets/backgrounds/anna-magenta-vKhd5bnnolg-unsplash.jpg'
-import Image from '@components/atoms/Image.astro';
-import HeroSection from '@components/sections/HeroSection.astro'
-
+import peopleBG from '@assets/backgrounds/anna-magenta-vKhd5bnnolg-unsplash.jpg';
+import PeopleFilteredGrid from '@components/organisms/PeopleFilteredGrid';
+import HeroSection from '@components/sections/HeroSection.astro';
 import PageLayout from '@layouts/PageLayout.astro';
+import SectionLayout from '@layouts/SectionLayout.astro';
+import { getAllSections } from '@utils/people';
 
-// Get all people from the collection (images are automatically resolved)
+// Get all people from the collection
 const peopleEntries = await getCollection('people');
-const people = peopleEntries.map((entry) => entry.data);
+
+// Get all sections for filtering
+const sections = await getAllSections();
+
+// Serialize people for the React component
+const serializedPeople = peopleEntries.map((entry) => ({
+  id: entry.data.id,
+  name: entry.data.name,
+  title: entry.data.title,
+  headshot: entry.data.headshot.src,
+  sections: entry.data.sections,
+}));
 ---
 
 <PageLayout
@@ -17,50 +29,22 @@ const people = peopleEntries.map((entry) => entry.data);
 	image={peopleBG}
 >
 	<!-- Hero Section -->
-	<HeroSection
-		title="Our Team"
-		subtitle="Meet the amazing people who make everything possible"
-		backgroundImage={peopleBG}
-		sectionLabel='hero'
-	/>
+	<SectionLayout bgImage={peopleBG} sectionLabel="hero">
+		<HeroSection
+			title="Our Team"
+			subtitle="Meet the amazing people who make everything possible"
+		/>
+	</SectionLayout>
 
-	<!-- People Grid -->
-	<section class="py-16">
-		<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-			<div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-				{
-					people.map((person) => (
-						<a
-							href={`/people/${person.id}`}
-							class="block transition-transform hover:scale-105"
-							data-component
-						>
-							<div class="text-center">
-								<!-- Headshot -->
-								<div class="mb-4 flex justify-center">
-									<Image
-										src={person.headshot}
-										alt={person.name}
-										width={200}
-										height={200}
-										class="h-48 w-48 rounded-lg object-cover"
-									/>
-								</div>
-
-								<!-- Name -->
-								<h4 class="mb-2">
-									{person.name}
-								</h4>
-
-								<!-- Title -->
-								<p class="text-gray-600">
-									{person.title}
-								</p>
-							</div>
-						</a>
-					))
-				}
-			</div>
-		</div>
-	</section>
+	<!-- People Grid with Filtering -->
+	<SectionLayout>
+		<section class="py-16">
+			<PeopleFilteredGrid
+				client:load
+				people={serializedPeople}
+				sections={sections}
+				groupBySection={true}
+			/>
+		</section>
+	</SectionLayout>
 </PageLayout>

@@ -1,6 +1,8 @@
 ---
+import ArticlesRollSection from '@components/sections/ArticlesRollSection.astro';
 import ButtonSection from '@components/sections/ButtonSection.astro';
 import CardSection from '@components/sections/CardSection.astro';
+import FeaturedPartnersSection from '@components/sections/FeaturedPartnersSection.astro';
 import FlexiSection from '@components/sections/FlexiSection.astro';
 import HeroSection from '@components/sections/HeroSection.astro';
 import PartnersSection from '@components/sections/PartnersSection.astro';
@@ -67,6 +69,25 @@ const { sectionItems } = Astro.props;
             <PartnersSection
               title={section.title}
               category={section.category}
+            />
+          );
+        case 'articlesRoll':
+          return (
+            <ArticlesRollSection
+              title={section.title}
+              limit={section.limit}
+              category={section.category}
+              showViewAll={section.showViewAll}
+            />
+          );
+        case 'featuredPartners':
+          return (
+            <FeaturedPartnersSection
+              title={section.title}
+              description={section.description}
+              partners={section.partners}
+              limit={section.limit}
+              showViewAll={section.showViewAll}
             />
           );
         default:

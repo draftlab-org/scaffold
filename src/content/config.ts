@@ -99,6 +99,21 @@ const pagesCollection = defineCollection({
         title: z.string(),
         category: z.string().optional(),
       }),
+      SectionCommonSchema.extend({
+        type: z.literal('articlesRoll'),
+        title: z.string().optional(),
+        limit: z.number().optional().default(3),
+        category: z.string().optional(),
+        showViewAll: z.boolean().optional().default(true),
+      }),
+      SectionCommonSchema.extend({
+        type: z.literal('featuredPartners'),
+        title: z.string().optional(),
+        description: z.string().optional(),
+        partners: z.array(z.string()).optional(), // Specific partner IDs
+        limit: z.number().optional().default(4),
+        showViewAll: z.boolean().optional().default(false),
+      }),
       // Add more section types as needed
     ]);
 
@@ -133,6 +148,7 @@ const partnersCollection = defineCollection({
     return partnerSchema.extend({
       id: z.string(),
       order: z.number().optional().default(999),
+      featured: z.boolean().optional().default(false),
     });
   },
 });
