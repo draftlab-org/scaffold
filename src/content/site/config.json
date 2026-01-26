@@ -5,6 +5,7 @@
   "favicon": "/favicon.svg",
   "defaultOgImage": "/src/assets/draftlab-seo.png",
   "defaultLogoLight": "/src/assets/scaffold-logo.svg",
+  "defaultLogoDark": "/src/assets/scaffold-logo-dark.svg",
   "social": {
     "bluesky": "https://bsky.app/yourhandle",
     "mastodon": "https://mastodon.social/@yourhandle",
