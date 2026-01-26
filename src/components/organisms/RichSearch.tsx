@@ -8,7 +8,7 @@ import {
   DialogPanel,
 } from '@headlessui/react';
 import Fuse from 'fuse.js';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import DocumentIcon from '~icons/heroicons/document-text';
 import ExclamationTriangleIcon from '~icons/heroicons/exclamation-triangle';
 import FolderIcon from '~icons/heroicons/folder';
@@ -105,9 +105,10 @@ export default function RichSearch() {
   const [rawQuery, setRawQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(true);
+  const hasFetched = useRef(false);
   const query = rawQuery.toLowerCase().replace(/^[#>@]/, '');
 
-  // Fetch data dynamically from all configured categories
+  // Fetch data lazily when search opens for the first time
   useEffect(() => {
     async function fetchSearchData() {
       setLoading(true);
@@ -160,8 +161,12 @@ export default function RichSearch() {
       }
     }
 
-    fetchSearchData();
-  }, []);
+    // Only fetch when search opens and we haven't fetched yet
+    if (open && !hasFetched.current) {
+      hasFetched.current = true;
+      fetchSearchData();
+    }
+  }, [open]);
 
   // Open/close event listener
   useEffect(() => {

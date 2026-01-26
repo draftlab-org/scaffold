@@ -94,19 +94,28 @@ const isActive = (item: NavItemType) => {
 <RichSearch client:load />
 
 <script>
-	const searchButton = document.getElementById('search-button');
+	function setupSearchButton() {
+		const searchButton = document.getElementById('search-button');
 
-	if (searchButton) {
-		searchButton.addEventListener('click', () => {
-			window.dispatchEvent(new CustomEvent('open-search'));
-		});
+		if (searchButton) {
+			searchButton.addEventListener('click', () => {
+				window.dispatchEvent(new CustomEvent('open-search'));
+			});
+		}
 	}
 
+	// Run on initial load and after each View Transition navigation
+	document.addEventListener('astro:page-load', setupSearchButton);
+
 	// Listen for CMD+K or CTRL+K to open search
-	document.addEventListener('keydown', (e) => {
-		if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-			e.preventDefault();
-			window.dispatchEvent(new CustomEvent('open-search'));
-		}
-	});
+	// Use a data attribute to prevent duplicate listeners across View Transitions
+	if (!document.documentElement.dataset.searchKeyboardListener) {
+		document.documentElement.dataset.searchKeyboardListener = 'true';
+		document.addEventListener('keydown', (e) => {
+			if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+				e.preventDefault();
+				window.dispatchEvent(new CustomEvent('open-search'));
+			}
+		});
+	}
 </script>
