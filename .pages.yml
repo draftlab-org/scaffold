@@ -109,9 +109,13 @@ components:
         fields:
           - name: pageRef
             label: Page Reference
-            type: string
+            type: reference
             required: true
-            description: Path to the page (e.g. /about, /articles)
+            options:
+              collection: pages
+              value: '/{permalink}'
+              label: '{title} (/{permalink})'
+            description: Select a page from the pages collection
 
       - name: external
         label: External Link
