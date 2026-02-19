@@ -95,6 +95,91 @@ components:
         label: Button
         component: button
 
+  # --------------------------------------------------------------------------
+  # Navigation
+  # --------------------------------------------------------------------------
+
+  flexible_link:
+    type: block
+    blockKey: type
+    description: Link that can reference an internal page or external URL
+    blocks:
+      - name: internal
+        label: Internal Page Link
+        fields:
+          - name: pageRef
+            label: Page Reference
+            type: string
+            required: true
+            description: Path to the page (e.g. /about, /articles)
+
+      - name: external
+        label: External Link
+        fields:
+          - name: url
+            label: External URL
+            type: string
+            required: true
+            description: Full URL (e.g. https://example.com)
+            pattern:
+              message: 'Must be a valid URL starting with http:// or https://'
+              regex: '^https?://.+'
+
+  navigation_menu_item:
+    type: block
+    blockKey: type
+    description: Navigation item that can be a single link or a dropdown menu with multiple links
+    blocks:
+      - name: link
+        label: Single Link
+        fields:
+          - name: label
+            label: Link Label
+            type: string
+            required: true
+            description: Text displayed for the link
+          - name: link
+            label: Link
+            component: flexible_link
+            required: true
+            description: A single navigation link
+          - name: description
+            label: Description
+            type: string
+            description: Optional description for accessibility
+
+      - name: dropdown
+        label: Dropdown Menu
+        fields:
+          - name: label
+            label: Menu Label
+            type: string
+            required: true
+            description: Text displayed for the dropdown menu
+          - name: children
+            label: Menu Links
+            type: object
+            list: true
+            required: true
+            description: List of links in the dropdown menu
+            fields:
+              - name: label
+                label: Link Label
+                type: string
+                required: true
+              - name: link
+                label: Link
+                component: flexible_link
+                required: true
+              - name: description
+                label: Description
+                type: string
+                description: Optional description for accessibility
+
+  # --------------------------------------------------------------------------
+  # Layout
+  # --------------------------------------------------------------------------
+
   background_select:
     type: object
     fields:
@@ -1007,23 +1092,6 @@ content:
 
       - name: items
         label: Menu Items
-        type: object
+        component: navigation_menu_item
         list: true
         required: true
-        fields:
-          - name: label
-            label: Link Label
-            type: string
-            required: true
-            description: Text displayed for the link
-
-          - name: href
-            label: URL
-            type: string
-            required: true
-            description: Link destination (e.g. / or /about)
-
-          - name: description
-            label: Description
-            type: string
-            description: Optional description for accessibility
