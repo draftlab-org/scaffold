@@ -44,7 +44,12 @@ export default function ResourceItem({ item }: ResourceItemProps) {
 
       {/* Title */}
       <h3 className="text-xl font-bold md:text-2xl">
-        {item.title}
+        <a
+          href={`/resources/${item.id}`}
+          className="text-inherit no-underline transition-colors hover:text-secondary-600"
+        >
+          {item.title}
+        </a>
       </h3>
 
       {/* Description */}

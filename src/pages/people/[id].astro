@@ -1,23 +1,47 @@
 ---
 import { getCollection } from 'astro:content';
 import Image from '@components/atoms/Image.astro';
+import Link from '@components/atoms/Link.astro';
+import Tag from '@components/atoms/Tag.astro';
 import Hero from '@components/organisms/Hero.astro';
 import PageLayout from '@layouts/PageLayout.astro';
+import SectionLayout from '@layouts/SectionLayout.astro';
 import { isVisible } from '@utils/content';
+import { getResources, formatCategory } from '@utils/resources';
 import type { GetStaticPaths } from 'astro';
 
 // Generate static paths for visible people only
 export const getStaticPaths = (async () => {
-  const peopleEntries = await getCollection('people');
-  return peopleEntries
-    .filter((entry) => isVisible(entry))
-    .map((entry) => ({
-      params: { id: entry.data.id },
-      props: { person: entry.data },
-    }));
+	const peopleEntries = await getCollection('people');
+	return peopleEntries
+		.filter((entry) => isVisible(entry))
+		.map((entry) => ({
+			params: { id: entry.data.id },
+			props: { person: entry.data },
+		}));
 }) satisfies GetStaticPaths;
 
 const { person } = Astro.props;
+
+// Get articles authored by this person
+const allArticles = await getCollection('articles');
+const personArticles = allArticles
+	.filter((article) => isVisible(article) && article.data.authors.includes(person.id))
+	.sort((a, b) => b.data.publishedDate.getTime() - a.data.publishedDate.getTime());
+
+// Get resources contributed by this person
+const allResources = await getResources();
+const personResources = allResources.filter(
+	(resource) => resource.data.contributors?.includes(person.id)
+);
+
+const formatDate = (date: Date) => {
+	return new Intl.DateTimeFormat('en-US', {
+		year: 'numeric',
+		month: 'long',
+		day: 'numeric',
+	}).format(date);
+};
 ---
 
 <PageLayout
@@ -81,4 +105,68 @@ const { person } = Astro.props;
 			</div>
 		</div>
 	</section>
+
+	<!-- Articles by this person -->
+	{personArticles.length > 0 && (
+		<SectionLayout bgColor="gray">
+			<div class="mx-auto max-w-4xl py-12">
+				<h2 class="mb-8 text-2xl font-bold">Articles</h2>
+				<div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+					{personArticles.map((article) => (
+						<Link
+							variant="unstyled"
+							href={`/articles/${article.slug}`}
+							class="flex flex-col overflow-hidden rounded-lg bg-white no-underline transition hover:shadow-lg"
+						>
+							{article.data.heroImage && (
+								<Image
+									src={article.data.heroImage}
+									alt={article.data.title}
+									width={400}
+									height={200}
+									class="h-48 w-full object-cover"
+								/>
+							)}
+							<div class="flex flex-col gap-3 p-6">
+								<div class="flex flex-wrap gap-2">
+									{article.data.tags.slice(0, 2).map((tag) => (
+										<Tag variant="primary" size="sm">{tag}</Tag>
+									))}
+								</div>
+								<h3 class="line-clamp-2 text-lg font-semibold">{article.data.title}</h3>
+								<p class="mt-auto text-xs text-gray-500">{formatDate(article.data.publishedDate)}</p>
+							</div>
+						</Link>
+					))}
+				</div>
+			</div>
+		</SectionLayout>
+	)}
+
+	<!-- Resources by this person -->
+	{personResources.length > 0 && (
+		<SectionLayout bgColor={personArticles.length > 0 ? 'white' : 'gray'}>
+			<div class="mx-auto max-w-4xl py-12">
+				<h2 class="mb-8 text-2xl font-bold">Resources</h2>
+				<div class="grid gap-6 md:grid-cols-2">
+					{personResources.map((resource) => (
+						<Link
+							variant="unstyled"
+							href={`/resources/${resource.data.id}`}
+							class="flex flex-col gap-3 rounded-lg bg-white p-6 no-underline shadow-sm transition hover:shadow-md"
+						>
+							<div class="flex flex-wrap items-center gap-2">
+								<Tag variant="primary" size="sm">{formatCategory(resource.data.category)}</Tag>
+								<Tag variant="secondary" size="sm">{String(resource.data.year)}</Tag>
+							</div>
+							<h3 class="text-lg font-semibold">{resource.data.title}</h3>
+							{resource.data.description && (
+								<p class="line-clamp-2 text-sm text-neutral-600">{resource.data.description}</p>
+							)}
+						</Link>
+					))}
+				</div>
+			</div>
+		</SectionLayout>
+	)}
 </PageLayout>
