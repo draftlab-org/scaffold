@@ -1,26 +1,9 @@
 ---
-import { getCollection } from 'astro:content';
 import peopleBG from '@assets/backgrounds/anna-magenta-vKhd5bnnolg-unsplash.jpg';
-import PeopleFilteredGrid from '@components/organisms/PeopleFilteredGrid';
+import PeopleLanding from '@components/landing/PeopleLanding.astro';
 import HeroSection from '@components/sections/HeroSection.astro';
 import PageLayout from '@layouts/PageLayout.astro';
 import SectionLayout from '@layouts/SectionLayout.astro';
-import { getAllSections } from '@utils/people';
-
-// Get all people from the collection
-const peopleEntries = await getCollection('people');
-
-// Get all sections for filtering
-const sections = await getAllSections();
-
-// Serialize people for the React component
-const serializedPeople = peopleEntries.map((entry) => ({
-  id: entry.data.id,
-  name: entry.data.name,
-  title: entry.data.title,
-  headshot: entry.data.headshot.src,
-  sections: entry.data.sections,
-}));
 ---
 
 <PageLayout
@@ -38,13 +21,6 @@ const serializedPeople = peopleEntries.map((entry) => ({
 
 	<!-- People Grid with Filtering -->
 	<SectionLayout>
-		<section class="py-16">
-			<PeopleFilteredGrid
-				client:load
-				people={serializedPeople}
-				sections={sections}
-				groupBySection={true}
-			/>
-		</section>
+		<PeopleLanding />
 	</SectionLayout>
 </PageLayout>

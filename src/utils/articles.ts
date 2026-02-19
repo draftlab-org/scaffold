@@ -1,16 +1,14 @@
 import { type CollectionEntry, getCollection } from 'astro:content';
-import { isDev } from './dev';
+import { isVisible } from '@utils/content';
 
 export type Article = CollectionEntry<'articles'>;
 
 /**
- * Get all published articles (includes drafts in dev mode)
+ * Get all published articles (includes drafts in dev/preview mode)
  */
 export async function getPublishedArticles(): Promise<Article[]> {
   const allArticles = await getCollection('articles');
-  return allArticles.filter(
-    (article) => isDev || article.data.published === 'published'
-  );
+  return allArticles.filter((article) => isVisible(article));
 }
 
 /**
@@ -113,9 +111,11 @@ export async function getAllCategories(): Promise<string[]> {
   const articles = await getPublishedArticles();
   const categories = new Set<string>();
 
-  articles.forEach((article) => {
-    article.data.categories?.forEach((cat) => categories.add(cat));
-  });
+  for (const article of articles) {
+    for (const cat of article.data.categories ?? []) {
+      categories.add(cat);
+    }
+  }
 
   return Array.from(categories).sort();
 }
@@ -127,9 +127,11 @@ export async function getAllTags(): Promise<string[]> {
   const articles = await getPublishedArticles();
   const tags = new Set<string>();
 
-  articles.forEach((article) => {
-    article.data.tags.forEach((tag) => tags.add(tag));
-  });
+  for (const article of articles) {
+    for (const tag of article.data.tags) {
+      tags.add(tag);
+    }
+  }
 
   return Array.from(tags).sort();
 }

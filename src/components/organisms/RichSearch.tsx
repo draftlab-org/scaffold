@@ -136,7 +136,7 @@ export default function RichSearch() {
             // Filter out unpublished articles if applicable
             .filter((item: any) =>
               category.name === 'Articles'
-                ? item.data?.published === 'published'
+                ? item.data?.status === 'published' || item.data?.status === 'archived'
                 : true
             )
             .map((item: any) => {

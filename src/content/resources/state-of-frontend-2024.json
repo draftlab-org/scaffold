@@ -1,0 +1,22 @@
+{
+  "id": "state-of-frontend-2024",
+  "title": "State of Frontend Development 2024",
+  "status": "published",
+  "description": "Annual report analyzing trends in frontend frameworks, tooling, and developer workflows. Based on survey data from over 5,000 developers worldwide.",
+  "authors": "Priya Sharma, Alex Turner",
+  "contributors": ["priya-sharma", "alex-turner"],
+  "year": 2024,
+  "category": "report",
+  "externalLinks": [
+    {
+      "label": "View Report",
+      "url": "https://example.com/state-of-frontend-2024"
+    },
+    {
+      "label": "Raw Data",
+      "url": "https://example.com/state-of-frontend-2024-data"
+    }
+  ],
+  "publishedDate": "2024-09-01",
+  "tags": ["frontend", "trends", "survey"]
+}

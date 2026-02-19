@@ -5,7 +5,7 @@ authors:
   - michael-brown
   - priya-sharma
   - emily-rodriguez
-published: draft
+status: draft
 tags:
   - api
   - backend

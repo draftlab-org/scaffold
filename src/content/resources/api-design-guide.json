@@ -1,0 +1,18 @@
+{
+  "id": "api-design-guide",
+  "title": "RESTful API Design Guide",
+  "status": "published",
+  "description": "Best practices for designing clean, consistent, and developer-friendly REST APIs. Covers versioning, error handling, pagination, and authentication patterns.",
+  "authors": "Michael Brown, Emily Rodriguez",
+  "contributors": ["michael-brown", "emily-rodriguez"],
+  "year": 2024,
+  "category": "guide",
+  "externalLinks": [
+    {
+      "label": "Read Online",
+      "url": "https://example.com/api-design-guide"
+    }
+  ],
+  "publishedDate": "2024-03-20",
+  "tags": ["api", "backend", "design"]
+}

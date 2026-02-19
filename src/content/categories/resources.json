@@ -1,0 +1,5 @@
+{
+  "id": "resources",
+  "name": "Resource Categories",
+  "categories": ["report", "whitepaper", "case-study", "guide"]
+}

@@ -1,0 +1,28 @@
+---
+import PeopleFilteredGrid from '@components/organisms/PeopleFilteredGrid';
+import { getAllPeople, getAllSections } from '@utils/people';
+
+// Get all visible people
+const people = await getAllPeople();
+
+// Get all sections for filtering
+const sections = await getAllSections();
+
+// Serialize people for the React component
+const serializedPeople = people.map((person) => ({
+  id: person.id,
+  name: person.name,
+  title: person.title || '',
+  headshot: person.headshot.src,
+  sections: person.sections,
+}));
+---
+
+<section class="py-16">
+  <PeopleFilteredGrid
+    client:load
+    people={serializedPeople}
+    sections={sections}
+    groupBySection={true}
+  />
+</section>

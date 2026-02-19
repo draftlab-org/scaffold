@@ -1,19 +1,21 @@
 ---
 import { Image } from 'astro:assets';
-import { getCollection } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
+import Banner from '@components/atoms/Banner.astro';
 import Link from '@components/atoms/Link.astro'
 import Tag from '@components/atoms/Tag.astro';
 import HeroSection from '@components/sections/HeroSection.astro';
 import PageLayout from '@layouts/PageLayout.astro';
 import SectionLayout from '@layouts/SectionLayout.astro';
+import { isVisible, mapColorToVariant } from '@utils/content';
 import { isDev } from '@utils/dev';
 
 export async function getStaticPaths() {
   const articles = await getCollection('articles');
 
-  // In production, only build published articles. In dev, build all articles.
+  // In production, only build published/archived articles. In dev/preview, build all.
   return articles
-    .filter((article) => isDev || article.data.published === 'published')
+    .filter((article) => isVisible(article))
     .map((article) => ({
       params: { slug: article.slug },
       props: { article },
@@ -39,7 +41,7 @@ const relatedArticles = article.data.relatedArticles
       .filter(permalink => permalink !== article.data.permalink) // Don't show current article
       .map((permalink) => {
         const relatedArticle = allArticles.find(
-          (a) => a.data.permalink === permalink && (isDev || a.data.published === 'published')
+          (a) => a.data.permalink === permalink && isVisible(a)
         );
         if (!relatedArticle) {
           console.warn(`Related article not found: ${permalink}`);
@@ -68,7 +70,10 @@ const formatDate = (date: Date) => {
   }).format(date);
 };
 
-const {title, publishedDate, heroImage, tags, published } = article.data
+const {title, publishedDate, heroImage, tags, status } = article.data
+
+const siteConfig = await getEntry('site', 'config');
+const archivedBanner = siteConfig?.data.archivedBanner;
 ---
 
 <PageLayout
@@ -76,12 +81,18 @@ const {title, publishedDate, heroImage, tags, published } = article.data
 	description={`Article by ${authors.map((a) => a?.name).join(', ')}`}
 	image={heroImage}
 >
+	{status === 'archived' && archivedBanner && (
+		<Banner variant={mapColorToVariant(archivedBanner.color)} dismissible>
+			{archivedBanner.message}
+		</Banner>
+	)}
+
 	<!-- Article Header -->
 	<SectionLayout bgImage={heroImage} sectionLabel="hero">
 		<HeroSection title={title}>
 			{/* Draft badge (only visible in dev) */}
 			{
-				isDev && published === 'draft' && (
+				isDev && status === 'draft' && (
 					<div class="mb-4">
 						<Tag variant="highlight" size="md" class="font-bold">
 							DRAFT

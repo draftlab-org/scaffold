@@ -1,0 +1,116 @@
+---
+import { getEntry } from 'astro:content';
+import { renderMarkdown } from '@utils/renderMarkdown';
+
+const siteConfigEntry = await getEntry('site', 'config');
+const cookieConsent = siteConfigEntry?.data?.cookieConsent;
+const gaId = cookieConsent?.googleAnalyticsId;
+
+// Don't render anything if cookie consent is not configured or GA ID is empty
+if (!cookieConsent || !gaId) {
+  return;
+}
+
+const messageHtml = (await renderMarkdown(cookieConsent.message))?.html;
+---
+
+<div
+	id="cookie-banner"
+	hidden
+	role="dialog"
+	aria-label="Cookie consent"
+	class="fixed inset-x-0 bottom-0 z-50 border-t border-neutral-200 bg-white p-4 shadow-lg"
+>
+	<div
+		class="mx-auto flex max-w-7xl flex-col items-center gap-4 sm:flex-row sm:justify-between"
+	>
+		<div
+			class="prose prose-sm max-w-none flex-1 [&_p]:m-0"
+			set:html={messageHtml}
+		/>
+		<div class="flex shrink-0 gap-2">
+			<button
+				id="cookie-reject"
+				type="button"
+				class="button-base button-ghost button-size-md"
+			>
+				Reject
+			</button>
+			<button
+				id="cookie-accept"
+				type="button"
+				class="button-base button-primary button-size-md"
+			>
+				Accept
+			</button>
+		</div>
+	</div>
+</div>
+
+<script is:inline define:vars={{ gaId }}>
+	(function () {
+		var STORAGE_KEY = 'cookie-consent';
+
+		function loadGA() {
+			if (document.querySelector('script[src*="googletagmanager.com/gtag"]'))
+				return;
+			var s = document.createElement('script');
+			s.async = true;
+			s.src = 'https://www.googletagmanager.com/gtag/js?id=' + gaId;
+			document.head.appendChild(s);
+			window.dataLayer = window.dataLayer || [];
+			function gtag() {
+				window.dataLayer.push(arguments);
+			}
+			gtag('js', new Date());
+			gtag('config', gaId, { anonymize_ip: true });
+		}
+
+		function disableGA() {
+			window['ga-disable-' + gaId] = true;
+		}
+
+		function init() {
+			var banner = document.getElementById('cookie-banner');
+			if (!banner) return;
+
+			var consent = localStorage.getItem(STORAGE_KEY);
+
+			if (consent === 'accepted') {
+				loadGA();
+				return;
+			}
+
+			if (consent === 'rejected') {
+				disableGA();
+				return;
+			}
+
+			// No consent yet — show banner
+			banner.removeAttribute('hidden');
+
+			document
+				.getElementById('cookie-accept')
+				.addEventListener('click', function () {
+					localStorage.setItem(STORAGE_KEY, 'accepted');
+					banner.setAttribute('hidden', '');
+					loadGA();
+				});
+
+			document
+				.getElementById('cookie-reject')
+				.addEventListener('click', function () {
+					localStorage.setItem(STORAGE_KEY, 'rejected');
+					banner.setAttribute('hidden', '');
+					disableGA();
+				});
+		}
+
+		// Support Astro View Transitions
+		document.addEventListener('astro:page-load', init);
+		// Fallback for initial load without View Transitions
+		if (!document.querySelector('[name="astro-view-transitions-enabled"]')) {
+			init();
+		}
+	})();
+</script>

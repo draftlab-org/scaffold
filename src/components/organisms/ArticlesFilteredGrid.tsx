@@ -12,7 +12,7 @@ interface Article {
   categories?: string[];
   publishedDate: string;
   heroImage?: string;
-  published: 'draft' | 'published';
+  status: 'draft' | 'published' | 'archived';
 }
 
 interface ArticlesFilteredGridProps {
@@ -159,7 +159,7 @@ export default function ArticlesFilteredGrid({
               )}
               <div className="flex h-full flex-col p-6">
                 {/* Draft badge */}
-                {isDev && article.published === 'draft' && (
+                {isDev && article.status === 'draft' && (
                   <div className="mb-3">
                     <span className="tag-base tag-highlight tag-size-sm font-bold">
                       DRAFT

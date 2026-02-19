@@ -1,45 +1,9 @@
 ---
-import { getCollection } from 'astro:content';
 import housesBG from '@assets/backgrounds/anna-magenta-XUCfqIEudBU-unsplash.jpg';
-import ArticlesFilteredGrid from '@components/organisms/ArticlesFilteredGrid';
+import ArticlesLanding from '@components/landing/ArticlesLanding.astro';
 import HeroSection from '@components/sections/HeroSection.astro';
 import PageLayout from '@layouts/PageLayout.astro';
 import SectionLayout from '@layouts/SectionLayout.astro';
-import { getAllCategories, getAllTags } from '@utils/articles';
-import { isDev } from '@utils/dev';
-
-// Fetch all articles
-const allArticles = await getCollection('articles');
-
-// Filter articles based on environment: show drafts in dev, only published in production
-const articles = allArticles
-  .filter((article) => isDev || article.data.published === 'published')
-  .sort((a, b) => b.data.publishedDate.getTime() - a.data.publishedDate.getTime());
-
-// Fetch all people for author lookups
-const allPeople = await getCollection('people');
-const authorMap: Record<string, string> = {};
-allPeople.forEach((person) => {
-  authorMap[person.data.id] = person.data.name;
-});
-
-// Get all categories and tags for filtering
-const categories = await getAllCategories();
-const tags = await getAllTags();
-
-// Serialize articles for the React component
-const serializedArticles = articles.map((article) => ({
-  slug: article.slug,
-  title: article.data.title,
-  permalink: article.data.permalink,
-  excerpt: article.data.excerpt,
-  authors: article.data.authors,
-  tags: article.data.tags,
-  categories: article.data.categories,
-  publishedDate: article.data.publishedDate.toISOString(),
-  heroImage: article.data.heroImage?.src,
-  published: article.data.published,
-}));
 ---
 
 <PageLayout
@@ -56,15 +20,6 @@ const serializedArticles = articles.map((article) => ({
 
 	<!-- Articles Grid with Filtering -->
 	<SectionLayout>
-		<div class="py-12">
-			<ArticlesFilteredGrid
-				client:load
-				articles={serializedArticles}
-				categories={categories}
-				tags={tags}
-				authorMap={authorMap}
-				isDev={isDev}
-			/>
-		</div>
+		<ArticlesLanding />
 	</SectionLayout>
 </PageLayout>

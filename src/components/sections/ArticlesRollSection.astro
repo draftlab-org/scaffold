@@ -96,7 +96,7 @@ const getAuthorNames = (authorIds: string[]) => {
           )}
           <div class="flex h-full flex-col p-6">
             {/* Draft badge (only visible in dev) */}
-            {isDev && article.data.published === 'draft' && (
+            {isDev && article.data.status === 'draft' && (
               <div class="mb-3">
                 <Tag variant="highlight" class="font-bold">
                   DRAFT

@@ -1,0 +1,17 @@
+{
+  "id": "css-architecture-case-study",
+  "title": "Migrating to Tailwind CSS: A Case Study",
+  "status": "published",
+  "description": "How our team migrated a large-scale application from custom CSS to Tailwind CSS, reducing bundle size by 60% and improving developer velocity.",
+  "contributors": ["emily-rodriguez"],
+  "year": 2023,
+  "category": "case-study",
+  "externalLinks": [
+    {
+      "label": "Read Case Study",
+      "url": "https://example.com/tailwind-migration-case-study"
+    }
+  ],
+  "publishedDate": "2023-11-10",
+  "tags": ["css", "tailwind", "migration"]
+}

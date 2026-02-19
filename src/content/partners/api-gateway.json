@@ -5,5 +5,6 @@
   "url": "https://apigateway.example.com",
   "category": "technology",
   "image": "/src/assets/partners/rings-5.png",
-  "order": 6
+  "order": 6,
+  "status": "published"
 }

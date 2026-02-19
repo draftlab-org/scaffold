@@ -2,6 +2,18 @@ import { defineCollection, type ImageFunction, z } from 'astro:content';
 import articleCategories from './categories/articles.json';
 import partnerCategories from './categories/partners.json';
 import peopleCategories from './categories/people.json';
+import resourceCategories from './categories/resources.json';
+
+// Shared status field for content visibility across all collections
+const statusSchema = z.enum(['draft', 'published', 'archived']).default('draft');
+
+// Shared color palette enum matching the site's design tokens
+const colorPaletteSchema = z.enum([
+  'primary',
+  'secondary',
+  'highlight',
+  'neutral',
+]);
 
 // Helper to create schemas with image support
 const createSchemas = (image: ImageFunction) => {
@@ -13,14 +25,13 @@ const createSchemas = (image: ImageFunction) => {
     text: z.string(),
   });
 
-  // Organisms
-
   // Card
   const cardSchema = z.object({
     title: z.string(),
     content: z.string().optional(),
     image: image().optional(),
     button: buttonSchema.optional(),
+    color: colorPaletteSchema.optional(),
   });
 
   //  Person
@@ -28,10 +39,14 @@ const createSchemas = (image: ImageFunction) => {
     id: z.string(),
     name: z.string(),
     headshot: image(),
-    title: z.string(),
+    title: z.string().optional(),
+    affiliation: z.string().optional(),
+    extraInfo: z.string().optional(),
+    url: z.string().optional(),
     sections: z.array(
       z.enum(peopleCategories.categories as [string, ...string[]])
     ),
+    status: statusSchema,
   });
 
   //  Partner
@@ -114,7 +129,13 @@ const pagesCollection = defineCollection({
         limit: z.number().optional().default(4),
         showViewAll: z.boolean().optional().default(false),
       }),
-      // Add more section types as needed
+      SectionCommonSchema.extend({
+        type: z.literal('resourcesRoll'),
+        title: z.string().default('Resources'),
+        description: z.string().optional(),
+        limit: z.number().min(1).max(12).default(3),
+        showViewAll: z.boolean().default(false),
+      }),
     ]);
 
     const flexiSectionSchema = SectionCommonSchema.extend({
@@ -128,6 +149,8 @@ const pagesCollection = defineCollection({
       title: z.string(),
       description: z.string().optional(),
       heroImage: image().optional(),
+      permalink: z.string().optional(),
+      status: statusSchema,
       sections: z
         .union([...sectionsSchema.options, flexiSectionSchema])
         .array()
@@ -149,6 +172,7 @@ const partnersCollection = defineCollection({
       id: z.string(),
       order: z.number().optional().default(999),
       featured: z.boolean().optional().default(false),
+      status: statusSchema,
     });
   },
 });
@@ -161,7 +185,7 @@ const articlesCollection = defineCollection({
       title: z.string(),
       excerpt: z.string().optional(),
       authors: z.array(z.string()), // References to people collection IDs
-      published: z.enum(['draft', 'published']),
+      status: statusSchema,
       tags: z.array(z.string()),
       categories: z
         .array(z.enum(articleCategories.categories as [string, ...string[]]))
@@ -199,6 +223,14 @@ const siteCollection = defineCollection({
         description: z.string().optional(),
         bottom: z.string(),
       }),
+      archivedBanner: z.object({
+        message: z.string(),
+        color: colorPaletteSchema,
+      }).optional(),
+      cookieConsent: z.object({
+        message: z.string(),
+        googleAnalyticsId: z.string().optional(),
+      }).optional(),
     }),
 });
 
@@ -257,6 +289,30 @@ const categoriesCollection = defineCollection({
   }),
 });
 
+const resourcesCollection = defineCollection({
+  type: 'data',
+  schema: z.object({
+    id: z.string(),
+    title: z.string(),
+    status: statusSchema,
+    description: z.string().optional(),
+    authors: z.string().optional(), // Citation string
+    contributors: z.array(z.string()).optional(), // References to people collection IDs
+    year: z.number(),
+    category: z.enum(resourceCategories.categories as [string, ...string[]]),
+    externalLinks: z
+      .array(
+        z.object({
+          label: z.string(),
+          url: z.string().url(),
+        })
+      )
+      .optional(),
+    publishedDate: z.coerce.date().optional(),
+    tags: z.array(z.string()).optional(),
+  }),
+});
+
 export const collections = {
   people: peopleCollection,
   pages: pagesCollection,
@@ -265,4 +321,5 @@ export const collections = {
   navigation: navigationCollection,
   partners: partnersCollection,
   categories: categoriesCollection,
+  resources: resourcesCollection,
 };

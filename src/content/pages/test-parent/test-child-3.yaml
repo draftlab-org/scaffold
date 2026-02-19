@@ -1,8 +1,0 @@
-title: Test child 3
-permalink: test-child-3
-sections:
-  - type: richText
-    background:
-      bgColor: white
-      bgType: full
-    content: asd

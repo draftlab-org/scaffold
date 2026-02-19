@@ -1,0 +1,30 @@
+title: Draftlab Scaffold
+status: published
+description: A modern web development starter with Astro, Tailwind CSS, and React
+sections:
+  - type: hero
+    title: The Draftlab Scaffold template
+    subtitle: Atomic elements with Astro, Tailwind, React
+  - type: card
+    title: Component Architecture
+    description: Organized from atomic components to complete page layouts
+    cards:
+      - title: Atoms
+        content: Basic building blocks like buttons, links, and headings
+      - title: Molecules
+        content: Simple combinations like cards, navigation items, and form fields
+      - title: Organisms
+        content: Complex components like navigation bars, footers, and hero sections
+      - title: Layouts
+        content: Complete page structures
+  - type: button
+    title: Ready to Start Building?
+    buttons:
+      - variant: primary
+        size: lg
+        href: /about
+        text: Get Started
+      - variant: outline
+        size: lg
+        href: https://github.com/draftlab-org/scaffold
+        text: View on GitHub

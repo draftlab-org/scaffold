@@ -1,0 +1,18 @@
+{
+  "id": "scaling-web-architecture",
+  "title": "Scaling Web Architecture: Patterns and Best Practices",
+  "status": "published",
+  "description": "A comprehensive guide to scaling web applications from thousands to millions of users, covering load balancing, caching strategies, and database optimization.",
+  "authors": "Sarah Chen, David Kim",
+  "contributors": ["sarah-chen", "david-kim"],
+  "year": 2024,
+  "category": "whitepaper",
+  "externalLinks": [
+    {
+      "label": "Download PDF",
+      "url": "https://example.com/scaling-web-architecture.pdf"
+    }
+  ],
+  "publishedDate": "2024-06-15",
+  "tags": ["architecture", "performance", "scalability"]
+}

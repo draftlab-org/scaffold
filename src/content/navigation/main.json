@@ -4,14 +4,6 @@
   "items": [
     {
       "type": "link",
-      "label": "Home",
-      "link": {
-        "type": "internal",
-        "pageRef": "/"
-      }
-    },
-    {
-      "type": "link",
       "label": "About",
       "link": {
         "type": "internal",

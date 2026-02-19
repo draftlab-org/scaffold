@@ -1,0 +1,31 @@
+---
+import ResourceItems from '@components/organisms/Resource/ResourceItems';
+import { getResources, prepareResourcesCardData } from '@utils/resources';
+
+const resources = await getResources();
+const resourcesData = await prepareResourcesCardData(resources);
+
+// Serialize for the React component
+const serializedResources = resourcesData.map(({ resource, contributorNames }) => ({
+  id: resource.id,
+  title: resource.data.title,
+  description: resource.data.description,
+  category: resource.data.category,
+  year: resource.data.year,
+  tags: resource.data.tags,
+  externalLinks: resource.data.externalLinks,
+  contributorNames,
+}));
+---
+
+<div class="py-12">
+  {serializedResources.length === 0 ? (
+    <div class="py-12 text-center">
+      <p class="text-lg text-neutral-600">
+        No resources available yet. Check back soon!
+      </p>
+    </div>
+  ) : (
+    <ResourceItems client:load items={serializedResources} />
+  )}
+</div>

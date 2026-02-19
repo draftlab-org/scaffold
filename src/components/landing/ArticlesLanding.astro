@@ -1,0 +1,45 @@
+---
+import ArticlesFilteredGrid from '@components/organisms/ArticlesFilteredGrid';
+import { getAllCategories, getAllTags, getPublishedArticles, sortArticlesByDate } from '@utils/articles';
+import { isDev } from '@utils/dev';
+import { getPeopleMap } from '@utils/people';
+
+// Fetch visible articles, sorted by date
+const articles = sortArticlesByDate(await getPublishedArticles());
+
+// Fetch people map for author lookups
+const peopleMap = await getPeopleMap();
+const authorMap: Record<string, string> = {};
+for (const [id, person] of peopleMap) {
+  authorMap[id] = person.name;
+}
+
+// Get all categories and tags for filtering
+const categories = await getAllCategories();
+const tags = await getAllTags();
+
+// Serialize articles for the React component
+const serializedArticles = articles.map((article) => ({
+  slug: article.slug,
+  title: article.data.title,
+  permalink: article.data.permalink,
+  excerpt: article.data.excerpt,
+  authors: article.data.authors,
+  tags: article.data.tags,
+  categories: article.data.categories,
+  publishedDate: article.data.publishedDate.toISOString(),
+  heroImage: article.data.heroImage?.src,
+  status: article.data.status,
+}));
+---
+
+<div class="py-12">
+  <ArticlesFilteredGrid
+    client:load
+    articles={serializedArticles}
+    categories={categories}
+    tags={tags}
+    authorMap={authorMap}
+    isDev={isDev}
+  />
+</div>

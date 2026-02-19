@@ -3,5 +3,10 @@
   "name": "Aisha Patel",
   "headshot": "/src/assets/people/aisha-patel.png",
   "title": "Senior Software Engineer",
-  "sections": ["Engineering", "Product", "Community"]
+  "sections": [
+    "Engineering",
+    "Product",
+    "Community"
+  ],
+  "status": "published"
 }

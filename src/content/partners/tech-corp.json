@@ -5,5 +5,6 @@
   "url": "https://techcorp.example.com",
   "category": "sponsor",
   "image": "/src/assets/partners/rings-0.png",
-  "order": 1
+  "order": 1,
+  "status": "published"
 }

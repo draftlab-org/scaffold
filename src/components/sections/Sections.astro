@@ -7,6 +7,7 @@ import FlexiSection from '@components/sections/FlexiSection.astro';
 import HeroSection from '@components/sections/HeroSection.astro';
 import PartnersSection from '@components/sections/PartnersSection.astro';
 import PeopleSection from '@components/sections/PeopleSection.astro';
+import ResourcesRollSection from '@components/sections/ResourcesRollSection.astro';
 import RichTextSection from '@components/sections/RichTextSection.astro';
 import SectionLayout from '@layouts/SectionLayout.astro';
 
@@ -86,6 +87,15 @@ const { sectionItems } = Astro.props;
               title={section.title}
               description={section.description}
               partners={section.partners}
+              limit={section.limit}
+              showViewAll={section.showViewAll}
+            />
+          );
+        case 'resourcesRoll':
+          return (
+            <ResourcesRollSection
+              title={section.title}
+              description={section.description}
               limit={section.limit}
               showViewAll={section.showViewAll}
             />

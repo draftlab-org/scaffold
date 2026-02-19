@@ -2,7 +2,7 @@
 permalink: 'modern-css-techniques'
 title: 'Modern CSS Techniques for Responsive Design'
 authors: ['emily-rodriguez']
-published: 'published'
+status: 'published'
 tags: ['css', 'design', 'responsive']
 publishedDate: 2024-02-20
 heroImage: '/src/assets/backgrounds/anna-magenta-YELG0ZVK5yw-unsplash.jpg'

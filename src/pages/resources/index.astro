@@ -1,0 +1,24 @@
+---
+import ResourcesLanding from '@components/landing/ResourcesLanding.astro';
+import HeroSection from '@components/sections/HeroSection.astro';
+import PageLayout from '@layouts/PageLayout.astro';
+import SectionLayout from '@layouts/SectionLayout.astro';
+---
+
+<PageLayout
+	title="Resources"
+	description="Reports, whitepapers, case studies, and guides from our team"
+>
+	<!-- Header Section -->
+	<SectionLayout sectionLabel="hero">
+		<HeroSection
+			title="Resources"
+			subtitle="Reports, whitepapers, case studies, and guides"
+		/>
+	</SectionLayout>
+
+	<!-- Resources Grid -->
+	<SectionLayout>
+		<ResourcesLanding />
+	</SectionLayout>
+</PageLayout>

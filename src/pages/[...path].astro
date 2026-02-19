@@ -1,26 +1,41 @@
 ---
-import { getCollection } from 'astro:content';
+import { getEntry } from 'astro:content';
+import Banner from '@components/atoms/Banner.astro';
 import HeroSection from '@components/sections/HeroSection.astro';
 import Sections from '@components/sections/Sections.astro';
 import PageLayout from '@layouts/PageLayout.astro';
 import SectionLayout from '@layouts/SectionLayout.astro';
+import { getPages } from '@utils/pages';
+import { mapColorToVariant } from '@utils/content';
 
 import type { GetStaticPaths } from 'astro';
 
-// Generate static paths from pages collection
+// Generate static paths from pages collection (respects status visibility)
+// Exclude 'home' — it's rendered by index.astro
 export const getStaticPaths = (async () => {
-  const pages = await getCollection('pages');
-  return pages.map((page) => ({
-    params: { path: page.id },
-    props: { page },
-  }));
+  const pages = await getPages();
+  return pages
+    .filter((page) => page.id !== 'home')
+    .map((page) => ({
+      params: { path: page.id },
+      props: { page },
+    }));
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;
 
+const siteConfig = await getEntry('site', 'config');
+const archivedBanner = siteConfig?.data.archivedBanner;
+
 ---
 
 <PageLayout title={page.data.title} description={page.data.description}>
+	{page.data.status === 'archived' && archivedBanner && (
+		<Banner variant={mapColorToVariant(archivedBanner.color)} dismissible>
+			{archivedBanner.message}
+		</Banner>
+	)}
+
 	<SectionLayout bgImage={page.data.heroImage} sectionLabel="hero">
 		<HeroSection title={page.data.title} subtitle={page.data.description} />
 	</SectionLayout>

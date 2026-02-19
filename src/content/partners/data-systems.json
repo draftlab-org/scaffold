@@ -5,5 +5,6 @@
   "url": "https://datasystems.example.com",
   "category": "sponsor",
   "image": "/src/assets/partners/rings-4.png",
-  "order": 5
+  "order": 5,
+  "status": "published"
 }
