@@ -91,15 +91,6 @@ const rehypeAddIdPrefix = (prefix: string) => {
   };
 };
 
-// Plugin to update TOC IDs with prefix
-const updateTocWithPrefix = (toc: TocEntry[], prefix: string): TocEntry[] => {
-  return toc.map((entry) => ({
-    ...entry,
-    id: `${prefix}-${entry.id}`,
-    children: entry.children ? updateTocWithPrefix(entry.children, prefix) : undefined,
-  }));
-};
-
 // Extract base markdown processor (no image processing)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const createMarkdownProcessor = (withTOC = false, idPrefix?: string): any => {
@@ -149,12 +140,7 @@ export const renderMarkdown = async (
   const processor = createMarkdownProcessor(withTOC, idPrefix);
   const result = await processor.process(markdown);
 
-  let toc = (result.data as any)?.toc as TocEntry[] | undefined;
-
-  // Apply prefix to TOC IDs if both TOC and prefix are provided
-  if (toc && idPrefix) {
-    toc = updateTocWithPrefix(toc, idPrefix);
-  }
+  const toc = (result.data as any)?.toc as TocEntry[] | undefined;
 
   return {
     html: String(result),
@@ -171,12 +157,7 @@ export const renderMarkdownWithImages = async (
   const processor = createMarkdownProcessor(withTOC, idPrefix).use(processImageNodes);
   const result = await processor.process(markdown);
 
-  let toc = (result.data as any)?.toc as TocEntry[] | undefined;
-
-  // Apply prefix to TOC IDs if both TOC and prefix are provided
-  if (toc && idPrefix) {
-    toc = updateTocWithPrefix(toc, idPrefix);
-  }
+  const toc = (result.data as any)?.toc as TocEntry[] | undefined;
 
   return {
     html: String(result),

@@ -47,6 +47,13 @@
   font-weight: 400;
 }
 
+.prose
+  :where(strong):not(
+    :where([class~='not-prose'], [class~='not-prose'] *)
+  ) {
+  font-weight: 500;
+}
+
 @layer base {
   h1,
   h2,
@@ -54,7 +61,7 @@
   h4,
   h5,
   h6 {
-    @apply font-serif font-bold;
+    @apply font-serif font-bold scroll-mt-24;
   }
   h1 {
     @apply text-4xl md:text-6xl;
@@ -72,8 +79,13 @@
     @apply text-base;
   }
 
-  p {
+  p,
+  li {
     @apply text-sm md:text-base;
+  }
+
+  strong {
+    @apply font-medium;
   }
 
   /* applies default link styling to "a" components that do not have the "data-component" property,

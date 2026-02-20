@@ -10,10 +10,6 @@ sections:
   # HERO SECTIONS
   # ============================================================
 
-  - type: hero
-    title: Feature Showcase
-    subtitle: Every section type. Every variation. One page to see them all.
-
   - type: richText
     content: |-
       ## Hero Sections
@@ -142,19 +138,19 @@ sections:
       - variant: primary
         size: md
         text: Primary Action
-        href: "#"
+        href: '#'
       - variant: secondary
         size: md
         text: Secondary Action
-        href: "#"
+        href: '#'
       - variant: outline
         size: md
         text: Outline Action
-        href: "#"
+        href: '#'
       - variant: ghost
         size: md
         text: Ghost Action
-        href: "#"
+        href: '#'
 
   - type: button
     title: All Three Sizes (primary)
@@ -162,15 +158,15 @@ sections:
       - variant: primary
         size: sm
         text: Small Button
-        href: "#"
+        href: '#'
       - variant: primary
         size: md
         text: Medium Button
-        href: "#"
+        href: '#'
       - variant: primary
         size: lg
         text: Large Button
-        href: "#"
+        href: '#'
 
   # ============================================================
   # CARD SECTIONS
@@ -198,7 +194,7 @@ sections:
           variant: primary
           size: sm
           text: Learn More
-          href: "#"
+          href: '#'
       - title: Secondary Color
         content: Uses a cool secondary tint with a matching border. Useful for complementary content that supports the primary message.
         color: secondary
@@ -206,7 +202,7 @@ sections:
           variant: secondary
           size: sm
           text: Explore
-          href: "#"
+          href: '#'
       - title: Highlight Color
         content: Uses the decorative highlight SVG as a background, matching the section-level highlight treatment. Eye-catching for featured cards.
         color: highlight
@@ -214,7 +210,7 @@ sections:
           variant: outline
           size: sm
           text: View Details
-          href: "#"
+          href: '#'
       - title: Neutral Color
         content: Uses a subtle gray tint with a gray border. Best for supplementary information that should not compete visually with colored cards.
         color: neutral
@@ -222,16 +218,16 @@ sections:
           variant: ghost
           size: sm
           text: Read More
-          href: "#"
+          href: '#'
     buttons:
       - variant: primary
         size: md
         text: View All Programs
-        href: "#"
+        href: '#'
       - variant: outline
         size: md
         text: Get Involved
-        href: "#"
+        href: '#'
 
   - type: card
     title: Default Cards (No Color)
@@ -250,7 +246,7 @@ sections:
       - variant: primary
         size: md
         text: Explore Tools
-        href: "#"
+        href: '#'
 
   # ============================================================
   # PEOPLE SECTIONS
@@ -403,8 +399,8 @@ sections:
           - variant: primary
             size: md
             text: Download the Toolkit
-            href: "#"
+            href: '#'
           - variant: outline
             size: md
             text: Contribute on GitHub
-            href: "#"
+            href: '#'

@@ -40,9 +40,7 @@ function TOCEntries({
               type="button"
               onClick={() => onEntryClick(entry.id)}
               className={`block w-full cursor-pointer text-left text-sm transition-colors ${
-                isActive
-                  ? 'font-medium text-primary-600 underline decoration-primary-300 decoration-dotted decoration-2 underline-offset-4'
-                  : 'hover:text-gray-900'
+                isActive ? 'text-primary-600' : 'hover:text-gray-900'
               }`}
             >
               {entry.value}
@@ -81,7 +79,7 @@ export default function TOC({ entries, title = 'On this page' }: TOCProps) {
         }
       },
       {
-        rootMargin: '-80px 0px -70% 0px',
+        rootMargin: '-18px 0px -70% 0px',
         threshold: 0,
       }
     );
@@ -112,8 +110,8 @@ export default function TOC({ entries, title = 'On this page' }: TOCProps) {
   }
 
   return (
-    <nav className="sticky top-24" aria-label="Table of contents">
-      <h4 className="mb-3 text-sm font-semibold tracking-wide text-gray-900 uppercase">
+    <nav className="sticky top-24 pt-6" aria-label="Table of contents">
+      <h4 className="mb-3 font-semibold tracking-wide text-gray-900 uppercase">
         {title}
       </h4>
       <TOCEntries
