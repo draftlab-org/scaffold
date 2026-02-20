@@ -1,78 +1,123 @@
 title: How to Use Scaffold
-status: published
-description: A guide to installing, running, and managing your Scaffold site.
-heroImage: /src/assets/backgrounds/anna-magenta-vKhd5bnnolg-unsplash.jpg
 permalink: how-to-use
+status: published
+description: A guide to installing, running, and managing the Scaffold template.
+heroImage: /src/assets/backgrounds/anna-magenta-vKhd5bnnolg-unsplash.jpg
 sections:
-  # ============================================================
-  # Intro
-  # ============================================================
   - type: richText
-    content: |
-      Scaffold is a website starter built with [Astro](https://astro.build). It gives you a ready-to-use site with a page builder, a content management system, and a set of reusable components — so you can focus on your content instead of your infrastructure.
+    background:
+      bgColor: white
+      bgType: full
+    withTOC: false
+    content: >-
+      Scaffold is a website starter built with [Astro](https://astro.build). It
+      gives you a ready-to-use site with a page builder, a content management
+      system, and a set of reusable components.
 
-      This guide walks you through installation, day-to-day editing, and the main concepts you need to know.
 
-  # ============================================================
-  # Getting started
-  # ============================================================
+      This guide walks you through installation, day-to-day editing, and the
+      main concepts you need to know.
   - type: richText
     background:
       bgColor: gray
+      bgType: full
     withTOC: true
-    content: |
+    content: >-
       ## Getting started
+
 
       ### Prerequisites
 
-      You'll need **Git**, **Node.js** (v20 or later), and a **GitHub** account. A basic familiarity with the command line is helpful but not required beyond the steps listed here.
+
+      You'll need **Git**, **Node.js** (v20 or later), and a **GitHub** account.
+      A basic familiarity with the command line is helpful but not required
+      beyond the steps listed here.
+
 
       ### Installation
 
+
       Clone the repository and install dependencies:
 
+
       ```bash
+
       git clone https://github.com/your-org/scaffold.git my-site
+
       cd my-site
+
       npm install
+
       ```
+
 
       ### Running the development server
 
+
       ```bash
+
       npm run dev
+
       ```
 
-      This starts a local server, usually at `http://localhost:4321`. Changes you make to files will appear in the browser almost instantly.
+
+      This starts a local server, usually at `http://localhost:4321`. Changes
+      you make to files will appear in the browser almost instantly.
+
 
       ### Building for production
 
+
       ```bash
+
       npm run build
+
       ```
 
-      This generates a fully static site in the `dist/` folder. You can preview the production build locally with:
+
+      This generates a fully static site in the `dist/` folder. You can preview
+      the production build locally with:
+
 
       ```bash
+
       npm run preview
+
       ```
+
 
       ### Deploying
 
-      Scaffold is pre-configured for **Netlify**. Connect your GitHub repository to a Netlify site and every push to `main` will trigger a new build. No additional configuration is needed — the `netlify.toml` and Astro adapter are already set up.
 
-      You can also deploy to any platform that supports static sites (Vercel, Cloudflare Pages, GitHub Pages, etc.) by swapping the Astro adapter in `astro.config.mjs`.
+      Scaffold is pre-configured for **Netlify**. Connect your GitHub repository
+      to a Netlify site and every push to `main` will trigger a new build. No
+      additional configuration is needed — the `netlify.toml` and Astro adapter
+      are already set up.
+
+
+      You can also deploy to any platform that supports static sites (Vercel,
+      Cloudflare Pages, GitHub Pages, etc.) by swapping the Astro adapter in
+      `astro.config.mjs`.
+
 
       ## How the site works
 
+
       ### Pages and sections
 
-      Every page on the site is defined by a YAML file in `src/content/pages/`. A page file looks something like this:
+
+      Every page on the site is defined by a YAML file in `src/content/pages/`.
+      A page file looks something like this:
+
 
       ```yaml
+
       title: About Us
+
       status: published
+
       permalink: about
+
       sections:
         - type: hero
           title: About Our Organization
@@ -84,124 +129,255 @@ sections:
           category: Leadership
       ```
 
-      The `sections` array is the core of the page builder. Each section has a `type` that determines which component renders it. Sections are rendered in order, top to bottom.
+
+      The `sections` array is the core of the page builder. Each section has a
+      `type` that determines which component renders it. Sections are rendered
+      in order, top to bottom.
+
 
       ### Available section types
 
-      | Type | What it does |
-      |---|---|
-      | **hero** | Full-width banner with title, optional subtitle, and optional background image |
-      | **richText** | Markdown content — supports headings, lists, links, images, code blocks, tables. Optional table of contents sidebar |
-      | **button** | A row of call-to-action buttons with configurable variants and sizes |
-      | **card** | A grid of content cards, each with optional image, markdown text, and button |
-      | **people** | A grid of team member profiles pulled from the People collection. Filterable by category |
-      | **partners** | A grid of partner logos pulled from the Partners collection. Filterable by category |
-      | **articlesRoll** | A feed of recent articles, with optional category filter and limit |
-      | **featuredPartners** | A curated row of partner logos, selected by ID or shown by featured flag |
-      | **resourcesRoll** | A feed of recent resources (reports, guides, case studies) |
-      | **flexi** | A container for nesting other sections (richText, button, card) inside a single block |
 
-      Every section can also set a `background` with `bgColor` (white, gray, or gradient) to create visual rhythm on the page.
+      | Type | What it does |
+
+      | --- | --- |
+
+      | **hero** | Full-width banner with title, optional subtitle, and optional
+      background image |
+
+      | **richText** | Markdown content — supports headings, lists, links,
+      images, code blocks, tables. Optional table of contents sidebar |
+
+      | **button** | A row of call-to-action buttons with configurable variants
+      and sizes |
+
+      | **card** | A grid of content cards, each with optional image, markdown
+      text, and button |
+
+      | **people** | A grid of team member profiles pulled from the People
+      collection. Filterable by category |
+
+      | **partners** | A grid of partner logos pulled from the Partners
+      collection. Filterable by category |
+
+      | **articlesRoll** | A feed of recent articles, with optional category
+      filter and limit |
+
+      | **featuredPartners** | A curated row of partner logos, selected by ID or
+      shown by featured flag |
+
+      | **resourcesRoll** | A feed of recent resources (reports, guides, case
+      studies) |
+
+      | **flexi** | A container for nesting other sections (richText, button,
+      card) inside a single block |
+
+
+      Every section can also set a `background` with `bgColor` (white, gray, or
+      gradient) to create visual rhythm on the page.
+
 
       ### Content collections
 
+
       Beyond pages, the site manages several types of content:
 
-      - **Articles** (`src/content/articles/`) — Markdown blog posts with frontmatter for title, excerpt, authors, tags, and hero image.
-      - **People** (`src/content/people/`) — Team member profiles with name, title, headshot, affiliation, and category tags.
-      - **Partners** (`src/content/partners/`) — Organizations with logo, URL, category, and display order.
-      - **Resources** (`src/content/resources/`) — Publications like reports, whitepapers, and guides with external download links.
-      - **Navigation** (`src/content/navigation/`) — Menu definitions for the header and footer. Supports single links and dropdown menus.
-      - **Site Settings** (`src/content/site/config.json`) — Global configuration: site title, description, social links, favicon, Open Graph image, cookie consent, and footer text.
 
-      Each collection has a schema defined in `src/content/config.ts`. Astro validates every file against its schema at build time, so you'll get a clear error message if something is missing or malformed.
+      *   **Articles** (`src/content/articles/`) — Markdown blog posts with
+      frontmatter for title, excerpt, authors, tags, and hero image.
+
+      *   **People** (`src/content/people/`) — Team member profiles with name,
+      title, headshot, affiliation, and category tags.
+
+      *   **Partners** (`src/content/partners/`) — Organizations with logo, URL,
+      category, and display order.
+
+      *   **Resources** (`src/content/resources/`) — Publications like reports,
+      whitepapers, and guides with external download links.
+
+      *   **Navigation** (`src/content/navigation/`) — Menu definitions for the
+      header and footer. Supports single links and dropdown menus.
+
+      *   **Site Settings** (`src/content/site/config.json`) — Global
+      configuration: site title, description, social links, favicon, Open Graph
+      image, cookie consent, and footer text.
+
+
+      Each collection has a schema defined in `src/content/config.ts`. Astro
+      validates every file against its schema at build time, so you'll get a
+      clear error message if something is missing or malformed.
+
 
       ### Content status
 
+
       All content supports a `status` field with three values:
 
-      - **draft** — Only visible when running the development server.
-      - **published** — Visible everywhere.
-      - **archived** — Still visible, but can be styled differently or filtered out.
 
-      This lets you work on new content without publishing it, and retire old content without deleting it.
+      *   **draft** — Only visible when running the development server.
+
+      *   **published** — Visible everywhere.
+
+      *   **archived** — Still visible, but can be styled differently or
+      filtered out.
+
+
+      This lets you work on new content without publishing it, and retire old
+      content without deleting it.
+
 
       ## Using PagesCMS
 
+
       ### What is PagesCMS?
 
-      [PagesCMS](https://pagescms.org) is a free, open-source content management system that works directly with your GitHub repository. It gives you a visual interface for editing content — no need to open YAML or JSON files by hand.
 
-      When you save changes in PagesCMS, it commits them directly to your repository, which triggers a new build and deploy.
+      [PagesCMS](https://pagescms.org) is a free, open-source content management
+      system that works directly with your GitHub repository. It gives you a
+      visual interface for editing content — no need to open YAML or JSON files
+      by hand.
+
+
+      When you save changes in PagesCMS, it commits them directly to your
+      repository, which triggers a new build and deploy.
+
 
       ### Setting it up
 
-      1. Go to [app.pagescms.org](https://app.pagescms.org) and sign in with your GitHub account.
-      2. Select the repository where your Scaffold site lives.
-      3. PagesCMS reads the `.pages.yml` file in the root of the repository and automatically sets up the editing interface.
+
+      1.  Go to [app.pagescms.org](https://app.pagescms.org) and sign in with
+      your GitHub account.
+
+      2.  Select the repository where your Scaffold site lives.
+
+      3.  PagesCMS reads the `.pages.yml` file in the root of the repository and
+      automatically sets up the editing interface.
+
 
       That's it. No API keys, no database, no separate hosting.
 
+
       ### What you can do in PagesCMS
 
-      - **Edit pages** — Add, remove, and reorder sections. Each section type has a form with the relevant fields.
-      - **Write articles** — Use the built-in Markdown editor with live preview.
-      - **Manage people** — Add team members with headshots and roles.
-      - **Manage partners** — Upload partner logos, set display order, and toggle featured status.
-      - **Manage resources** — Add publications with download links and contributor cross-references.
-      - **Edit navigation** — Change header and footer menus, add dropdown menus, link to internal pages or external URLs.
-      - **Update site settings** — Change the site title, description, social links, analytics ID, and cookie consent copy.
-      - **Upload images** — All images are stored in `src/assets/` and automatically optimized at build time.
+
+      *   **Edit pages** — Add, remove, and reorder sections. Each section type
+      has a form with the relevant fields.
+
+      *   **Write articles** — Use the built-in Markdown editor with live
+      preview.
+
+      *   **Manage people** — Add team members with headshots and roles.
+
+      *   **Manage partners** — Upload partner logos, set display order, and
+      toggle featured status.
+
+      *   **Manage resources** — Add publications with download links and
+      contributor cross-references.
+
+      *   **Edit navigation** — Change header and footer menus, add dropdown
+      menus, link to internal pages or external URLs.
+
+      *   **Update site settings** — Change the site title, description, social
+      links, analytics ID, and cookie consent copy.
+
+      *   **Upload images** — All images are stored in `src/assets/` and
+      automatically optimized at build time.
+
 
       ### How images work
 
-      When you upload an image through PagesCMS, it gets committed to `src/assets/` in your repository. At build time, Astro optimizes these images — resizing, converting to modern formats, and generating responsive `srcset` attributes.
 
-      Image paths in content files always start with `/src/assets/`. For example: `/src/assets/team/headshot.jpg`.
+      When you upload an image through PagesCMS, it gets committed to
+      `src/assets/` in your repository. At build time, Astro optimizes these
+      images — resizing, converting to modern formats, and generating responsive
+      `srcset` attributes.
+
+
+      Image paths in content files always start with `/src/assets/`. For
+      example: `/src/assets/team/headshot.jpg`.
+
 
       ## For developers
 
+
       ### Project structure
 
-      ```
-      src/
-      ├── assets/          Images and media
-      ├── components/
-      │   ├── atoms/       Basic elements (Button, Link, Image)
-      │   ├── molecules/   Combinations (Card, NavItem)
-      │   ├── organisms/   Complex components (Navigation, Footer)
-      │   └── sections/    Page section components
-      ├── content/         Content collections (YAML, JSON, Markdown)
-      ├── layouts/         Page layouts
-      ├── pages/           File-based routing
-      ├── styles/          Tailwind theme and global CSS
-      └── utils/           Utility functions
+
       ```
 
-      Components follow **atomic design** — atoms are the smallest building blocks, molecules combine atoms, organisms combine molecules, and sections are full-width page blocks.
+      src/
+
+      ├── assets/          Images and media
+
+      ├── components/
+
+      │   ├── atoms/       Basic elements (Button, Link, Image)
+
+      │   ├── molecules/   Combinations (Card, NavItem)
+
+      │   ├── organisms/   Complex components (Navigation, Footer)
+
+      │   └── sections/    Page section components
+
+      ├── content/         Content collections (YAML, JSON, Markdown)
+
+      ├── layouts/         Page layouts
+
+      ├── pages/           File-based routing
+
+      ├── styles/          Tailwind theme and global CSS
+
+      └── utils/           Utility functions
+
+      ```
+
+
+      Components follow **atomic design** — atoms are the smallest building
+      blocks, molecules combine atoms, organisms combine molecules, and sections
+      are full-width page blocks.
+
 
       ### Adding a new page
 
-      Create a new YAML file in `src/content/pages/`. The filename becomes the URL path (e.g., `privacy-policy.yaml` → `/privacy-policy`). A GitHub Action keeps filenames and `permalink` fields in sync automatically.
+
+      Create a new YAML file in `src/content/pages/`. The filename becomes the
+      URL path (e.g., `privacy-policy.yaml` → `/privacy-policy`). A GitHub
+      Action keeps filenames and `permalink` fields in sync automatically.
+
 
       ### Customizing styles
 
-      Scaffold uses Tailwind CSS v4 with custom theme tokens defined in `src/styles/`:
 
-      - `colors.css` — Color palette (primary, secondary, highlight, gray)
-      - `typography.css` — Font families, prose styling, heading scales
-      - `breakpoints.css` — Responsive breakpoints
+      Scaffold uses Tailwind CSS v4 with custom theme tokens defined in
+      `src/styles/`:
+
+
+      *   `colors.css` — Color palette (primary, secondary, highlight, gray)
+
+      *   `typography.css` — Font families, prose styling, heading scales
+
+      *   `breakpoints.css` — Responsive breakpoints
+
 
       Change the color palette in `colors.css` and the entire site updates.
 
+
       ### API endpoints
+
 
       Every content collection is automatically exposed as a JSON API:
 
-      - `/api/pages.json`
-      - `/api/articles.json`
-      - `/api/people.json`
-      - `/api/partners.json`
-      - `/api/resources.json`
 
-      These are generated at build time and can be used by external tools or client-side JavaScript.
+      *   `/api/pages.json`
+
+      *   `/api/articles.json`
+
+      *   `/api/people.json`
+
+      *   `/api/partners.json`
+
+      *   `/api/resources.json`
+
+
+      These are generated at build time and can be used by external tools or
+      client-side JavaScript.
