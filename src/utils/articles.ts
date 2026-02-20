@@ -1,5 +1,5 @@
-import { type CollectionEntry, getCollection } from 'astro:content';
-import { isVisible } from '@utils/content';
+import type { CollectionEntry } from 'astro:content';
+import { getVisibleEntries } from '@utils/content';
 
 export type Article = CollectionEntry<'articles'>;
 
@@ -7,8 +7,7 @@ export type Article = CollectionEntry<'articles'>;
  * Get all published articles (includes drafts in dev/preview mode)
  */
 export async function getPublishedArticles(): Promise<Article[]> {
-  const allArticles = await getCollection('articles');
-  return allArticles.filter((article) => isVisible(article));
+  return getVisibleEntries('articles');
 }
 
 /**

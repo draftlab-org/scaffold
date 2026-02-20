@@ -38,45 +38,25 @@ const partners = filteredPartners
 		{
 			partners.map((partner) => (
 				<div class="flex flex-col items-center text-center">
-					{partner.url ? (
-						<a
-							href={partner.url}
-							target="_blank"
-							rel="noopener noreferrer"
-							class="group"
-							data-component
-						>
-							{partner.image && (
-								<div class="mb-4 flex h-32 w-full items-center justify-center rounded-lg bg-white p-6 shadow-sm transition-shadow group-hover:shadow-md">
-									<Image
-										src={partner.image}
-										alt={partner.name}
-										width={200}
-										height={128}
-										class="max-h-full max-w-full object-contain"
-									/>
-								</div>
-							)}
-							<h4 class="mb-2">{partner.name}</h4>
-							{partner.affiliation && <p class="">{partner.affiliation}</p>}
-						</a>
-					) : (
-						<>
-							{partner.image && (
-								<div class="mb-4 flex h-32 w-full items-center justify-center rounded-lg bg-white p-6 shadow-sm">
-									<Image
-										src={partner.image}
-										alt={partner.name}
-										width={200}
-										height={128}
-										class="max-h-full max-w-full object-contain"
-									/>
-								</div>
-							)}
-							<h4 class="mb-2">{partner.name}</h4>
-							{partner.affiliation && <p class="">{partner.affiliation}</p>}
-						</>
-					)}
+					<a
+						href={`/partners/${partner.id}`}
+						class="group"
+						data-component
+					>
+						{partner.image && (
+							<div class="mb-4 flex h-32 w-full items-center justify-center rounded-lg bg-white p-6 shadow-sm transition-shadow group-hover:shadow-md">
+								<Image
+									src={partner.image}
+									alt={partner.name}
+									width={200}
+									height={128}
+									class="max-h-full max-w-full object-contain"
+								/>
+							</div>
+						)}
+						<h4 class="mb-2">{partner.name}</h4>
+						{partner.affiliation && <p class="">{partner.affiliation}</p>}
+					</a>
 				</div>
 			))
 		}

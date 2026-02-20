@@ -1,5 +1,5 @@
-import { type CollectionEntry, getCollection } from 'astro:content';
-import { isVisible } from '@utils/content';
+import type { CollectionEntry } from 'astro:content';
+import { getVisibleEntries } from '@utils/content';
 
 export type Person = CollectionEntry<'people'>['data'];
 
@@ -15,21 +15,17 @@ export interface PersonData {
  * Get all visible people from the collection
  */
 export async function getAllPeople(): Promise<Person[]> {
-  const peopleEntries = await getCollection('people');
-  return peopleEntries
-    .filter((entry) => isVisible(entry))
-    .map((entry) => entry.data);
+  const entries = await getVisibleEntries('people');
+  return entries.map((entry) => entry.data);
 }
 
 /**
  * Creates a map of people by ID for quick lookups
  */
 export async function getPeopleMap(): Promise<Map<string, PersonData>> {
-  const allPeople = await getCollection('people');
+  const entries = await getVisibleEntries('people');
   return new Map(
-    allPeople
-      .filter((person) => isVisible(person))
-      .map((person) => [person.data.id, person.data as PersonData])
+    entries.map((person) => [person.data.id, person.data as PersonData])
   );
 }
 

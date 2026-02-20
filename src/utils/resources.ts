@@ -1,5 +1,5 @@
-import { type CollectionEntry, getCollection } from 'astro:content';
-import { isVisible } from '@utils/content';
+import type { CollectionEntry } from 'astro:content';
+import { getVisibleEntries } from '@utils/content';
 import { getPeopleMap, getPersonNames, type PersonData } from '@utils/people';
 
 export type Resource = CollectionEntry<'resources'>;
@@ -13,11 +13,9 @@ export interface ResourceCardData {
  * Get all visible resources sorted by year (newest first), then alphabetically
  */
 export async function getResources(): Promise<Resource[]> {
-  const allResources = await getCollection('resources');
+  const allResources = await getVisibleEntries('resources');
 
-  return allResources
-    .filter((resource) => isVisible(resource))
-    .sort((a, b) => {
+  return allResources.sort((a, b) => {
       if (b.data.year !== a.data.year) {
         return b.data.year - a.data.year;
       }

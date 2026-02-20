@@ -1,6 +1,7 @@
 title: Test sections
 status: published
 permalink: test-sections
+heroImage: /src/assets/backgrounds/anna-magenta-oT639KoYTKM-unsplash.jpg
 sections:
   - type: richText
     background:

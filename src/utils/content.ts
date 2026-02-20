@@ -1,3 +1,4 @@
+import { type CollectionEntry, type CollectionKey, getCollection } from 'astro:content';
 import { isDev, isPreview } from '@utils/dev';
 
 /**
@@ -10,6 +11,16 @@ export function isVisible(item: { data: { status?: string } }): boolean {
   if (status === 'published' || status === 'archived') return true;
   if (status === 'draft') return isDev || isPreview;
   return false;
+}
+
+/**
+ * Get all visible entries from a collection (filters by status).
+ */
+export async function getVisibleEntries<C extends CollectionKey>(
+  collection: C
+): Promise<CollectionEntry<C>[]> {
+  const entries = await getCollection(collection);
+  return entries.filter((entry) => isVisible(entry as any)) as CollectionEntry<C>[];
 }
 
 /**

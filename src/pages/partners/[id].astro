@@ -1,0 +1,86 @@
+---
+import { getCollection } from 'astro:content';
+import Image from '@components/atoms/Image.astro';
+import Tag from '@components/atoms/Tag.astro';
+import Hero from '@components/organisms/Hero.astro';
+import PageLayout from '@layouts/PageLayout.astro';
+import SectionLayout from '@layouts/SectionLayout.astro';
+import { isVisible } from '@utils/content';
+import type { GetStaticPaths } from 'astro';
+import IconExternalLink from '~icons/heroicons/arrow-top-right-on-square-20-solid';
+
+export const getStaticPaths = (async () => {
+	const partnerEntries = await getCollection('partners');
+	return partnerEntries
+		.filter((entry) => isVisible(entry))
+		.map((entry) => ({
+			params: { id: entry.data.id },
+			props: { partner: entry.data },
+		}));
+}) satisfies GetStaticPaths;
+
+const { partner } = Astro.props;
+---
+
+<PageLayout
+	title={`${partner.name}`}
+	description={partner.affiliation || `Partner: ${partner.name}`}
+>
+	<!-- Hero -->
+	<Hero
+		title={partner.name}
+		subtitle={partner.affiliation}
+		size="default"
+		background="white"
+	/>
+
+	<!-- Partner Details -->
+	<section class="py-16">
+		<div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+			<div class="flex flex-col items-center text-center">
+				<!-- Logo -->
+				{partner.image && (
+					<div class="mb-8 flex h-48 w-full max-w-sm items-center justify-center rounded-lg bg-white p-8 shadow-sm">
+						<Image
+							src={partner.image}
+							alt={partner.name}
+							width={300}
+							height={192}
+							class="max-h-full max-w-full object-contain"
+						/>
+					</div>
+				)}
+
+				<!-- Category -->
+				<div class="mb-6">
+					<Tag variant="primary" size="md">
+						{partner.category.charAt(0).toUpperCase() + partner.category.slice(1)}
+					</Tag>
+				</div>
+
+				<!-- Affiliation -->
+				{partner.affiliation && (
+					<p class="mb-6">{partner.affiliation}</p>
+				)}
+
+				<!-- Website Link -->
+				{partner.url && (
+					<a
+						href={partner.url}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="button-base button-primary button-size-md mb-8 inline-flex items-center"
+					>
+						Visit Website
+						<IconExternalLink class="ml-1 h-4 w-4" />
+					</a>
+				)}
+
+				<!-- Back Button -->
+				<a onclick="history.back()" class="default-link cursor-pointer">
+					← Back
+				</a>
+			</div>
+		</div>
+	</section>
+</PageLayout>

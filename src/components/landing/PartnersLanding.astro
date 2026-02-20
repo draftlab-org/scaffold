@@ -1,0 +1,29 @@
+---
+import PartnersFilteredGrid from '@components/organisms/PartnersFilteredGrid';
+import { getAllCategories, getAllPartners } from '@utils/partners';
+
+// Get all visible partners, sorted by order
+const partners = await getAllPartners();
+
+// Get all categories for filtering
+const categories = await getAllCategories();
+
+// Serialize for the React component
+const serializedPartners = partners.map((partner) => ({
+  id: partner.id,
+  name: partner.name,
+  affiliation: partner.affiliation,
+  url: partner.url,
+  category: partner.category,
+  image: partner.image?.src,
+}));
+---
+
+<section class="py-16">
+  <PartnersFilteredGrid
+    client:load
+    partners={serializedPartners}
+    categories={categories}
+    groupByCategory={true}
+  />
+</section>

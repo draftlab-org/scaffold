@@ -1,6 +1,10 @@
 ---
 import { getEntry } from 'astro:content';
 import Banner from '@components/atoms/Banner.astro';
+import ArticlesLanding from '@components/landing/ArticlesLanding.astro';
+import PeopleLanding from '@components/landing/PeopleLanding.astro';
+import PartnersLanding from '@components/landing/PartnersLanding.astro';
+import ResourcesLanding from '@components/landing/ResourcesLanding.astro';
 import HeroSection from '@components/sections/HeroSection.astro';
 import Sections from '@components/sections/Sections.astro';
 import PageLayout from '@layouts/PageLayout.astro';
@@ -27,6 +31,15 @@ const { page } = Astro.props;
 const siteConfig = await getEntry('site', 'config');
 const archivedBanner = siteConfig?.data.archivedBanner;
 
+// Landing components for collection index pages
+const permalink = page.data.permalink;
+const landingPages: Record<string, string> = {
+  articles: 'articles',
+  people: 'people',
+  partners: 'partners',
+  resources: 'resources',
+};
+const landingType = landingPages[permalink];
 ---
 
 <PageLayout title={page.data.title} description={page.data.description}>
@@ -41,4 +54,26 @@ const archivedBanner = siteConfig?.data.archivedBanner;
 	</SectionLayout>
 
 	<Sections sectionItems={page.data.sections} />
+
+	{/* Append landing content for collection index pages */}
+	{landingType === 'articles' && (
+		<SectionLayout>
+			<ArticlesLanding />
+		</SectionLayout>
+	)}
+	{landingType === 'people' && (
+		<SectionLayout>
+			<PeopleLanding />
+		</SectionLayout>
+	)}
+	{landingType === 'partners' && (
+		<SectionLayout>
+			<PartnersLanding />
+		</SectionLayout>
+	)}
+	{landingType === 'resources' && (
+		<SectionLayout>
+			<ResourcesLanding />
+		</SectionLayout>
+	)}
 </PageLayout>

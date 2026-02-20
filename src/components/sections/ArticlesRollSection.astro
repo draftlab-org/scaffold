@@ -51,86 +51,83 @@ const getAuthorNames = (authorIds: string[]) => {
 ---
 
 <div class="py-12">
-  {/* Section Header */}
-  <div class="mb-8 flex items-end justify-between">
-    <Heading level={2} class="text-3xl">{title}</Heading>
-    {showViewAll && (
-      <Button variant="ghost" size="sm" as="a" href="/articles">
-        View All Articles
-        <IconArrowRight class="ml-1 h-4 w-4" />
-      </Button>
-    )}
-  </div>
+	{/* Section Header */}
+	<div class="mb-8 flex items-end justify-between">
+		<Heading level={2} class="text-3xl">{title}</Heading>
+		{
+			showViewAll && (
+				<Button variant="ghost" size="sm" as="a" href="/articles">
+					View All Articles
+					<IconArrowRight class="ml-1 h-4 w-4" />
+				</Button>
+			)
+		}
+	</div>
 
-  {/* Articles Grid */}
-  {articles.length === 0 ? (
-    <div class="py-12 text-center">
-      <p class="text-lg text-gray-600">
-        No articles available yet. Check back soon!
-      </p>
-    </div>
-  ) : (
-    <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-      {articles.map((article) => (
-        <Card variant="bordered" class="flex h-full flex-col overflow-hidden">
-          {article.data.heroImage && (
-            <a href={getArticleUrl(article)} class="block">
-              <Image
-                src={article.data.heroImage as ImageMetadata}
-                alt={article.data.title}
-                width={400}
-                height={225}
-                class="h-48 w-full object-cover transition-transform duration-300 hover:scale-105"
-              />
-            </a>
-          )}
-          <div class="flex h-full flex-col p-6">
-            {/* Draft badge (only visible in dev) */}
-            {isDev && article.data.status === 'draft' && (
-              <div class="mb-3">
-                <Tag variant="highlight" class="font-bold">
-                  DRAFT
-                </Tag>
-              </div>
-            )}
+	{/* Articles Grid */}
+	{
+		articles.length === 0 ? (
+			<div class="py-12 text-center">
+				<p class="text-lg text-gray-600">
+					No articles available yet. Check back soon!
+				</p>
+			</div>
+		) : (
+			<div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+				{articles.map((article) => (
+					<Card variant="bordered" class="flex h-full flex-col overflow-hidden">
+						{article.data.heroImage && (
+							<a href={getArticleUrl(article)} class="block">
+								<Image
+									src={article.data.heroImage as ImageMetadata}
+									alt={article.data.title}
+									width={400}
+									height={225}
+									class="h-48 w-full object-cover transition-transform duration-300 hover:scale-105"
+								/>
+							</a>
+						)}
+						<div class="flex h-full flex-col p-6">
+							{/* Draft badge (only visible in dev) */}
+							{isDev && article.data.status === 'draft' && (
+								<div class="mb-3">
+									<Tag variant="highlight" class="font-bold">
+										DRAFT
+									</Tag>
+								</div>
+							)}
 
-            {/* Tags */}
-            <div class="mb-3 flex flex-wrap gap-2">
-              {article.data.tags.slice(0, 2).map((tag) => (
-                <Tag variant="primary" size="sm">{tag}</Tag>
-              ))}
-            </div>
+							{/* Tags */}
+							<div class="mb-3 flex flex-wrap gap-2">
+								{article.data.tags.slice(0, 2).map((tag) => (
+									<Tag variant="primary" size="sm">
+										{tag}
+									</Tag>
+								))}
+							</div>
 
-            {/* Title */}
-            <h3 class="mb-3 line-clamp-2 text-xl font-semibold">
-              <a
-                href={getArticleUrl(article)}
-                class="transition-colors hover:text-secondary-600"
-              >
-                {article.data.title}
-              </a>
-            </h3>
+							{/* Title */}
+							<h3 class="text-xl font-bold md:text-2xl">
+								<a
+									href={getArticleUrl(article)}
+									class="text-inherit no-underline transition-colors hover:text-secondary-600"
+								>
+									{article.data.title}
+								</a>
+							</h3>
 
-            {/* Metadata */}
-            <div class="mb-4 space-y-1 text-sm text-gray-500">
-              <p>By {getAuthorNames(article.data.authors)}</p>
-              <p>{formatArticleDate(article.data.publishedDate)}</p>
-            </div>
+							{/* Metadata */}
+							<div class="mb-4 space-y-1 text-sm text-gray-500">
+								<p>By {getAuthorNames(article.data.authors)}</p>
+								<p>{formatArticleDate(article.data.publishedDate)}</p>
+							</div>
 
-            {/* Spacer */}
-            <div class="grow" />
-
-            {/* Read More */}
-            <a
-              href={getArticleUrl(article)}
-              class="inline-flex items-center text-sm font-medium text-secondary-600 underline decoration-dotted underline-offset-4 transition-colors hover:text-secondary-700 hover:decoration-solid"
-            >
-              Read more
-              <IconArrowRight class="ml-1 h-4 w-4" />
-            </a>
-          </div>
-        </Card>
-      ))}
-    </div>
-  )}
+							{/* Spacer */}
+							<div class="grow" />
+						</div>
+					</Card>
+				))}
+			</div>
+		)
+	}
 </div>

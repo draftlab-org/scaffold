@@ -168,7 +168,7 @@ export default function ArticlesFilteredGrid({
 
                 {/* Tags */}
                 <div className="mb-3 flex flex-wrap gap-2">
-                  {article.tags.slice(0, 3).map((tag) => (
+                  {article.tags.slice(0, 2).map((tag) => (
                     <span
                       key={tag}
                       className="tag-base tag-primary tag-size-sm"
@@ -179,36 +179,22 @@ export default function ArticlesFilteredGrid({
                 </div>
 
                 {/* Title */}
-                <h3 className="mb-3 line-clamp-2 text-xl font-semibold">
+                <h3 className="text-xl font-bold md:text-2xl">
                   <a
                     href={`/articles/${article.slug}`}
-                    className="transition-colors hover:text-secondary-600"
+                    className="text-inherit no-underline transition-colors hover:text-secondary-600"
                   >
                     {article.title}
                   </a>
                 </h3>
 
                 {/* Metadata */}
-                <div className="mb-4 space-y-1">
-                  <p className="text-sm">
-                    By {getAuthorNames(article.authors)}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    {formatDate(article.publishedDate)}
-                  </p>
+                <div className="mb-4 space-y-1 text-sm text-gray-500">
+                  <p>By {getAuthorNames(article.authors)}</p>
+                  <p>{formatDate(article.publishedDate)}</p>
                 </div>
 
                 <div className="grow" />
-
-                {/* Read More */}
-                <div className="mt-4">
-                  <a
-                    href={`/articles/${article.slug}`}
-                    className="button-base button-outline button-size-sm w-full text-center"
-                  >
-                    Read Article
-                  </a>
-                </div>
               </div>
             </div>
           ))}
