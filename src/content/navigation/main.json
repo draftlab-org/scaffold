@@ -35,6 +35,13 @@
             "type": "internal",
             "pageRef": "/resources"
           }
+        },
+        {
+          "label": "Partners",
+          "link": {
+            "type": "internal",
+            "pageRef": "/partners"
+          }
         }
       ]
     },
