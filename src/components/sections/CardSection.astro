@@ -52,7 +52,11 @@ const cardsWithHtml = await Promise.all(
 		<!-- Section Header -->
 		<div class="mb-12 text-center">
 			<h2 class="mb-4">{title}</h2>
-			{descriptionHtml && <div class="prose" set:html={descriptionHtml} />}
+			{
+				descriptionHtml && (
+					<div class="m-auto prose" set:html={descriptionHtml} />
+				)
+			}
 		</div>
 
 		<!-- Cards Grid -->
@@ -75,7 +79,9 @@ const cardsWithHtml = await Promise.all(
 								</div>
 							)}
 							<h3 class="mb-3">{card.title}</h3>
-							{card.contentHtml && <div class="prose mb-4" set:html={card.contentHtml} />}
+							{card.contentHtml && (
+								<div class="prose mb-4" set:html={card.contentHtml} />
+							)}
 							{card.button && (
 								<Button
 									type="button"
