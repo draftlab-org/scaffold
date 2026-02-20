@@ -9,9 +9,10 @@ import Hero from '@components/organisms/Hero.astro';
 import PageLayout from '@layouts/PageLayout.astro';
 import SectionLayout from '@layouts/SectionLayout.astro';
 import { isVisible, mapColorToVariant } from '@utils/content';
-import { formatCategory, getResources } from '@utils/resources';
 import { getPeopleMap, resolvePeople } from '@utils/people';
+import { formatCategory, getResources } from '@utils/resources';
 import type { GetStaticPaths } from 'astro';
+import IconExternalLink from '~icons/heroicons/arrow-top-right-on-square-20-solid';
 
 export const getStaticPaths = (async () => {
 	const resources = await getResources();
@@ -42,15 +43,14 @@ const siteConfig = await getEntry('site', 'config');
 const archivedBanner = siteConfig?.data.archivedBanner;
 ---
 
-<PageLayout
-	title={`${title} - Resource`}
-	description={description}
->
-	{status === 'archived' && archivedBanner && (
-		<Banner variant={mapColorToVariant(archivedBanner.color)} dismissible>
-			{archivedBanner.message}
-		</Banner>
-	)}
+<PageLayout title={`${title} - Resource`} description={description}>
+	{
+		status === 'archived' && archivedBanner && (
+			<Banner variant={mapColorToVariant(archivedBanner.color)} dismissible>
+				{archivedBanner.message}
+			</Banner>
+		)
+	}
 
 	<!-- Hero -->
 	<SectionLayout sectionLabel="hero">
@@ -58,9 +58,13 @@ const archivedBanner = siteConfig?.data.archivedBanner;
 			<div class="flex flex-wrap items-center gap-2">
 				<Tag variant="primary" size="md">{formatCategory(category)}</Tag>
 				<Tag variant="secondary" size="md">{String(year)}</Tag>
-				{tags?.map((tag) => (
-					<Tag variant="gray" size="md">{tag}</Tag>
-				))}
+				{
+					tags?.map((tag) => (
+						<Tag variant="gray" size="md">
+							{tag}
+						</Tag>
+					))
+				}
 			</div>
 		</Hero>
 	</SectionLayout>
@@ -69,51 +73,68 @@ const archivedBanner = siteConfig?.data.archivedBanner;
 	<SectionLayout>
 		<div class="mx-auto max-w-4xl py-12">
 			{/* Description */}
-			{description && (
-				<div class="mb-8">
-					<p class="text-lg leading-relaxed text-neutral-700">{description}</p>
-				</div>
-			)}
+			{
+				description && (
+					<div class="mb-8">
+						<p class="text-neutral-700 text-lg leading-relaxed">
+							{description}
+						</p>
+					</div>
+				)
+			}
 
 			{/* Metadata */}
-			<div class="mb-8 rounded-lg border border-neutral-200 p-6">
+			<div class="border-neutral-200 mb-8 rounded-lg border p-6">
 				<dl class="grid gap-4 sm:grid-cols-2">
-					{authors && (
-						<div>
-							<dt class="text-sm font-medium text-neutral-500">Authors</dt>
-							<dd class="mt-1 text-neutral-900">{authors}</dd>
-						</div>
-					)}
+					{
+						authors && (
+							<div>
+								<dt class="text-neutral-500 text-sm font-medium">Authors</dt>
+								<dd class="text-neutral-900 mt-1">{authors}</dd>
+							</div>
+						)
+					}
 					<div>
-						<dt class="text-sm font-medium text-neutral-500">Category</dt>
-						<dd class="mt-1 text-neutral-900">{formatCategory(category)}</dd>
+						<dt class="text-neutral-500 text-sm font-medium">Category</dt>
+						<dd class="text-neutral-900 mt-1">{formatCategory(category)}</dd>
 					</div>
 					<div>
-						<dt class="text-sm font-medium text-neutral-500">Year</dt>
-						<dd class="mt-1 text-neutral-900">{year}</dd>
+						<dt class="text-neutral-500 text-sm font-medium">Year</dt>
+						<dd class="text-neutral-900 mt-1">{year}</dd>
 					</div>
-					{publishedDate && (
-						<div>
-							<dt class="text-sm font-medium text-neutral-500">Published</dt>
-							<dd class="mt-1 text-neutral-900">{formatDate(publishedDate)}</dd>
-						</div>
-					)}
+					{
+						publishedDate && (
+							<div>
+								<dt class="text-neutral-500 text-sm font-medium">Published</dt>
+								<dd class="text-neutral-900 mt-1">
+									{formatDate(publishedDate)}
+								</dd>
+							</div>
+						)
+					}
 				</dl>
 			</div>
 
 			{/* External Links */}
-			{externalLinks && externalLinks.length > 0 && (
-				<div class="mb-8 flex flex-wrap gap-3">
-					{externalLinks.map((link) => (
-						<Button variant="primary" size="md" as="a" href={link.url} target="_blank" rel="noopener noreferrer">
-							{link.label}
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="ml-1 h-4 w-4">
-								<path fill-rule="evenodd" d="M4.25 5.5a.75.75 0 0 0-.75.75v8.5c0 .414.336.75.75.75h8.5a.75.75 0 0 0 .75-.75v-4a.75.75 0 0 1 1.5 0v4A2.25 2.25 0 0 1 12.75 17h-8.5A2.25 2.25 0 0 1 2 14.75v-8.5A2.25 2.25 0 0 1 4.25 4h5a.75.75 0 0 1 0 1.5h-5Zm7.25-.75a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0V6.31l-5.47 5.47a.75.75 0 1 1-1.06-1.06l5.47-5.47H12.25a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd" />
-							</svg>
-						</Button>
-					))}
-				</div>
-			)}
+			{
+				externalLinks && externalLinks.length > 0 && (
+					<div class="mb-8 flex flex-wrap gap-3">
+						{externalLinks.map((link) => (
+							<Button
+								variant="primary"
+								size="md"
+								as="a"
+								href={link.url}
+								target="_blank"
+								rel="noopener noreferrer"
+							>
+								{link.label}
+								<IconExternalLink class="ml-1 h-4 w-4" />
+							</Button>
+						))}
+					</div>
+				)
+			}
 
 			<!-- Back Link -->
 			<div class="mt-8">
@@ -125,36 +146,38 @@ const archivedBanner = siteConfig?.data.archivedBanner;
 	</SectionLayout>
 
 	<!-- Contributors Section -->
-	{resolvedContributors.length > 0 && (
-		<SectionLayout bgColor="gray">
-			<div class="mx-auto max-w-4xl py-12">
-				<h2 class="mb-8 text-2xl font-bold">
-					{resolvedContributors.length === 1 ? 'Contributor' : 'Contributors'}
-				</h2>
-				<div class="grid gap-6 md:grid-cols-2">
-					{resolvedContributors.map((contributor) => (
-						<Link
-							variant="unstyled"
-							href={`/people/${contributor.id}`}
-							class="flex gap-4 rounded-lg bg-white p-6 no-underline transition hover:shadow-sm"
-						>
-							{contributor.headshot && (
-								<Image
-									src={contributor.headshot}
-									alt={contributor.name}
-									class="h-16 w-16 rounded-full object-cover"
-								/>
-							)}
-							<div>
-								<h3 class="mb-1 text-lg font-semibold">{contributor.name}</h3>
-								{contributor.title && (
-									<p class="text-sm text-gray-600">{contributor.title}</p>
+	{
+		resolvedContributors.length > 0 && (
+			<SectionLayout bgColor="gray">
+				<div class="mx-auto max-w-4xl py-12">
+					<h2 class="mb-8 text-2xl font-bold">
+						{resolvedContributors.length === 1 ? 'Contributor' : 'Contributors'}
+					</h2>
+					<div class="grid gap-6 md:grid-cols-2">
+						{resolvedContributors.map((contributor) => (
+							<Link
+								variant="unstyled"
+								href={`/people/${contributor.id}`}
+								class="flex gap-4 rounded-lg bg-white p-6 no-underline transition hover:shadow-sm"
+							>
+								{contributor.headshot && (
+									<Image
+										src={contributor.headshot}
+										alt={contributor.name}
+										class="h-16 w-16 rounded-full object-cover"
+									/>
 								)}
-							</div>
-						</Link>
-					))}
+								<div>
+									<h3 class="mb-1 text-lg font-semibold">{contributor.name}</h3>
+									{contributor.title && (
+										<p class="text-sm">{contributor.title}</p>
+									)}
+								</div>
+							</Link>
+						))}
+					</div>
 				</div>
-			</div>
-		</SectionLayout>
-	)}
+			</SectionLayout>
+		)
+	}
 </PageLayout>

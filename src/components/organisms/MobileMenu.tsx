@@ -10,13 +10,15 @@ import { siteConfig } from '@lib/config';
 import type { NavItem } from '@utils/navigation';
 import { isExternalLink, resolveFlexibleLink } from '@utils/navigation';
 import { useState } from 'react';
+import IconBars3 from '~icons/heroicons/bars-3';
+import IconXMark from '~icons/heroicons/x-mark';
+import IconChevronDown from '~icons/heroicons/chevron-down-20-solid';
+import IconExternalLink from '~icons/heroicons/arrow-top-right-on-square-20-solid';
 
 interface MobileMenuProps {
   items: NavItem[];
   currentPath?: string;
 }
-
-// TODO: #17 clean up manually added SVGs, check external link
 
 export default function MobileMenu({
   items,
@@ -38,20 +40,7 @@ export default function MobileMenu({
         className="button-base button-primary inline-flex cursor-pointer items-center justify-center rounded-md p-1"
         aria-label="Open menu"
       >
-        <svg
-          className="size-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth="1.5"
-          stroke="currentColor"
-          aria-hidden="true"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-          />
-        </svg>
+        <IconBars3 class="size-6" aria-hidden="true" />
       </button>
 
       {/* Mobile menu dialog */}
@@ -77,20 +66,7 @@ export default function MobileMenu({
                 className="-m-2.5 p-2.5"
                 aria-label="Close menu"
               >
-                <svg
-                  className="size-6 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                <IconXMark class="size-6 text-white" aria-hidden="true" />
               </button>
             </div>
 
@@ -114,19 +90,7 @@ export default function MobileMenu({
                               <Disclosure as="div">
                                 <DisclosureButton className="group flex w-full items-center gap-x-4 text-xl text-black">
                                   {item.label}
-                                  <svg
-                                    role="graphics-symbol img"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 20 20"
-                                    fill="currentColor"
-                                    className="ml-auto h-5 w-5 shrink-0 transition-transform group-data-open:rotate-180"
-                                  >
-                                    <path
-                                      fillRule="evenodd"
-                                      d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
-                                      clipRule="evenodd"
-                                    />
-                                  </svg>
+                                  <IconChevronDown class="ml-auto h-5 w-5 shrink-0 transition-transform group-data-open:rotate-180" />
                                 </DisclosureButton>
                                 <DisclosurePanel
                                   as="ul"
@@ -157,24 +121,7 @@ export default function MobileMenu({
                                         >
                                           {child.label}
                                           {external && (
-                                            <svg
-                                              role="graphics-symbol img"
-                                              xmlns="http://www.w3.org/2000/svg"
-                                              viewBox="0 0 20 20"
-                                              fill="currentColor"
-                                              className="h-4 w-4 opacity-70"
-                                            >
-                                              <path
-                                                fillRule="evenodd"
-                                                d="M4.25 5.5a.75.75 0 0 0-.75.75v8.5c0 .414.336.75.75.75h8.5a.75.75 0 0 0 .75-.75v-4a.75.75 0 0 1 1.5 0v4A2.25 2.25 0 0 1 12.75 17h-8.5A2.25 2.25 0 0 1 2 14.75v-8.5A2.25 2.25 0 0 1 4.25 4h5a.75.75 0 0 1 0 1.5h-5Z"
-                                                clipRule="evenodd"
-                                              />
-                                              <path
-                                                fillRule="evenodd"
-                                                d="M6.194 12.753a.75.75 0 0 0 1.06.053L16.5 4.44v2.81a.75.75 0 0 0 1.5 0v-4.5a.75.75 0 0 0-.75-.75h-4.5a.75.75 0 0 0 0 1.5h2.553l-9.056 8.194a.75.75 0 0 0-.053 1.06Z"
-                                                clipRule="evenodd"
-                                              />
-                                            </svg>
+                                            <IconExternalLink class="h-4 w-4 opacity-70" />
                                           )}
                                         </a>
                                       </li>
@@ -202,24 +149,7 @@ export default function MobileMenu({
                             >
                               {item.label}
                               {external && (
-                                <svg
-                                  role="graphics-symbol img"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  viewBox="0 0 20 20"
-                                  fill="currentColor"
-                                  className="h-4 w-4 opacity-70"
-                                >
-                                  <path
-                                    fillRule="evenodd"
-                                    d="M4.25 5.5a.75.75 0 0 0-.75.75v8.5c0 .414.336.75.75.75h8.5a.75.75 0 0 0 .75-.75v-4a.75.75 0 0 1 1.5 0v4A2.25 2.25 0 0 1 12.75 17h-8.5A2.25 2.25 0 0 1 2 14.75v-8.5A2.25 2.25 0 0 1 4.25 4h5a.75.75 0 0 1 0 1.5h-5Z"
-                                    clipRule="evenodd"
-                                  />
-                                  <path
-                                    fillRule="evenodd"
-                                    d="M6.194 12.753a.75.75 0 0 0 1.06.053L16.5 4.44v2.81a.75.75 0 0 0 1.5 0v-4.5a.75.75 0 0 0-.75-.75h-4.5a.75.75 0 0 0 0 1.5h2.553l-9.056 8.194a.75.75 0 0 0-.053 1.06Z"
-                                    clipRule="evenodd"
-                                  />
-                                </svg>
+                                <IconExternalLink class="h-4 w-4 opacity-70" />
                               )}
                             </a>
                           </li>

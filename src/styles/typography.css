@@ -25,7 +25,7 @@
   h4,
   h5,
   h6 {
-    @apply font-serif;
+    @apply font-serif font-bold;
   }
   h1 {
     @apply text-4xl md:text-6xl;

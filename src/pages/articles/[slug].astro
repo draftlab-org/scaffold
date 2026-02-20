@@ -81,11 +81,13 @@ const archivedBanner = siteConfig?.data.archivedBanner;
 	description={`Article by ${authors.map((a) => a?.name).join(', ')}`}
 	image={heroImage}
 >
-	{status === 'archived' && archivedBanner && (
-		<Banner variant={mapColorToVariant(archivedBanner.color)} dismissible>
-			{archivedBanner.message}
-		</Banner>
-	)}
+	{
+		status === 'archived' && archivedBanner && (
+			<Banner variant={mapColorToVariant(archivedBanner.color)} dismissible>
+				{archivedBanner.message}
+			</Banner>
+		)
+	}
 
 	<!-- Article Header -->
 	<SectionLayout bgImage={heroImage} sectionLabel="hero">
@@ -181,7 +183,7 @@ const archivedBanner = siteConfig?.data.archivedBanner;
 									</h3>
 
 									{/* Metadata: Authors and Date */}
-									<div class="mt-auto text-sm text-gray-600">
+									<div class="mt-auto text-sm">
 										<p>
 											By{' '}
 											{relatedArticle.resolvedAuthors.map((a, i) => (
@@ -232,7 +234,7 @@ const archivedBanner = siteConfig?.data.archivedBanner;
 
 										<div>
 											<h3 class="mb-1 text-lg font-semibold">{author.name}</h3>
-											<p class="text-sm text-gray-600">{author.title}</p>
+											<p class="text-sm">{author.title}</p>
 										</div>
 									</Link>
 								)

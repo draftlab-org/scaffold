@@ -66,9 +66,7 @@ const partners = filteredPartners
 								</div>
 							)}
 							<h4 class="mb-2">{partner.name}</h4>
-							{partner.affiliation && (
-								<p class="text-gray-600">{partner.affiliation}</p>
-							)}
+							{partner.affiliation && <p class="">{partner.affiliation}</p>}
 						</a>
 					) : (
 						<>
@@ -84,9 +82,7 @@ const partners = filteredPartners
 								</div>
 							)}
 							<h4 class="mb-2">{partner.name}</h4>
-							{partner.affiliation && (
-								<p class="text-gray-600">{partner.affiliation}</p>
-							)}
+							{partner.affiliation && <p class="">{partner.affiliation}</p>}
 						</>
 					)}
 				</div>

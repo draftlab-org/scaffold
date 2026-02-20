@@ -47,9 +47,8 @@ export default function ArticlesFilteredGrid({
     return initial;
   }, []);
 
-  const [filters, setFilters] = useState<Record<string, string | null>>(
-    getInitialFilters
-  );
+  const [filters, setFilters] =
+    useState<Record<string, string | null>>(getInitialFilters);
 
   // Sync URL on filter change
   useEffect(() => {
@@ -136,7 +135,7 @@ export default function ArticlesFilteredGrid({
 
       {filteredArticles.length === 0 ? (
         <div className="py-12 text-center">
-          <p className="text-lg text-gray-600">
+          <p className="text-lg">
             No articles match your filters. Try adjusting your selection.
           </p>
         </div>
@@ -191,7 +190,7 @@ export default function ArticlesFilteredGrid({
 
                 {/* Metadata */}
                 <div className="mb-4 space-y-1">
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm">
                     By {getAuthorNames(article.authors)}
                   </p>
                   <p className="text-sm text-gray-500">

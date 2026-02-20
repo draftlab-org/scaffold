@@ -5,7 +5,9 @@ import peopleCategories from './categories/people.json';
 import resourceCategories from './categories/resources.json';
 
 // Shared status field for content visibility across all collections
-const statusSchema = z.enum(['draft', 'published', 'archived']).default('draft');
+const statusSchema = z
+  .enum(['draft', 'published', 'archived'])
+  .default('draft');
 
 // Shared color palette enum matching the site's design tokens
 const colorPaletteSchema = z.enum([
@@ -149,6 +151,10 @@ const pagesCollection = defineCollection({
       title: z.string(),
       description: z.string().optional(),
       heroImage: image().optional(),
+      background: z
+        .enum(['white', 'gray', 'gradient', 'highlight'])
+        .default('white')
+        .optional(),
       permalink: z.string().optional(),
       status: statusSchema,
       sections: z
@@ -223,14 +229,18 @@ const siteCollection = defineCollection({
         description: z.string().optional(),
         bottom: z.string(),
       }),
-      archivedBanner: z.object({
-        message: z.string(),
-        color: colorPaletteSchema,
-      }).optional(),
-      cookieConsent: z.object({
-        message: z.string(),
-        googleAnalyticsId: z.string().optional(),
-      }).optional(),
+      archivedBanner: z
+        .object({
+          message: z.string(),
+          color: colorPaletteSchema,
+        })
+        .optional(),
+      cookieConsent: z
+        .object({
+          message: z.string(),
+          googleAnalyticsId: z.string().optional(),
+        })
+        .optional(),
     }),
 });
 

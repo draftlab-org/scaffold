@@ -7,7 +7,7 @@ import Hero from '@components/organisms/Hero.astro';
 import PageLayout from '@layouts/PageLayout.astro';
 import SectionLayout from '@layouts/SectionLayout.astro';
 import { isVisible } from '@utils/content';
-import { getResources, formatCategory } from '@utils/resources';
+import { formatCategory, getResources } from '@utils/resources';
 import type { GetStaticPaths } from 'astro';
 
 // Generate static paths for visible people only
@@ -78,7 +78,7 @@ const formatDate = (date: Date) => {
 				</h2>
 
 				<!-- Title -->
-				<p class="mb-6 text-gray-600">
+				<p class="mb-6">
 					{person.title}
 				</p>
 
@@ -107,66 +107,82 @@ const formatDate = (date: Date) => {
 	</section>
 
 	<!-- Articles by this person -->
-	{personArticles.length > 0 && (
-		<SectionLayout bgColor="gray">
-			<div class="mx-auto max-w-4xl py-12">
-				<h2 class="mb-8 text-2xl font-bold">Articles</h2>
-				<div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-					{personArticles.map((article) => (
-						<Link
-							variant="unstyled"
-							href={`/articles/${article.slug}`}
-							class="flex flex-col overflow-hidden rounded-lg bg-white no-underline transition hover:shadow-lg"
-						>
-							{article.data.heroImage && (
-								<Image
-									src={article.data.heroImage}
-									alt={article.data.title}
-									width={400}
-									height={200}
-									class="h-48 w-full object-cover"
-								/>
-							)}
-							<div class="flex flex-col gap-3 p-6">
-								<div class="flex flex-wrap gap-2">
-									{article.data.tags.slice(0, 2).map((tag) => (
-										<Tag variant="primary" size="sm">{tag}</Tag>
-									))}
+	{
+		personArticles.length > 0 && (
+			<SectionLayout bgColor="gray">
+				<div class="mx-auto max-w-4xl py-12">
+					<h2 class="mb-8 text-2xl font-bold">Articles</h2>
+					<div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+						{personArticles.map((article) => (
+							<Link
+								variant="unstyled"
+								href={`/articles/${article.slug}`}
+								class="flex flex-col overflow-hidden rounded-lg bg-white no-underline transition hover:shadow-lg"
+							>
+								{article.data.heroImage && (
+									<Image
+										src={article.data.heroImage}
+										alt={article.data.title}
+										width={400}
+										height={200}
+										class="h-48 w-full object-cover"
+									/>
+								)}
+								<div class="flex flex-col gap-3 p-6">
+									<div class="flex flex-wrap gap-2">
+										{article.data.tags.slice(0, 2).map((tag) => (
+											<Tag variant="primary" size="sm">
+												{tag}
+											</Tag>
+										))}
+									</div>
+									<h3 class="line-clamp-2 text-lg font-semibold">
+										{article.data.title}
+									</h3>
+									<p class="mt-auto text-xs text-gray-500">
+										{formatDate(article.data.publishedDate)}
+									</p>
 								</div>
-								<h3 class="line-clamp-2 text-lg font-semibold">{article.data.title}</h3>
-								<p class="mt-auto text-xs text-gray-500">{formatDate(article.data.publishedDate)}</p>
-							</div>
-						</Link>
-					))}
+							</Link>
+						))}
+					</div>
 				</div>
-			</div>
-		</SectionLayout>
-	)}
+			</SectionLayout>
+		)
+	}
 
 	<!-- Resources by this person -->
-	{personResources.length > 0 && (
-		<SectionLayout bgColor={personArticles.length > 0 ? 'white' : 'gray'}>
-			<div class="mx-auto max-w-4xl py-12">
-				<h2 class="mb-8 text-2xl font-bold">Resources</h2>
-				<div class="grid gap-6 md:grid-cols-2">
-					{personResources.map((resource) => (
-						<Link
-							variant="unstyled"
-							href={`/resources/${resource.data.id}`}
-							class="flex flex-col gap-3 rounded-lg bg-white p-6 no-underline shadow-sm transition hover:shadow-md"
-						>
-							<div class="flex flex-wrap items-center gap-2">
-								<Tag variant="primary" size="sm">{formatCategory(resource.data.category)}</Tag>
-								<Tag variant="secondary" size="sm">{String(resource.data.year)}</Tag>
-							</div>
-							<h3 class="text-lg font-semibold">{resource.data.title}</h3>
-							{resource.data.description && (
-								<p class="line-clamp-2 text-sm text-neutral-600">{resource.data.description}</p>
-							)}
-						</Link>
-					))}
+	{
+		personResources.length > 0 && (
+			<SectionLayout bgColor={personArticles.length > 0 ? 'white' : 'gray'}>
+				<div class="mx-auto max-w-4xl py-12">
+					<h2 class="mb-8 text-2xl font-bold">Resources</h2>
+					<div class="grid gap-6 md:grid-cols-2">
+						{personResources.map((resource) => (
+							<Link
+								variant="unstyled"
+								href={`/resources/${resource.data.id}`}
+								class="flex flex-col gap-3 rounded-lg bg-white p-6 no-underline shadow-sm transition hover:shadow-md"
+							>
+								<div class="flex flex-wrap items-center gap-2">
+									<Tag variant="primary" size="sm">
+										{formatCategory(resource.data.category)}
+									</Tag>
+									<Tag variant="secondary" size="sm">
+										{String(resource.data.year)}
+									</Tag>
+								</div>
+								<h3 class="text-lg font-semibold">{resource.data.title}</h3>
+								{resource.data.description && (
+									<p class="text-neutral-600 line-clamp-2 text-sm">
+										{resource.data.description}
+									</p>
+								)}
+							</Link>
+						))}
+					</div>
 				</div>
-			</div>
-		</SectionLayout>
-	)}
+			</SectionLayout>
+		)
+	}
 </PageLayout>

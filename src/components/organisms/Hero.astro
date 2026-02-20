@@ -1,5 +1,4 @@
 ---
-import Button from '@components/atoms/Button.astro';
 import Heading from '@components/atoms/Heading.astro';
 import Text from '@components/atoms/Text.astro';
 
@@ -8,7 +7,7 @@ export interface Props {
   subtitle?: string;
   align?: 'left' | 'center' | 'right';
   size?: 'default' | 'large';
-  background?: 'white' | 'gray' | 'gradient';
+  background?: 'white' | 'gray' | 'gradient' | 'highlight';
   class?: string;
 }
 
@@ -36,9 +35,10 @@ const backgrounds = {
   white: 'bg-white/90',
   gray: 'bg-gray-50',
   gradient: 'bg-gradient-to-br from-blue-50 to-indigo-100',
+	highlight: ''
 };
 
-const containerClasses = `${sizes[size]} ${backgrounds[background]} ${className}`;
+const containerClasses = `relative ${sizes[size]} ${backgrounds[background]} ${className}`;
 ---
 
 <section class={containerClasses}>
@@ -52,7 +52,7 @@ const containerClasses = `${sizes[size]} ${backgrounds[background]} ${className}
 			<!-- Subtitle -->
 			{
 				subtitle && (
-					<Text size="xl" class="mb-8 text-gray-600">
+					<Text size="xl" class="mb-8">
 						{subtitle}
 					</Text>
 				)

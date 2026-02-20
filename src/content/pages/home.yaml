@@ -1,10 +1,9 @@
 title: Draftlab Scaffold
 status: published
-description: A modern web development starter with Astro, Tailwind CSS, and React
+background: highlight
+# heroImage: /src/assets/highlight.svg
+description: A pretty good web development starter
 sections:
-  - type: hero
-    title: The Draftlab Scaffold template
-    subtitle: Atomic elements with Astro, Tailwind, React
   - type: card
     title: Component Architecture
     description: Organized from atomic components to complete page layouts

@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
 import type { FilterConfig } from '@components/molecules/FilterBar';
 import FilterBar from '@components/molecules/FilterBar';
+import { useCallback, useEffect, useState } from 'react';
 
 interface Person {
   id: string;
@@ -35,9 +35,8 @@ export default function PeopleFilteredGrid({
     return initial;
   }, []);
 
-  const [filters, setFilters] = useState<Record<string, string | null>>(
-    getInitialFilters
-  );
+  const [filters, setFilters] =
+    useState<Record<string, string | null>>(getInitialFilters);
 
   // Sync URL on filter change
   useEffect(() => {
@@ -119,7 +118,7 @@ export default function PeopleFilteredGrid({
           />
         </div>
         <h4 className="mb-2 font-semibold">{person.name}</h4>
-        <p className="text-gray-600">{person.title}</p>
+        <p className="">{person.title}</p>
       </div>
     </a>
   );
@@ -136,7 +135,7 @@ export default function PeopleFilteredGrid({
 
       {filteredPeople.length === 0 ? (
         <div className="py-12 text-center">
-          <p className="text-lg text-gray-600">
+          <p className="text-lg">
             No team members match your filters. Try adjusting your selection.
           </p>
         </div>

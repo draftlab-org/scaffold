@@ -42,7 +42,7 @@ function TOCEntries({
               className={`block w-full cursor-pointer text-left text-sm transition-colors ${
                 isActive
                   ? 'font-medium text-primary-600 underline decoration-primary-300 decoration-dotted decoration-2 underline-offset-4'
-                  : 'text-gray-600 hover:text-gray-900'
+                  : 'hover:text-gray-900'
               }`}
             >
               {entry.value}

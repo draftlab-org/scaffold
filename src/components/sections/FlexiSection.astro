@@ -1,6 +1,6 @@
 ---
-import SectionLayout from '@layouts/SectionLayout.astro';
 import Sections from '@components/sections/Sections.astro';
+import SectionLayout from '@layouts/SectionLayout.astro';
 
 export interface SectionType {
   type: string;
@@ -22,11 +22,10 @@ const { title, description, sections = [] } = Astro.props;
 		<!-- Section Header -->
 		<div class="mb-12 text-center">
 			<h2 class="mb-4">{title}</h2>
-			{description && <p class="text-gray-600">{description}</p>}
+			{description && <p class="">{description}</p>}
 		</div>
 
 		<!-- Sections -->
-    <Sections sectionItems={sections} />
-
+		<Sections sectionItems={sections} />
 	</div>
 </SectionLayout>

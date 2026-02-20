@@ -41,13 +41,15 @@ const {
 		<!-- Section Header -->
 		<div class="mb-12 text-center">
 			<h2 class="mb-4">{title}</h2>
-			{description && <p class="text-gray-600">{description}</p>}
+			{description && <p class="">{description}</p>}
 		</div>
 
 		<!-- Cards Grid -->
 		{
 			cards.length > 0 && (
-				<div class={`mb-12 grid gap-6 sm:grid-cols-2 ${cards.length === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-3'}`}>
+				<div
+					class={`mb-12 grid gap-6 sm:grid-cols-2 ${cards.length === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-3'}`}
+				>
 					{cards.map((card) => (
 						<Card variant="bordered" padding="md">
 							{card.image && (
@@ -62,7 +64,7 @@ const {
 								</div>
 							)}
 							<h3 class="mb-3">{card.title}</h3>
-							{card.content && <p class="mb-4 text-gray-600">{card.content}</p>}
+							{card.content && <p class="mb-4">{card.content}</p>}
 							{card.button && (
 								<Button
 									type="button"

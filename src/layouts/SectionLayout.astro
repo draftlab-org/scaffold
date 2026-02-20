@@ -1,8 +1,10 @@
 ---
 import { Image } from 'astro:assets';
+import Highlight from '@assets/highlight.svg'
 import DevOnly from '@components/atoms/DevOnly.astro';
 import { devClass } from '@utils/dev';
 import type { ImageMetadata } from 'astro';
+
 
 export interface Props {
   containerized?: boolean;
@@ -63,6 +65,16 @@ const containerBgClass = bgType === 'contained' ? bgClass : '';
 				src={bgImage}
 				alt=""
 				class="absolute inset-0 -z-10 h-full w-full object-cover"
+				loading="eager"
+			/>
+		)
+	}
+	{
+		bgType === 'highlight' && (
+			<Image
+				src={Highlight}
+				alt=""
+				class="absolute inset-0 -z-10 h-full w-full object-contain"
 				loading="eager"
 			/>
 		)

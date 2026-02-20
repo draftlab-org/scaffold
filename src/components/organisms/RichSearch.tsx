@@ -136,7 +136,8 @@ export default function RichSearch() {
             // Filter out unpublished articles if applicable
             .filter((item: any) =>
               category.name === 'Articles'
-                ? item.data?.status === 'published' || item.data?.status === 'archived'
+                ? item.data?.status === 'published' ||
+                  item.data?.status === 'archived'
                 : true
             )
             .map((item: any) => {
@@ -343,7 +344,7 @@ export default function RichSearch() {
                 <p className="mt-4 font-semibold text-gray-900">
                   Help with searching
                 </p>
-                <p className="mt-2 text-gray-600">
+                <p className="mt-2">
                   Quickly search through site content and get results divided by
                   category. You can also use search modifiers in the footer to
                   search and show all results from a single category.
@@ -365,13 +366,13 @@ export default function RichSearch() {
                   <p className="mt-4 font-semibold text-gray-900">
                     No results found
                   </p>
-                  <p className="mt-2 text-gray-600">
+                  <p className="mt-2">
                     We couldn't find anything with that term. Please try again.
                   </p>
                 </div>
               )}
 
-            <div className="flex flex-wrap items-center border-t border-gray-100 bg-gray-50 px-4 py-2.5 text-xs text-gray-600">
+            <div className="flex flex-wrap items-center border-t border-gray-100 bg-gray-50 px-4 py-2.5 text-xs">
               Type{' '}
               {SEARCH_CATEGORIES.map((category) => (
                 <span key={category.name} className="inline-flex items-center">

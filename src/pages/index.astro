@@ -1,18 +1,34 @@
 ---
 import { getEntry } from 'astro:content';
+import HeroSection from '@components/sections/HeroSection.astro';
 import Sections from '@components/sections/Sections.astro';
 import PageLayout from '@layouts/PageLayout.astro';
+import SectionLayout from '@layouts/SectionLayout.astro';
 
 const page = await getEntry('pages', 'home');
 
 if (!page) {
   throw new Error('Homepage content not found. Create src/content/pages/home.yaml');
 }
+
+console.log(page.data.heroImage)
 ---
 
 <PageLayout
 	title={page.data.title}
 	description={page.data.description}
+	image={page.data.heroImage}
 >
+	<SectionLayout
+		bgImage={page.data.heroImage}
+		bgType={page.data.background}
+		sectionLabel="hero"
+	>
+		<HeroSection
+			title={page.data.title}
+			subtitle={page.data.description}
+			background={page.data.background}
+		/>
+	</SectionLayout>
 	<Sections sectionItems={page.data.sections} />
 </PageLayout>
