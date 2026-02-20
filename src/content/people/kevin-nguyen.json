@@ -2,7 +2,9 @@
   "id": "kevin-nguyen",
   "name": "Kevin Nguyen",
   "headshot": "/src/assets/people/kevin-nguyen.png",
-  "title": "Customer Success Manager",
+  "title": "Grants Manager",
+  "affiliation": "Digital Rights Watch",
+  "extraInfo": "Secures institutional funding for privacy advocacy and research",
   "sections": [
     "Sales"
   ],

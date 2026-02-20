@@ -63,7 +63,7 @@ const isActive = (item: NavItemType) => {
 
 		<!-- Navigation Links -->
 		<div class="hidden items-center space-x-1 md:flex">
-			{items.map((item) => <NavItem item={item} active={isActive(item)} />)}
+			{items.map((item) => <NavItem item={item} active={isActive(item)} currentPath={currentPath} />)}
 		</div>
 	</div>
 

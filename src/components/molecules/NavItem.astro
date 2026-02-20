@@ -7,12 +7,14 @@ import { isExternalLink, resolveFlexibleLink } from '@utils/navigation';
 export type Props = {
   item: NavItem;
   active?: boolean;
+  currentPath?: string;
   class?: string;
 }
 
 const {
   item,
   active = false,
+  currentPath = '',
   class: className = '',
 } = Astro.props;
 
@@ -25,7 +27,7 @@ const classes = `underline underline-offset-8 decoration-dotted decoration-4 inl
 
 {
 	item.type === 'dropdown' ? (
-		<NavItemDropdown client:load item={item} active={active} />
+		<NavItemDropdown client:load item={item} active={active} currentPath={currentPath} />
 	) : (
 		<Link
 			href={resolveFlexibleLink(item.link)}

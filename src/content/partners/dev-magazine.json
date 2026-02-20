@@ -1,8 +1,8 @@
 {
   "id": "dev-magazine",
-  "name": "Developer Magazine",
-  "affiliation": "Media Partner",
-  "url": "https://devmagazine.example.com",
+  "name": "The Lighthouse Report",
+  "affiliation": "Investigative Tech Journalism",
+  "url": "https://lighthousereport.example.org",
   "category": "media",
   "image": "/src/assets/partners/rings-6.png",
   "order": 7,

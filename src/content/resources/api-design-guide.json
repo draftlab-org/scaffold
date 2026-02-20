@@ -1,8 +1,8 @@
 {
   "id": "api-design-guide",
-  "title": "RESTful API Design Guide",
+  "title": "Privacy-Preserving API Design Guide",
   "status": "published",
-  "description": "Best practices for designing clean, consistent, and developer-friendly REST APIs. Covers versioning, error handling, pagination, and authentication patterns.",
+  "description": "Best practices for designing APIs that minimize data collection, enforce consent boundaries, and protect user privacy. Covers data minimization, audit logging, and anonymization patterns.",
   "authors": "Michael Brown, Emily Rodriguez",
   "contributors": ["michael-brown", "emily-rodriguez"],
   "year": 2024,
@@ -10,9 +10,9 @@
   "externalLinks": [
     {
       "label": "Read Online",
-      "url": "https://example.com/api-design-guide"
+      "url": "https://example.com/privacy-api-design-guide"
     }
   ],
   "publishedDate": "2024-03-20",
-  "tags": ["api", "backend", "design"]
+  "tags": ["api", "privacy", "data-minimization"]
 }

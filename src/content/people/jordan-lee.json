@@ -2,7 +2,9 @@
   "id": "jordan-lee",
   "name": "Jordan Lee",
   "headshot": "/src/assets/people/jordan-lee.png",
-  "title": "Senior Designer",
+  "title": "Community Design Lead",
+  "affiliation": "Superbloom Design",
+  "extraInfo": "Leads co-design processes with marginalized communities",
   "sections": [
     "Design",
     "Community"

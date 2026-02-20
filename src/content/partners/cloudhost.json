@@ -1,8 +1,8 @@
 {
   "id": "cloudhost",
-  "name": "CloudHost",
-  "affiliation": "Infrastructure Partner",
-  "url": "https://cloudhost.example.com",
+  "name": "Quietline Hosting",
+  "affiliation": "Privacy Infrastructure Provider",
+  "url": "https://quietline.example.org",
   "category": "infrastructure",
   "image": "/src/assets/partners/rings-2.png",
   "order": 3,

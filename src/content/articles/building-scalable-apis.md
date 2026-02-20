@@ -1,6 +1,6 @@
 ---
 permalink: building-scalable-apis
-title: "Building Scalable APIs: Best Practices"
+title: "Building Secure APIs for Civic Data Platforms"
 authors:
   - michael-brown
   - priya-sharma
@@ -8,8 +8,8 @@ authors:
 status: draft
 tags:
   - api
-  - backend
-  - architecture
+  - security
+  - civic-tech
 publishedDate: 2024-03-10
 heroImage: /src/assets/backgrounds/anna-magenta-XUCfqIEudBU-unsplash.jpg
 relatedArticles:
@@ -18,77 +18,87 @@ relatedArticles:
 categories:
   - Technology
 ---
-# Building Scalable APIs: Best Practices
 
-Creating APIs that can scale to handle millions of requests requires careful planning and implementation.
+> **Disclaimer:** This is placeholder content created to demonstrate the features of the Scaffold starter template. The organizations, people, and projects referenced here are fictional.
 
-## API Design Principles
+# Building Secure APIs for Civic Data Platforms
 
-Start with solid design principles:
+Public interest technology projects handle sensitive data — from voter registration systems to community health dashboards. The APIs that power these platforms must be secure by default, transparent in their operation, and resilient under pressure.
 
-1.  **RESTful conventions**: Use standard HTTP methods and status codes
-    
-2.  **Versioning**: Plan for API evolution from day one
-    
-3.  **Documentation**: Auto-generate docs from code when possible
-    
+## Design Principles for Civic APIs
 
-## Performance Optimization
+Start with principles that reflect the values of the communities you serve:
 
-Key strategies for API performance:
+1. **Data minimization**: Collect only what's necessary, expose only what's permitted
+2. **Transparency**: Every endpoint should be documented, every data flow auditable
+3. **Graceful degradation**: Civic infrastructure can't go dark during peak demand
 
-| this | is  | A Table |
+## Securing Data in Transit and at Rest
+
+Every civic data API needs defense in depth:
+
+| Layer | Protection | Implementation |
 | --- | --- | --- |
-| Example | table | content |
-| More | table | content |
+| Transport | TLS 1.3 | Enforce HTTPS, HSTS headers |
+| Authentication | Token-based | Short-lived JWTs, refresh rotation |
+| Authorization | Role-based | Principle of least privilege |
+| Storage | Encryption | AES-256 at rest, field-level for PII |
 
-### Caching
+### Rate Limiting for Public APIs
 
-Implement caching at multiple levels:
-
-```javascript
-// Response caching with Cache-Control headers
-app.get('/api/data', (req, res) => {
-  res.set('Cache-Control', 'public, max-age=300');
-  res.json(data);
-});
-```
-
-### Database Optimization
-
-*   Use connection pooling
-    
-*   Add appropriate indexes
-    
-*   Implement query result caching
-    
-
-### Rate Limiting
-
-Protect your API from abuse:
+Protect shared infrastructure from abuse without blocking legitimate civic use:
 
 ```javascript
 const rateLimit = require('express-rate-limit');
 
-const limiter = rateLimit({
+// Tiered rate limiting: registered civic orgs get higher limits
+const publicLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
+  message: 'Rate limit exceeded. Register for a civic API key for higher limits.',
 });
 
-app.use('/api/', limiter);
+const civicLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 1000,
+  keyGenerator: (req) => req.headers['x-civic-api-key'],
+});
+
+app.use('/api/public/', publicLimiter);
+app.use('/api/civic/', civicLimiter);
 ```
 
-## Monitoring and Observability
+### Audit Logging
 
-Implement comprehensive monitoring:
+Every data access should be traceable:
 
-*   Request/response logging
-    
-*   Performance metrics
-    
-*   Error tracking and alerting
-    
+```javascript
+const logAccess = (req, res, next) => {
+  const entry = {
+    timestamp: new Date().toISOString(),
+    method: req.method,
+    path: req.path,
+    actor: req.user?.id || 'anonymous',
+    ip: req.ip,
+    fields: req.query.fields?.split(',') || ['*'],
+  };
+
+  accessLog.write(JSON.stringify(entry) + '\n');
+  next();
+};
+
+app.use('/api/', logAccess);
+```
+
+## Monitoring for Public Trust
+
+Civic platforms need more than uptime monitors — they need trust indicators:
+
+* **Request/response logging** with PII redaction
+* **Data access patterns** to detect bulk scraping
+* **Availability dashboards** that the public can verify
+* **Incident response playbooks** published transparently
 
 ## Conclusion
 
-Building scalable APIs is an iterative process. Start with these foundations and continuously measure and optimize based on real-world usage.
+Building APIs for civic infrastructure is a responsibility, not just an engineering task. The communities that depend on these systems deserve the same rigor and security that powers financial institutions — without the surveillance that often comes with it.

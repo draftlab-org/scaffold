@@ -1,28 +1,41 @@
 title: Draftlab Scaffold
 status: published
 background: highlight
-# heroImage: /src/assets/highlight.svg
 description: A pretty good web development starter
 sections:
   - type: card
-    title: Component Architecture
-    description: Organized from atomic components to complete page layouts
+    title: It probably has what you are looking for.
+    description: >-
+      A static site that is also a fully configurable website builder,
+      with predefined content categories and most common settings.
     cards:
-      - title: Atoms
-        content: Basic building blocks like buttons, links, and headings
-      - title: Molecules
-        content: Simple combinations like cards, navigation items, and form fields
-      - title: Organisms
-        content: Complex components like navigation bars, footers, and hero sections
-      - title: Layouts
-        content: Complete page structures
+      - title: Accessible by Default
+        content: >-
+          WCAG-compliant components, keyboard navigation, screen reader
+          support, and reduced motion preferences.
+      - title: CMS-ready
+        content: >-
+          Pre-configured settings to work with [PagesCMS](https://pagescms.com). Add articles, upload media, change site settings, the works.
+        button:
+          variant: primary
+          size: md
+          href: /how-to-use
+          text: Learn More
+      - title: Open Source
+        content: >-
+          Free to use, modify, and distribute. Built with Astro, Tailwind,
+          and modern web standards.
+      - title: Privacy by Design
+        content: >-
+          Built-in patterns for consent management, data minimization, and
+          transparent data practices.
   - type: button
     title: Ready to Start Building?
     buttons:
       - variant: primary
         size: lg
-        href: /about
-        text: Get Started
+        href: /how-to-use
+        text: Learn more
       - variant: outline
         size: lg
         href: https://github.com/draftlab-org/scaffold

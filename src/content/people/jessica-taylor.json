@@ -2,7 +2,9 @@
   "id": "jessica-taylor",
   "name": "Jessica Taylor",
   "headshot": "/src/assets/people/jessica-taylor.png",
-  "title": "Account Executive",
+  "title": "Partnerships Director",
+  "affiliation": "Community Signal Lab",
+  "extraInfo": "Cultivates cross-sector partnerships with community organizations and funders",
   "sections": [
     "Sales",
     "Community"

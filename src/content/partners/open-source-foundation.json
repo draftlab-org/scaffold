@@ -1,8 +1,8 @@
 {
   "id": "open-source-foundation",
-  "name": "Open Source Foundation",
-  "affiliation": "Community Partner",
-  "url": "https://osf.example.com",
+  "name": "Civic Forge",
+  "affiliation": "Civic Tech Community",
+  "url": "https://civicforge.example.org",
   "category": "community",
   "image": "/src/assets/partners/rings-3.png",
   "order": 4,

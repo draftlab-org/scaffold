@@ -2,7 +2,9 @@
   "id": "sophie-anderson",
   "name": "Sophie Anderson",
   "headshot": "/src/assets/people/sophie-anderson.png",
-  "title": "UI Designer",
+  "title": "Visual Designer",
+  "affiliation": "Superbloom Design",
+  "extraInfo": "Creates visual identities for digital rights campaigns and tools",
   "sections": [
     "Design"
   ],

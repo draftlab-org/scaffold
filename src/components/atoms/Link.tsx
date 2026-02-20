@@ -31,7 +31,7 @@ export default function Link({
     : {};
 
   return (
-    <a href={href} className={classes} {...externalProps}>
+    <a data-component href={href} className={classes} {...externalProps}>
       {children}
       {external && showExternalIcon && (
         <IconExternalLink class="ml-1 inline-block h-4 w-4 opacity-70" aria-hidden="true" />

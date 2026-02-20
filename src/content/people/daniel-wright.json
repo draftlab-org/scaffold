@@ -2,7 +2,9 @@
   "id": "daniel-wright",
   "name": "Daniel Wright",
   "headshot": "/src/assets/people/daniel-wright.png",
-  "title": "HR Director",
+  "title": "People & Culture Lead",
+  "affiliation": "Superbloom Design",
+  "extraInfo": "Builds equitable hiring practices for mission-driven tech organizations",
   "sections": [
     "Operations"
   ],

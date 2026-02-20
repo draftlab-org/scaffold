@@ -1,8 +1,8 @@
 {
   "id": "api-gateway",
-  "name": "API Gateway Solutions",
-  "affiliation": "Technology Partner",
-  "url": "https://apigateway.example.com",
+  "name": "Shadowpath Labs",
+  "affiliation": "Anonymity Tools Provider",
+  "url": "https://shadowpath.example.org",
   "category": "technology",
   "image": "/src/assets/partners/rings-5.png",
   "order": 6,

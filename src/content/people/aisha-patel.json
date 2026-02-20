@@ -2,7 +2,9 @@
   "id": "aisha-patel",
   "name": "Aisha Patel",
   "headshot": "/src/assets/people/aisha-patel.png",
-  "title": "Senior Software Engineer",
+  "title": "Privacy Engineer",
+  "affiliation": "Freedom Tech Alliance",
+  "extraInfo": "Builds privacy-preserving tools for at-risk communities",
   "sections": [
     "Engineering",
     "Product",

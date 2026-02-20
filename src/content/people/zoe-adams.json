@@ -2,7 +2,9 @@
   "id": "zoe-adams",
   "name": "Zoe Adams",
   "headshot": "/src/assets/people/zoe-adams.png",
-  "title": "Office Manager",
+  "title": "Finance Manager",
+  "affiliation": "Community Signal Lab",
+  "extraInfo": "Manages grant compliance and financial reporting for community programs",
   "sections": [
     "Operations"
   ],

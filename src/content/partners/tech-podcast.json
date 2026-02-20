@@ -1,8 +1,8 @@
 {
   "id": "tech-podcast",
-  "name": "Tech Talk Podcast",
-  "affiliation": "Media Partner",
-  "url": "https://techtalk.example.com",
+  "name": "Throughline Journal",
+  "affiliation": "Technology & Society Publication",
+  "url": "https://throughline.example.org",
   "category": "media",
   "image": "/src/assets/partners/rings-9.png",
   "order": 10,

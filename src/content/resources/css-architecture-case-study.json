@@ -1,17 +1,17 @@
 {
   "id": "css-architecture-case-study",
-  "title": "Migrating to Tailwind CSS: A Case Study",
+  "title": "Rebuilding a Civic Platform for Accessibility: A Case Study",
   "status": "published",
-  "description": "How our team migrated a large-scale application from custom CSS to Tailwind CSS, reducing bundle size by 60% and improving developer velocity.",
+  "description": "How a digital rights organization rebuilt their public-facing platform to meet WCAG 2.2 AA standards, increasing engagement from assistive technology users by 340%.",
   "contributors": ["emily-rodriguez"],
   "year": 2023,
   "category": "case-study",
   "externalLinks": [
     {
       "label": "Read Case Study",
-      "url": "https://example.com/tailwind-migration-case-study"
+      "url": "https://example.com/accessibility-rebuild-case-study"
     }
   ],
   "publishedDate": "2023-11-10",
-  "tags": ["css", "tailwind", "migration"]
+  "tags": ["accessibility", "civic-tech", "inclusive-design"]
 }

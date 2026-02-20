@@ -1,0 +1,31 @@
+{
+  "yaml.schemas": {
+    "./.astro/collections/pages.schema.json": "/src/content/pages/*.yaml"
+  },
+  "json.schemas": [
+    {
+      "fileMatch": ["/src/content/partners/*.json"],
+      "url": "./.astro/collections/partners.schema.json"
+    },
+    {
+      "fileMatch": ["/src/content/people/*.json"],
+      "url": "./.astro/collections/people.schema.json"
+    },
+    {
+      "fileMatch": ["/src/content/resources/*.json"],
+      "url": "./.astro/collections/resources.schema.json"
+    },
+    {
+      "fileMatch": ["/src/content/categories/*.json"],
+      "url": "./.astro/collections/categories.schema.json"
+    },
+    {
+      "fileMatch": ["/src/content/navigation/*.json"],
+      "url": "./.astro/collections/navigation.schema.json"
+    },
+    {
+      "fileMatch": ["/src/content/site/*.json"],
+      "url": "./.astro/collections/site.schema.json"
+    }
+  ]
+}

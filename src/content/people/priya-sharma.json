@@ -3,6 +3,8 @@
   "name": "Priya Sharma",
   "headshot": "/src/assets/people/priya-sharma.png",
   "title": "UX Researcher",
+  "affiliation": "Community Signal Lab",
+  "extraInfo": "Conducts participatory research with communities navigating digital harms",
   "sections": [
     "Product",
     "Design"

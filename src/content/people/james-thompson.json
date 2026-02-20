@@ -2,7 +2,9 @@
   "id": "james-thompson",
   "name": "James Thompson",
   "headshot": "/src/assets/people/james-thompson.png",
-  "title": "VP of Engineering",
+  "title": "Director of Policy",
+  "affiliation": "Freedom Tech Alliance",
+  "extraInfo": "Guides technical policy on encryption and open standards",
   "sections": [
     "Leadership",
     "Engineering"

@@ -1,7 +1,9 @@
 import { getImage } from 'astro:assets';
 import rehypeTableAlign from '@lib/rehype-table-align';
 import rehypeExtractToc from '@stefanprobst/rehype-extract-toc';
+import rehypeExpressiveCode from 'rehype-expressive-code';
 import rehypeExternalLinks from 'rehype-external-links';
+import rehypeRaw from 'rehype-raw';
 import rehypeSlug from 'rehype-slug';
 import rehypeStringify from 'rehype-stringify';
 import remarkGfm from 'remark-gfm';
@@ -106,7 +108,7 @@ const createMarkdownProcessor = (withTOC = false, idPrefix?: string): any => {
   let processor: any = unified()
     .use(remarkParse)
     .use(remarkGfm) // Enable GFM tables with alignment
-    .use(remarkRehype)
+    .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeSlug)
     .use(rehypeTableAlign) // Apply alignment classes to table cells
     .use(rehypeExternalLinks, {
@@ -124,7 +126,18 @@ const createMarkdownProcessor = (withTOC = false, idPrefix?: string): any => {
     processor = processor.use(rehypeExtractToc);
   }
 
-  return processor.use(rehypeStringify, { allowDangerousHtml: true });
+  return processor
+    .use(rehypeRaw)
+    .use(rehypeExpressiveCode, {
+      themes: ['catppuccin-frappe'],
+      defaultProps: {
+        wrap: true,
+        overridesByLang: {
+          'bash,ps,sh': { preserveIndent: false },
+        },
+      },
+    })
+    .use(rehypeStringify);
 };
 
 // New: Plain markdown rendering (no image processing)

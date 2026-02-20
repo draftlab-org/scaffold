@@ -2,7 +2,9 @@
   "id": "maria-santos",
   "name": "Maria Santos",
   "headshot": "/src/assets/people/maria-santos.png",
-  "title": "Frontend Developer",
+  "title": "Cryptography Engineer",
+  "affiliation": "Digital Rights Watch",
+  "extraInfo": "Develops end-to-end encryption tools for journalists and activists",
   "sections": [
     "Engineering"
   ],

@@ -20,12 +20,6 @@ export default defineConfig({
     fonts: [
       {
         provider: fontProviders.bunny(),
-        name: 'Inter',
-        weights: [100, 200, 300, 400, 500, 600],
-        cssVariable: '--font-inter',
-      },
-      {
-        provider: fontProviders.bunny(),
         name: 'Rubik',
         weights: [300, 400, 500, 600, 700, 800],
         cssVariable: '--font-rubik',
@@ -35,6 +29,12 @@ export default defineConfig({
         name: 'IBM Plex Serif',
         weights: [300, 400, 500, 600, 700],
         cssVariable: '--font-ibm-plex-serif',
+      },
+      {
+        provider: fontProviders.bunny(),
+        name: 'JetBrains Mono',
+        weights: [300, 400],
+        cssVariable: '--font-jetbrains-mono',
       },
     ],
   },
@@ -53,7 +53,10 @@ export default defineConfig({
     ],
   },
 
-  integrations: [react(), sitemap(), expressiveCode({
+  integrations: [
+    react(),
+    sitemap(),
+    expressiveCode({
       themes: ['catppuccin-frappe'],
       defaultProps: {
         // Enable word wrap by default
@@ -63,6 +66,8 @@ export default defineConfig({
           'bash,ps,sh': { preserveIndent: false },
         },
       },
-    }), mdx()],
+    }),
+    mdx(),
+  ],
   adapter: netlify(),
 });

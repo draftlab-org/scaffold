@@ -2,7 +2,9 @@
   "id": "tyler-morgan",
   "name": "Tyler Morgan",
   "headshot": "/src/assets/people/tyler-morgan.png",
-  "title": "Data Analyst",
+  "title": "Security Researcher",
+  "affiliation": "Civic Data Collaborative",
+  "extraInfo": "Audits civic technology platforms for security vulnerabilities",
   "sections": [
     "Engineering",
     "Product"

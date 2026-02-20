@@ -2,7 +2,9 @@
   "id": "omar-hassan",
   "name": "Omar Hassan",
   "headshot": "/src/assets/people/omar-hassan.png",
-  "title": "VP of Sales",
+  "title": "Development Lead",
+  "affiliation": "Freedom Tech Alliance",
+  "extraInfo": "Grows sustainable revenue through mission-aligned partnerships",
   "sections": [
     "Sales"
   ],

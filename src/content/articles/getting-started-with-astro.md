@@ -1,66 +1,93 @@
 ---
 permalink: getting-started-with-astro
-title: "Getting Started with Astro: A Comprehensive Guide"
+title: "Building Privacy-First Websites with Astro"
 authors:
   - sarah-chen
   - david-kim
 status: published
 tags:
   - astro
-  - web-development
+  - privacy
   - tutorial
 publishedDate: 2024-01-15
 heroImage: /src/assets/backgrounds/anna-magenta-DJ7FzM_WZXs-unsplash.jpg
 relatedArticles:
   - building-scalable-apis
 ---
-# Getting Started with Astro
 
-Astro is a modern web framework that delivers fast, content-focused websites. In this guide, we'll explore the fundamentals of building with Astro.
+> **Disclaimer:** This is placeholder content created to demonstrate the features of the Scaffold starter template. The organizations, people, and projects referenced here are fictional.
 
-## Why Choose Astro?
+# Building Privacy-First Websites with Astro
 
-Astro stands out for its unique approach to building websites:
+When building websites for advocacy organizations and public interest groups, performance and privacy go hand in hand. Astro's architecture makes it a natural fit for projects where minimizing data exposure is a core requirement.
 
-*   **Zero JavaScript by default**: Only ship the JavaScript you need
-*   **Component Islands**: Hydrate interactive components on demand
-*   **Framework agnostic**: Use React, Vue, Svelte, or any framework
+## Why Privacy-Conscious Organizations Choose Astro
 
-## Your First Astro Project
+Astro stands out for its approach to shipping less code to users:
 
-Getting started is simple. First, create a new project:
+* **Zero JavaScript by default**: Less client-side code means fewer vectors for tracking scripts to piggyback on your bundle
+* **Component Islands**: Only hydrate what's truly interactive — a contact form, a search bar — leaving the rest as static HTML
+* **No client-side routing overhead**: Each page load is a clean slate, reducing persistent state that can be exploited for fingerprinting
+
+## Setting Up a Privacy-First Project
+
+Start with a fresh Astro project and configure it for minimal data exposure:
 
 ```bash
-npm create astro@latest
+npm create astro@latest privacy-first-site
+cd privacy-first-site
 ```
 
-Follow the prompts to set up your project structure.
-
-## Building Pages
-
-Astro pages live in the `src/pages/` directory and use the `.astro` extension:
+Add a strict Content Security Policy in your layout:
 
 ```astro
 ---
-const title = "My Page";
+const cspDirectives = [
+  "default-src 'self'",
+  "script-src 'self'",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data:",
+  "connect-src 'self'",
+  "frame-ancestors 'none'",
+].join("; ");
 ---
 
 <html>
   <head>
-    <title>{title}</title>
+    <meta http-equiv="Content-Security-Policy" content={cspDirectives} />
   </head>
   <body>
-    <h1>Welcome to Astro!</h1>
+    <slot />
   </body>
 </html>
 ```
 
+## Self-Hosted Analytics Without Surveillance
+
+Replace third-party tracking with privacy-respecting alternatives that you control:
+
+```javascript
+// Simple, cookie-free page view counter
+// Stores only aggregate counts, no personal data
+const analyticsEndpoint = '/api/pageview';
+
+document.addEventListener('DOMContentLoaded', () => {
+  fetch(analyticsEndpoint, {
+    method: 'POST',
+    body: JSON.stringify({
+      path: window.location.pathname,
+      referrer: document.referrer ? new URL(document.referrer).hostname : null,
+    }),
+  });
+});
+```
+
 ## Next Steps
 
-Now that you understand the basics, explore:
+Building for privacy is an ongoing commitment:
 
-*   Content collections for managing markdown
-*   Component frameworks integration
-*   Deployment options
+* Audit your dependencies for hidden trackers
+* Implement consent-first patterns for any interactive features
+* Test with browser privacy tools to verify no unexpected network requests
 
-Happy building with Astro!
+Every architectural choice is a values choice. Shipping less JavaScript isn't just good engineering — it's good ethics.

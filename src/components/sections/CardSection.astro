@@ -3,6 +3,7 @@ import Button from '@components/atoms/Button.astro';
 import Image from '@components/atoms/Image.astro';
 import Card from '@components/molecules/Card.astro';
 import SectionLayout from '@layouts/SectionLayout.astro';
+import { renderMarkdown } from '@utils/renderMarkdown';
 import type { ImageMetadata } from 'astro';
 
 export interface ButtonType {
@@ -17,6 +18,7 @@ export interface CardType {
   content?: string;
   image?: ImageMetadata;
   button?: ButtonType;
+  color?: string;
 }
 
 export interface Props {
@@ -34,6 +36,15 @@ const {
   buttons = [],
   class: className = '',
 } = Astro.props;
+
+// Render markdown for description and card content
+const descriptionHtml = description ? (await renderMarkdown(description)).html : '';
+const cardsWithHtml = await Promise.all(
+  cards.map(async (card) => ({
+    ...card,
+    contentHtml: card.content ? (await renderMarkdown(card.content)).html : '',
+  }))
+);
 ---
 
 <SectionLayout>
@@ -41,7 +52,7 @@ const {
 		<!-- Section Header -->
 		<div class="mb-12 text-center">
 			<h2 class="mb-4">{title}</h2>
-			{description && <p class="">{description}</p>}
+			{descriptionHtml && <div class="prose" set:html={descriptionHtml} />}
 		</div>
 
 		<!-- Cards Grid -->
@@ -50,8 +61,8 @@ const {
 				<div
 					class={`mb-12 grid gap-6 sm:grid-cols-2 ${cards.length === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-3'}`}
 				>
-					{cards.map((card) => (
-						<Card variant="bordered" padding="md">
+					{cardsWithHtml.map((card) => (
+						<Card variant="bordered" padding="md" color={card.color}>
 							{card.image && (
 								<div class="mb-4">
 									<Image
@@ -64,7 +75,7 @@ const {
 								</div>
 							)}
 							<h3 class="mb-3">{card.title}</h3>
-							{card.content && <p class="mb-4">{card.content}</p>}
+							{card.contentHtml && <div class="prose mb-4" set:html={card.contentHtml} />}
 							{card.button && (
 								<Button
 									type="button"

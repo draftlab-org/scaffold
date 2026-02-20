@@ -2,7 +2,9 @@
   "id": "lisa-wang",
   "name": "Lisa Wang",
   "headshot": "/src/assets/people/lisa-wang.png",
-  "title": "Content Strategist",
+  "title": "Storytelling Lead",
+  "affiliation": "Civic Data Collaborative",
+  "extraInfo": "Translates complex data policy into compelling public narratives",
   "sections": [
     "Marketing"
   ],

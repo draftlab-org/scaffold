@@ -1,15 +1,19 @@
 ---
+import { Image } from 'astro:assets';
+import Highlight from '@assets/highlight.svg';
 import type { HTMLAttributes } from 'astro/types';
 
 export interface Props extends HTMLAttributes<'div'> {
   variant?: 'default' | 'bordered' | 'elevated';
   padding?: 'none' | 'sm' | 'md' | 'lg';
+  color?: string;
   class?: string;
 }
 
 const {
   variant = 'default',
   padding = 'md',
+  color,
   class: className = '',
   ...props
 } = Astro.props;
@@ -27,9 +31,28 @@ const paddings = {
   lg: 'p-8',
 };
 
-const classes = `rounded-lg ${variants[variant]} ${paddings[padding]} ${className}`;
+const colorStyles: Record<string, string> = {
+  primary: 'bg-primary-50 border-2 border-primary-300 border-solid',
+  secondary: 'bg-secondary-50 border-2 border-secondary-300 border-solid',
+  highlight: 'relative overflow-hidden',
+  neutral: 'bg-gray-100 border-2 border-gray-300 border-solid',
+};
+
+const hasColor = color && color in colorStyles;
+const variantClass = hasColor ? '' : variants[variant];
+const colorClass = hasColor ? colorStyles[color] : '';
+
+const classes = `rounded-lg ${variantClass} ${colorClass} ${paddings[padding]} ${className}`.trim();
 ---
 
 <div class={classes} {...props}>
+  {color === 'highlight' && (
+    <Image
+      src={Highlight}
+      alt=""
+      class="absolute inset-0 -z-10 h-full w-full object-contain"
+      loading="eager"
+    />
+  )}
   <slot />
 </div>

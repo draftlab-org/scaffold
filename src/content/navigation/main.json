@@ -4,41 +4,46 @@
   "items": [
     {
       "type": "link",
-      "label": "About",
+      "label": "How to Use",
       "link": {
         "type": "internal",
-        "pageRef": "/about"
+        "pageRef": "/how-to-use"
       },
-      "description": "Learn more about us"
+      "description": "How to use the Scaffold template"
     },
     {
       "type": "dropdown",
-      "label": "Community",
+      "label": "Collections Demo",
       "children": [
         {
-          "label": "Community Hub",
+          "label": "Articles",
           "link": {
             "type": "internal",
-            "pageRef": "/community"
-          },
-          "description": "Join our community"
+            "pageRef": "/articles"
+          }
         },
         {
-          "label": "GitHub",
+          "label": "People",
           "link": {
-            "type": "external",
-            "url": "https://github.com"
-          },
-          "description": "View our code on GitHub"
+            "type": "internal",
+            "pageRef": "/people"
+          }
+        },
+        {
+          "label": "Resources",
+          "link": {
+            "type": "internal",
+            "pageRef": "/resources"
+          }
         }
       ]
     },
     {
       "type": "link",
-      "label": "Articles",
+      "label": "Feature Showcase",
       "link": {
         "type": "internal",
-        "pageRef": "/articles"
+        "pageRef": "/feature-showcase"
       }
     }
   ]

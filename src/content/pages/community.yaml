@@ -1,104 +1,96 @@
-title: Welcome to our Community
+title: Join Our Community
 status: published
-description: Join our vibrant community of developers, contributors, and partners
+description: >-
+  Connect with advocates, technologists, and organizers working to protect
+  digital rights and build technology for the public good.
 heroImage: /src/assets/backgrounds/anna-magenta-YELG0ZVK5yw-unsplash.jpg
 sections:
   - type: hero
-    title: This is a hero section
-    subtitle:
-      Connect, collaborate, and grow with fellow developers from around the
-      world
+    title: Building Together for Digital Rights
+    subtitle: >-
+      Connect with advocates, technologists, and organizers working to protect
+      privacy, promote transparency, and defend internet freedom.
   - type: richText
     background:
       bgColor: white
       bgType: full
-    content: "## About Our Community
+    content: |-
+      ## Our Community
 
-
-      Our community is built on the principles of collaboration, innovation, and mutual
-      support.
-
-      Whether you're a beginner or an experienced developer, there's a place for you
-      here.
-
+      We are a growing network of people who believe technology should serve
+      the public interest. Whether you're a privacy researcher, a civic
+      technologist, a policy advocate, or someone who cares about how
+      technology shapes our communities — there's a place for you here.
 
       We believe in:
 
-      - **Open collaboration** - Working together to solve problems
-
-      - **Continuous learning** - Sharing knowledge and growing together
-
-      - **Inclusive culture** - Welcoming everyone regardless of background
-
-      "
+      - **Open collaboration** — Working in the open, sharing knowledge freely
+      - **Privacy by design** — Building consent and transparency into everything we make
+      - **Community self-determination** — Technology should strengthen communities, not extract from them
   - type: card
     title: Get Involved
-    description: There are many ways to participate in our community
+    description: There are many ways to contribute to digital rights work
     cards:
       - title: Contribute Code
-        content:
-          Help build and improve our projects by contributing code, fixing bugs,
-          and adding features.
+        content: >-
+          Help build privacy tools, audit open source projects, and improve
+          civic technology platforms.
         button:
           text: Contribute
           variant: primary
           size: md
-          href: /contribute
-      - title: Join Discussions
-        content:
-          Share your ideas, ask questions, and help others in our community forums
-          and chat channels.
+          href: "#"
+      - title: Join the Conversation
+        content: >-
+          Discuss policy, share research, and connect with others working on
+          digital rights challenges.
         button:
           text: Join
           variant: secondary
           size: md
-          href: /discussions
-      - title: Write Documentation
-        content:
-          Improve our docs by writing tutorials, guides, and helping others understand
-          our tools.
+          href: "#"
+      - title: Write & Research
+        content: >-
+          Contribute documentation, case studies, and research on privacy,
+          surveillance, and civic technology.
         button:
           text: Learn More
           variant: primary
           size: md
-          href: /docs
+          href: "#"
     buttons:
       - variant: primary
         text: Get Started
         size: lg
-        href: /get-started
+        href: "#"
   - type: card
     title: Community Resources
-    description: Quick links to helpful resources
+    description: Quick links to stay connected
     buttons:
       - variant: primary
         text: Forum
         size: md
-        href: /forum
+        href: "#"
       - variant: secondary
-        text: Discord
+        text: Signal Group
         size: md
-        href: /discord
+        href: "#"
       - variant: primary
         size: md
         text: Newsletter
-        href: /newsletter
+        href: "#"
   - type: people
     category: Community
   - type: partners
     title: Our Community Partners
-    # No category specified = show all partners
   - type: richText
     background:
       bgColor: gray
       bgType: full
-    content: "## Join Us Today
+    content: |-
+      ## Join Us Today
 
-
-      Ready to become part of our community? Sign up for our newsletter, join our Discord
-      server,
-
-      or start contributing on GitHub. We can't wait to see what we'll build together!
-
-      "
+      Ready to become part of the movement? Sign up for our newsletter,
+      join our Signal group, or start contributing on GitHub. The work of
+      protecting digital rights belongs to all of us.
 permalink: community

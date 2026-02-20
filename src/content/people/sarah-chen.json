@@ -2,7 +2,9 @@
   "id": "sarah-chen",
   "name": "Sarah Chen",
   "headshot": "/src/assets/people/sarah-chen.png",
-  "title": "Chief Executive Officer",
+  "title": "Executive Director",
+  "affiliation": "Open Internet Project",
+  "extraInfo": "Leads coalition efforts to protect internet freedom worldwide",
   "sections": [
     "Leadership",
     "Community"

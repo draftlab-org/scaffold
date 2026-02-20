@@ -2,7 +2,9 @@
   "id": "marcus-johnson",
   "name": "Marcus Johnson",
   "headshot": "/src/assets/people/marcus-johnson.png",
-  "title": "Chief Technology Officer",
+  "title": "Executive Director",
+  "affiliation": "Freedom Tech Alliance",
+  "extraInfo": "Advocates for open source solutions in public interest technology",
   "sections": [
     "Leadership",
     "Engineering",

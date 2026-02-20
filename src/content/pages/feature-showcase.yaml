@@ -1,46 +1,410 @@
-title: Feature Showcase Page
+title: Feature Showcase
 status: published
 permalink: feature-showcase
 description: >-
-  # Feature Showcase
-
-
-  Examples of sections, components, and features of the Draftlab Scaffold
-  template.
+  A comprehensive demonstration of every section type and configuration option
+  available in the Scaffold template. Themed around public interest technology,
+  digital rights, and internet freedom.
 sections:
+  # ============================================================
+  # HERO SECTIONS
+  # ============================================================
+
+  - type: hero
+    title: Feature Showcase
+    subtitle: Every section type. Every variation. One page to see them all.
+
+  - type: richText
+    content: |-
+      ## Hero Sections
+
+      The `hero` section type displays a prominent page header with a title and optional subtitle. It can also include a full-bleed background image.
+
+      **Props:** `title` (required), `subtitle`, `backgroundImage`
+
+  - type: hero
+    title: Privacy is a Human Right
+    subtitle: Building technology that respects the people who use it.
+    backgroundImage: /src/assets/backgrounds/anna-magenta-XUCfqIEudBU-unsplash.jpg
+
+  # ============================================================
+  # RICH TEXT SECTIONS
+  # ============================================================
+
   - type: richText
     background:
       bgColor: gray
       bgType: full
     content: |-
-      # Rich Text
+      ## Rich Text Sections
 
-      This is some content
+      The `richText` section renders markdown content with full formatting support. It supports background colors, the highlight background type, and an optional table of contents sidebar for long-form content.
 
-      ![image text](/src/assets/hero.png)
+      **Props:** `content` (required), `withTOC`, `background.bgColor`, `background.bgType`
+
+  - type: richText
+    content: |-
+      ### Plain Rich Text
+
+      This section demonstrates standard markdown formatting. Rich text sections are the backbone of content pages — they render any valid markdown with full support for inline formatting, lists, links, and images.
+
+      Here is **bold text**, *italic text*, and `inline code`. You can also use [links](https://example.org) and create structured content:
+
+      - Unordered list item one
+      - Unordered list item two
+      - Nested items work too
+        - Like this sub-item
+
+      1. Ordered lists are also supported
+      2. With automatic numbering
+      3. And proper indentation
+
+      > Blockquotes can highlight important ideas. Privacy by design means building consent and transparency into the architecture itself, not bolting it on as an afterthought.
+
+      ---
+
+      Horizontal rules separate content visually, and images can be embedded inline:
+
+      ![Background image](/src/assets/backgrounds/anna-magenta-vKhd5bnnolg-unsplash.jpg)
+
+  - type: richText
+    withTOC: true
+    content: |-
+      ## Table of Contents Example
+
+      When `withTOC: true` is set, a sidebar navigation appears on desktop showing all headings. This is useful for long-form documentation, policy pages, or research reports.
+
+      ### Digital Rights Framework
+
+      A digital rights framework establishes the principles and standards that protect people's fundamental freedoms in digital spaces. It encompasses everything from data protection to algorithmic transparency.
+
+      ### Privacy by Design
+
+      Privacy by design is an approach to systems engineering that takes privacy into account throughout the whole engineering process. The concept is an example of value-sensitive design, which takes human values into account in a well-defined manner throughout the process.
+
+      ### Open Source Governance
+
+      Open source governance models define how decisions are made in open source projects. From benevolent dictator models to consensus-based democratic processes, governance shapes the long-term sustainability of community-driven software.
+
+      ### Data Sovereignty
+
+      Data sovereignty refers to the idea that data is subject to the laws and governance structures within the jurisdiction it is collected. For communities and nations, this means maintaining control over data about their people and processes.
+
+      ### Algorithmic Accountability
+
+      As automated decision-making systems increasingly affect people's lives, algorithmic accountability ensures these systems can be examined, questioned, and corrected when they produce harmful outcomes.
+
+      ### Digital Accessibility
+
+      Accessibility in digital spaces means designing technology that works for everyone, regardless of ability. This includes screen reader compatibility, keyboard navigation, color contrast, and cognitive load considerations.
+
+      ### Community-Centered Design
+
+      Community-centered design shifts the focus from individual users to the communities they belong to. It asks not just "does this work for a person?" but "does this strengthen the community's capacity for self-determination?"
+
+  - type: richText
+    background:
+      bgColor: gradient
+      bgType: full
+    content: |-
+      ### Gradient Background
+
+      Rich text sections can use a gradient background by setting `bgColor: gradient`. This creates a subtle blue-to-indigo gradient that works well for callouts or featured content blocks.
+
+      This variation is useful for drawing attention to key messages without using a full hero section.
+
+  - type: richText
+    background:
+      bgType: highlight
+    content: |-
+      ### Highlight Background
+
+      Setting `bgType: highlight` renders the decorative highlight SVG as an absolute-positioned background. This creates a distinctive, branded visual treatment for special content sections.
+
+  # ============================================================
+  # BUTTON SECTIONS
+  # ============================================================
+
+  - type: richText
+    background:
+      bgColor: gray
+      bgType: full
+    content: |-
+      ## Button Sections
+
+      The `button` section displays a row of call-to-action buttons. Each button has a `variant` (primary, secondary, outline, ghost) and a `size` (sm, md, lg).
+
+      **Props:** `title`, `buttons[]` with `variant`, `size`, `href`, `text`
+
   - type: button
+    title: All Four Variants (medium)
     buttons:
       - variant: primary
         size: md
-        text: Button 1
-        href: google.com
+        text: Primary Action
+        href: "#"
       - variant: secondary
         size: md
-        text: Button 2
-        href: google.com
+        text: Secondary Action
+        href: "#"
+      - variant: outline
+        size: md
+        text: Outline Action
+        href: "#"
+      - variant: ghost
+        size: md
+        text: Ghost Action
+        href: "#"
+
+  - type: button
+    title: All Three Sizes (primary)
+    buttons:
+      - variant: primary
+        size: sm
+        text: Small Button
+        href: "#"
+      - variant: primary
+        size: md
+        text: Medium Button
+        href: "#"
+      - variant: primary
+        size: lg
+        text: Large Button
+        href: "#"
+
+  # ============================================================
+  # CARD SECTIONS
+  # ============================================================
+
+  - type: richText
+    background:
+      bgColor: gray
+      bgType: full
+    content: |-
+      ## Card Sections
+
+      The `card` section displays a grid of cards with optional images, content, and per-card buttons. Cards support a `color` prop (primary, secondary, highlight, neutral) that changes their visual treatment. Section-level buttons appear below the grid.
+
+      **Props:** `title` (required), `description`, `cards[]` with `title`, `content`, `image`, `button`, `color`, plus `buttons[]` for section-level CTAs
+
+  - type: card
+    title: Card Color Variants
+    description: Each card below demonstrates a different color accent. Colors replace the default dotted border with a solid tinted treatment.
+    cards:
+      - title: Primary Color
+        content: Uses a warm primary tint with a solid primary border. Good for highlighting the main offering or recommended option.
+        color: primary
+        button:
+          variant: primary
+          size: sm
+          text: Learn More
+          href: "#"
+      - title: Secondary Color
+        content: Uses a cool secondary tint with a matching border. Useful for complementary content that supports the primary message.
+        color: secondary
+        button:
+          variant: secondary
+          size: sm
+          text: Explore
+          href: "#"
+      - title: Highlight Color
+        content: Uses the decorative highlight SVG as a background, matching the section-level highlight treatment. Eye-catching for featured cards.
+        color: highlight
+        button:
+          variant: outline
+          size: sm
+          text: View Details
+          href: "#"
+      - title: Neutral Color
+        content: Uses a subtle gray tint with a gray border. Best for supplementary information that should not compete visually with colored cards.
+        color: neutral
+        button:
+          variant: ghost
+          size: sm
+          text: Read More
+          href: "#"
+    buttons:
+      - variant: primary
+        size: md
+        text: View All Programs
+        href: "#"
+      - variant: outline
+        size: md
+        text: Get Involved
+        href: "#"
+
+  - type: card
+    title: Default Cards (No Color)
+    description: Without a color prop, cards use the default dotted primary border treatment.
+    background:
+      bgColor: gray
+      bgType: full
+    cards:
+      - title: Encrypted Messaging
+        content: End-to-end encrypted communication tools that protect conversations from surveillance and unauthorized access.
+      - title: Secure File Sharing
+        content: Zero-knowledge file sharing platforms where only the intended recipients can decrypt and access shared documents.
+      - title: Privacy-First Analytics
+        content: Web analytics that respect visitor privacy by design, collecting only aggregate data without personal identifiers.
+    buttons:
+      - variant: primary
+        size: md
+        text: Explore Tools
+        href: "#"
+
+  # ============================================================
+  # PEOPLE SECTIONS
+  # ============================================================
+
+  - type: richText
+    content: |-
+      ## People Sections
+
+      The `people` section displays team member cards, optionally filtered by category. Categories are defined in `src/content/categories/people.json` and assigned to people via their `sections` field.
+
+      **Props:** `category` (optional filter)
+
+      **Available categories:** Leadership, Engineering, Product, Design, Marketing, Sales, Operations, Community
+
+  - type: people
+    category: Leadership
+
+  - type: people
+    category: Design
+    background:
+      bgColor: gray
+      bgType: full
+
+  # ============================================================
+  # PARTNERS SECTIONS
+  # ============================================================
+
+  - type: richText
+    content: |-
+      ## Partners Sections
+
+      The `partners` section displays partner logos in a grid, optionally filtered by category. Partners are defined as individual data files with category, image, and URL fields.
+
+      **Props:** `title` (required), `category` (optional filter)
+
+      **Available categories:** sponsor, infrastructure, community, technology, media
+
+  - type: partners
+    title: Technology Partners
+    category: technology
+
+  - type: partners
+    title: All Partners
+    background:
+      bgColor: gray
+      bgType: full
+
+  # ============================================================
+  # ARTICLES ROLL SECTION
+  # ============================================================
+
+  - type: richText
+    content: |-
+      ## Articles Roll Section
+
+      The `articlesRoll` section displays a feed of recent articles with optional filtering by category. It supports a configurable limit and a "View All" link.
+
+      **Props:** `title`, `limit` (default 3), `category`, `showViewAll`
+
+  - type: articlesRoll
+    title: Latest Articles
+    limit: 3
+    showViewAll: true
+
+  # ============================================================
+  # FEATURED PARTNERS SECTION
+  # ============================================================
+
+  - type: richText
+    background:
+      bgColor: gray
+      bgType: full
+    content: |-
+      ## Featured Partners Section
+
+      The `featuredPartners` section showcases specific partners by ID, with an optional description and a configurable display limit. Useful for sponsor spotlights or curated partner lists.
+
+      **Props:** `title`, `description`, `partners[]` (IDs), `limit` (default 4), `showViewAll`
+
+  - type: featuredPartners
+    title: Our Sponsors
+    description: Organizations supporting the mission of building technology for the public good.
+    partners:
+      - tech-corp
+      - devtools-inc
+      - data-systems
+      - cloudhost
+    limit: 4
+    showViewAll: true
+    background:
+      bgColor: gray
+      bgType: full
+
+  # ============================================================
+  # RESOURCES ROLL SECTION
+  # ============================================================
+
+  - type: richText
+    content: |-
+      ## Resources Roll Section
+
+      The `resourcesRoll` section displays a feed of resources (reports, guides, whitepapers, case studies) with a configurable limit and optional description.
+
+      **Props:** `title` (default "Resources"), `description`, `limit` (1-12, default 3), `showViewAll`
+
+  - type: resourcesRoll
+    title: Research & Resources
+    description: Reports, guides, and case studies on building equitable technology.
+    limit: 4
+    showViewAll: true
+
+  # ============================================================
+  # FLEXI SECTION
+  # ============================================================
+
+  - type: richText
+    background:
+      bgColor: gray
+      bgType: full
+    content: |-
+      ## Flexi Section
+
+      The `flexi` section is a container that wraps other section types, allowing you to compose multiple sections under a shared title and description. Any non-flexi section type can be nested inside.
+
+      **Props:** `title` (required), `description`, `sections[]` (array of section objects)
+
   - type: flexi
-    title: This is a Flexi Section!
-    description: Weeeee
+    title: Digital Rights Toolkit
+    description: A composed section demonstrating nested content — rich text, cards, and buttons living together.
     sections:
       - type: richText
-        background:
-          bgColor: white
-          bgType: full
-        content: Some text!
+        content: |-
+          ### Why Digital Rights Matter
+
+          The tools we build shape the freedoms people can exercise. When technology is designed without regard for human rights, it becomes a mechanism of control rather than empowerment.
+
+          Every design decision is a values decision. Choosing end-to-end encryption is choosing privacy. Choosing open protocols is choosing interoperability. Choosing accessible interfaces is choosing inclusion.
+      - type: card
+        title: Key Principles
+        cards:
+          - title: Transparency
+            content: Users deserve to understand how their data is collected, processed, and shared.
+          - title: Consent
+            content: Meaningful consent requires clear choices, not dark patterns buried in terms of service.
+          - title: Minimization
+            content: Collect only the data you need. Retain it only as long as necessary. Delete it when done.
       - type: button
-        title: Buttons
         buttons:
           - variant: primary
             size: md
-            text: Button 1
-            href: google.com
+            text: Download the Toolkit
+            href: "#"
+          - variant: outline
+            size: md
+            text: Contribute on GitHub
+            href: "#"

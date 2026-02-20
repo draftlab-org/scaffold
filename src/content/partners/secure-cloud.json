@@ -1,8 +1,8 @@
 {
   "id": "secure-cloud",
-  "name": "SecureCloud Services",
-  "affiliation": "Infrastructure Partner",
-  "url": "https://securecloud.example.com",
+  "name": "Vaultnet Collective",
+  "affiliation": "Secure Hosting Collective",
+  "url": "https://vaultnet.example.org",
   "category": "infrastructure",
   "image": "/src/assets/partners/rings-8.png",
   "order": 9,

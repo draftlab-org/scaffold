@@ -2,7 +2,9 @@
   "id": "michael-brown",
   "name": "Michael Brown",
   "headshot": "/src/assets/people/michael-brown.png",
-  "title": "Growth Manager",
+  "title": "Media Relations Lead",
+  "affiliation": "Open Internet Project",
+  "extraInfo": "Amplifies internet freedom stories in mainstream and independent media",
   "sections": [
     "Marketing"
   ],

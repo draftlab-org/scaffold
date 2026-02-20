@@ -2,7 +2,9 @@
   "id": "carlos-martinez",
   "name": "Carlos Martinez",
   "headshot": "/src/assets/people/carlos-martinez.png",
-  "title": "Head of Marketing",
+  "title": "Communications Director",
+  "affiliation": "Digital Rights Watch",
+  "extraInfo": "Leads public awareness campaigns on surveillance and data rights",
   "sections": [
     "Marketing"
   ],

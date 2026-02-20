@@ -2,7 +2,9 @@
   "id": "rachel-green",
   "name": "Rachel Green",
   "headshot": "/src/assets/people/rachel-green.png",
-  "title": "Chief Financial Officer",
+  "title": "Director of Operations",
+  "affiliation": "Civic Data Collaborative",
+  "extraInfo": "Oversees organizational sustainability and transparent financial practices",
   "sections": [
     "Leadership",
     "Operations"

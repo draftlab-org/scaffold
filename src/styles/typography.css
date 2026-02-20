@@ -1,6 +1,7 @@
 @theme {
   --font-sans: var(--font-rubik);
   --font-serif: var(--font-ibm-plex-serif);
+  --font-mono: var(--font-jetbrains-mono);
 
   --text-sm: 0.625rem;
   --text-base: 0.875rem;
@@ -16,6 +17,34 @@
 /* defines default link styling as a single source of truth */
 @utility link-default {
   @apply text-secondary-600 underline underline-offset-2 transition-colors hover:text-secondary-800;
+}
+
+/* Remove backtick pseudo-elements from prose inline code.
+   Must be unlayered to override @tailwindcss/typography plugin styles. */
+.prose
+  :where(code):not(
+    :where([class~='not-prose'], [class~='not-prose'] *)
+  )::before,
+.prose
+  :where(code):not(
+    :where([class~='not-prose'], [class~='not-prose'] *)
+  )::after {
+  content: none;
+}
+
+/* Style inline code to match Expressive Code's catppuccin-frappe theme */
+.prose
+  :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)):not(
+    pre code
+  ) {
+  background-color: var(--color-gray-100);
+  color: var(--color-gray-700);
+  padding: 0.15em 0.35em;
+  border-radius: 0.25rem;
+  border-width: 1px;
+  border-color: var(--color-gray-200);
+  font-size: 0.875em;
+  font-weight: 400;
 }
 
 @layer base {

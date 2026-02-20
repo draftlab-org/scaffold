@@ -1,8 +1,8 @@
 {
   "id": "scaling-web-architecture",
-  "title": "Scaling Web Architecture: Patterns and Best Practices",
+  "title": "Threat Modeling for Civic Technology Platforms",
   "status": "published",
-  "description": "A comprehensive guide to scaling web applications from thousands to millions of users, covering load balancing, caching strategies, and database optimization.",
+  "description": "A framework for identifying and mitigating security threats in civic technology, from voter registration systems to community health dashboards. Includes risk matrices and mitigation playbooks.",
   "authors": "Sarah Chen, David Kim",
   "contributors": ["sarah-chen", "david-kim"],
   "year": 2024,
@@ -10,9 +10,9 @@
   "externalLinks": [
     {
       "label": "Download PDF",
-      "url": "https://example.com/scaling-web-architecture.pdf"
+      "url": "https://example.com/civic-threat-modeling.pdf"
     }
   ],
   "publishedDate": "2024-06-15",
-  "tags": ["architecture", "performance", "scalability"]
+  "tags": ["security", "civic-tech", "threat-modeling"]
 }

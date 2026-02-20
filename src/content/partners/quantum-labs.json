@@ -1,8 +1,8 @@
 {
   "id": "quantum-labs",
-  "name": "Quantum Labs",
-  "affiliation": "Technology Partner",
-  "url": "https://quantumlabs.example.com",
+  "name": "Whisperline Protocol",
+  "affiliation": "Encrypted Communications",
+  "url": "https://whisperline.example.org",
   "category": "technology",
   "image": "/src/assets/partners/rings-10.png",
   "order": 11,
