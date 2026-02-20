@@ -42,9 +42,9 @@ sections:
 
       ```bash
 
-      git clone https://github.com/your-org/scaffold.git my-site
+      npx create-astro --template draftlab-org/scaffold
 
-      cd my-site
+      cd your-project-name
 
       npm install
 
@@ -185,23 +185,23 @@ sections:
 
       *   **Articles** (`src/content/articles/`) — Markdown blog posts with
       frontmatter for title, excerpt, authors, tags, and hero image.
-
+          
       *   **People** (`src/content/people/`) — Team member profiles with name,
       title, headshot, affiliation, and category tags.
-
+          
       *   **Partners** (`src/content/partners/`) — Organizations with logo, URL,
       category, and display order.
-
+          
       *   **Resources** (`src/content/resources/`) — Publications like reports,
       whitepapers, and guides with external download links.
-
+          
       *   **Navigation** (`src/content/navigation/`) — Menu definitions for the
       header and footer. Supports single links and dropdown menus.
-
+          
       *   **Site Settings** (`src/content/site/config.json`) — Global
       configuration: site title, description, social links, favicon, Open Graph
       image, cookie consent, and footer text.
-
+          
 
       Each collection has a schema defined in `src/content/config.ts`. Astro
       validates every file against its schema at build time, so you'll get a
@@ -215,12 +215,12 @@ sections:
 
 
       *   **draft** — Only visible when running the development server.
-
+          
       *   **published** — Visible everywhere.
-
+          
       *   **archived** — Still visible, but can be styled differently or
       filtered out.
-
+          
 
       This lets you work on new content without publishing it, and retire old
       content without deleting it.
@@ -247,12 +247,12 @@ sections:
 
       1.  Go to [app.pagescms.org](https://app.pagescms.org) and sign in with
       your GitHub account.
-
+          
       2.  Select the repository where your Scaffold site lives.
-
+          
       3.  PagesCMS reads the `.pages.yml` file in the root of the repository and
       automatically sets up the editing interface.
-
+          
 
       That's it. No API keys, no database, no separate hosting.
 
@@ -262,27 +262,27 @@ sections:
 
       *   **Edit pages** — Add, remove, and reorder sections. Each section type
       has a form with the relevant fields.
-
+          
       *   **Write articles** — Use the built-in Markdown editor with live
       preview.
-
+          
       *   **Manage people** — Add team members with headshots and roles.
-
+          
       *   **Manage partners** — Upload partner logos, set display order, and
       toggle featured status.
-
+          
       *   **Manage resources** — Add publications with download links and
       contributor cross-references.
-
+          
       *   **Edit navigation** — Change header and footer menus, add dropdown
       menus, link to internal pages or external URLs.
-
+          
       *   **Update site settings** — Change the site title, description, social
       links, analytics ID, and cookie consent copy.
-
+          
       *   **Upload images** — All images are stored in `src/assets/` and
       automatically optimized at build time.
-
+          
 
       ### How images work
 
@@ -353,11 +353,11 @@ sections:
 
 
       *   `colors.css` — Color palette (primary, secondary, highlight, gray)
-
+          
       *   `typography.css` — Font families, prose styling, heading scales
-
+          
       *   `breakpoints.css` — Responsive breakpoints
-
+          
 
       Change the color palette in `colors.css` and the entire site updates.
 
@@ -369,15 +369,15 @@ sections:
 
 
       *   `/api/pages.json`
-
+          
       *   `/api/articles.json`
-
+          
       *   `/api/people.json`
-
+          
       *   `/api/partners.json`
-
+          
       *   `/api/resources.json`
-
+          
 
       These are generated at build time and can be used by external tools or
       client-side JavaScript.
