@@ -3,7 +3,8 @@
   --font-serif: var(--font-ibm-plex-serif);
   --font-mono: var(--font-jetbrains-mono);
 
-  --text-sm: 0.625rem;
+  /* TODO: #19 explore custom text sizes */
+  /* --text-sm: 0.625rem;
   --text-base: 0.875rem;
   --text-lg: 1rem;
   --text-xl: 1.125rem;
@@ -11,7 +12,7 @@
   --text-3xl: 1.75rem;
   --text-4xl: 2.25rem;
   --text-5xl: 2.5rem;
-  --text-6xl: 3.5rem;
+  --text-6xl: 3.5rem; */
 }
 
 /* defines default link styling as a single source of truth */
@@ -48,9 +49,7 @@
 }
 
 .prose
-  :where(strong):not(
-    :where([class~='not-prose'], [class~='not-prose'] *)
-  ) {
+  :where(strong):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
   font-weight: 500;
 }
 
@@ -61,7 +60,7 @@
   h4,
   h5,
   h6 {
-    @apply font-serif font-bold scroll-mt-24;
+    @apply scroll-mt-24 font-serif font-bold;
   }
   h1 {
     @apply text-4xl md:text-6xl;
