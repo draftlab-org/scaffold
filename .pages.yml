@@ -482,6 +482,22 @@ content:
         type: image
         description: Background image for the page hero section
 
+      - name: background
+        label: Page Background
+        type: select
+        default: white
+        options:
+          values:
+            - label: White
+              value: white
+            - label: Gray
+              value: gray
+            - label: Gradient
+              value: gradient
+            - label: Highlight
+              value: highlight
+        description: Default background style for the page
+
       - name: sections
         label: Page Sections
         type: block
@@ -970,6 +986,16 @@ content:
         label: Default Open Graph Image
         type: image
         description: Default image for social media sharing
+
+      - name: defaultLogoLight
+        label: Logo (Light Background)
+        type: image
+        description: Site logo for use on light backgrounds
+
+      - name: defaultLogoDark
+        label: Logo (Dark Background)
+        type: image
+        description: Site logo for use on dark backgrounds
 
       - name: social
         label: Social Media Links
