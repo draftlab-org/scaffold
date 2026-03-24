@@ -27,9 +27,17 @@ const {
   canonicalURL,
 } = Astro.props;
 
-// Use the default OG image from content collection if no image provided
-const ogImage = image || siteConfig.defaultOgImage as ImageMetadata;
-const imageURL = ogImage ? new URL(ogImage.src, Astro.url).href : undefined;
+// Build og:image URL — use generated OG PNG when page has a hero image,
+// otherwise fall back to the default site OG image
+let imageURL: string | undefined;
+if (image) {
+  const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
+  const ogPath = pathname === '/' ? '/og/index.png' : `/og${pathname}.png`;
+  imageURL = new URL(ogPath, Astro.site || Astro.url).href;
+} else {
+  const fallback = siteConfig.defaultOgImage as ImageMetadata;
+  imageURL = fallback ? new URL(fallback.src, Astro.url).href : undefined;
+}
 
 ---
 

@@ -6,6 +6,7 @@
   "defaultOgImage": "/src/assets/draftlab-seo.png",
   "defaultLogoLight": "/src/assets/scaffold-logo.svg",
   "defaultLogoDark": "/src/assets/scaffold-logo-dark.svg",
+  "defaultLogoSquare": "/src/assets/draftlab-logo-square.svg",
   "social": {
     "bluesky": "https://bsky.app/yourhandle",
     "mastodon": "https://mastodon.social/@yourhandle",

@@ -997,6 +997,11 @@ content:
         type: image
         description: Site logo for use on dark backgrounds
 
+      - name: defaultLogoSquare
+        label: Logo (Square)
+        type: image
+        description: Square logo used for OG image badges and favicons
+
       - name: social
         label: Social Media Links
         type: object

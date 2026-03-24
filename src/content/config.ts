@@ -213,6 +213,7 @@ const siteCollection = defineCollection({
       defaultOgImage: image().optional(),
       defaultLogoLight: image().optional(),
       defaultLogoDark: image().optional(),
+      defaultLogoSquare: image().optional(),
       social: z
         .object({
           bluesky: z.string().optional(),
