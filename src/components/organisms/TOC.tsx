@@ -39,7 +39,7 @@ function TOCEntries({
             <button
               type="button"
               onClick={() => onEntryClick(entry.id)}
-              className={`block w-full cursor-pointer text-left text-sm transition-colors ${
+              className={`block w-full cursor-pointer text-left text-sm text-gray-600 transition-colors ${
                 isActive ? 'text-primary-600' : 'hover:text-gray-900'
               }`}
             >

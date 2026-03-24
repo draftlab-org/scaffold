@@ -655,6 +655,77 @@ content:
         type: rich-text
 
   # --------------------------------------------------------------------------
+  # Docs
+  # --------------------------------------------------------------------------
+  - name: docs
+    label: Docs
+    type: collection
+    path: src/content/docs
+    filename: '{fields.permalink}.md'
+    view:
+      fields: [title, chapter, order, status]
+      primary: title
+      sort: [chapterOrder, order]
+      default:
+        sort: chapterOrder
+        order: asc
+    fields:
+      - name: permalink
+        label: Permalink
+        type: string
+        required: true
+        description: URL-friendly identifier (e.g. getting-started)
+        pattern:
+          message: "Must be a web-safe string like 'my-doc-page'."
+          regex: '^[a-zA-Z0-9_-]*$'
+
+      - name: title
+        label: Title
+        type: string
+        required: true
+
+      - name: chapter
+        label: Chapter
+        type: string
+        required: true
+        description: Chapter name this page belongs to (e.g. "Getting Started")
+
+      - name: chapterOrder
+        label: Chapter Order
+        type: number
+        required: true
+        description: Order of this chapter in the sidebar (1, 2, 3...)
+
+      - name: order
+        label: Page Order
+        type: number
+        required: true
+        description: Order within the chapter (1, 2, 3...)
+
+      - name: status
+        label: Status
+        type: select
+        required: true
+        default: draft
+        options:
+          values:
+            - label: Draft
+              value: draft
+            - label: Published
+              value: published
+            - label: Archived
+              value: archived
+
+      - name: description
+        label: Description
+        type: string
+        description: Brief description of this page
+
+      - name: body
+        label: Body
+        type: rich-text
+
+  # --------------------------------------------------------------------------
   # People
   # --------------------------------------------------------------------------
   - name: people

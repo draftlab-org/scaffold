@@ -324,10 +324,24 @@ const resourcesCollection = defineCollection({
   }),
 });
 
+const docsCollection = defineCollection({
+  type: 'content',
+  schema: z.object({
+    permalink: z.string(),
+    title: z.string(),
+    chapter: z.string(),
+    chapterOrder: z.number(),
+    order: z.number(),
+    status: statusSchema,
+    description: z.string().optional(),
+  }),
+});
+
 export const collections = {
   people: peopleCollection,
   pages: pagesCollection,
   articles: articlesCollection,
+  docs: docsCollection,
   site: siteCollection,
   navigation: navigationCollection,
   partners: partnersCollection,

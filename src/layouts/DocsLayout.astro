@@ -1,0 +1,57 @@
+---
+import DocsPrevNext from '@components/organisms/DocsPrevNext.astro';
+import DocsSidebar from '@components/organisms/DocsSidebar.astro';
+import TOC from '@components/organisms/TOC';
+import PageLayout from '@layouts/PageLayout.astro';
+import type { DocChapter, DocEntry } from '@utils/docs';
+import type { TocEntry } from '@utils/renderMarkdown';
+
+interface Props {
+  title: string;
+  description?: string;
+  chapters: DocChapter[];
+  currentPermalink: string;
+  toc?: TocEntry[];
+  prev: DocEntry | null;
+  next: DocEntry | null;
+}
+
+const { title, description, chapters, currentPermalink, toc, prev, next } =
+  Astro.props;
+---
+
+<PageLayout title={title} description={description} containerized={false}>
+	<div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+		{/* Mobile sidebar toggle */}
+		<details class="mb-6 rounded-lg border border-primary-600 p-4 lg:hidden">
+			<summary class="cursor-pointer font-medium">Chapters</summary>
+			<div class="mt-4">
+				<DocsSidebar chapters={chapters} currentPermalink={currentPermalink} />
+			</div>
+		</details>
+
+		<div
+			class="grid grid-cols-1 gap-8 lg:grid-cols-[250px_1fr] xl:grid-cols-[250px_1fr_250px]"
+		>
+			{/* Left sidebar: Chapter navigation */}
+			<aside class="hidden lg:block">
+				<DocsSidebar chapters={chapters} currentPermalink={currentPermalink} />
+			</aside>
+
+			{/* Center: Content */}
+			<main>
+				<article class="mx-auto prose max-w-3xl">
+					<slot />
+				</article>
+				<div class="mx-auto max-w-3xl">
+					<DocsPrevNext prev={prev} next={next} />
+				</div>
+			</main>
+
+			{/* Right sidebar: TOC */}
+			<aside class="hidden xl:block">
+				{toc && toc.length > 0 && <TOC client:load entries={toc} />}
+			</aside>
+		</div>
+	</div>
+</PageLayout>

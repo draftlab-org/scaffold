@@ -1,0 +1,39 @@
+---
+import type { DocChapter } from '@utils/docs';
+
+interface Props {
+  chapters: DocChapter[];
+  currentPermalink: string;
+}
+
+const { chapters, currentPermalink } = Astro.props;
+---
+
+<nav class="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto pt-6 pr-4">
+	{
+		chapters.map((chapter) => (
+			<div class="mb-6">
+				<h4 class="mb-2 font-semibold tracking-wide text-gray-900 uppercase">
+					{chapter.name}
+				</h4>
+				<ul class="">
+					{chapter.pages.map((page) => (
+						<li>
+							<a
+								href={`/docs/${page.data.permalink}`}
+								class:list={[
+									'block rounded-lg border-2 p-1 pl-2 text-sm text-gray-600 no-underline',
+									page.data.permalink === currentPermalink
+										? 'border-2 border-solid border-primary-300 bg-primary-50 text-gray-900'
+										: 'border-transparent hover:text-gray-900',
+								]}
+							>
+								{page.data.title}
+							</a>
+						</li>
+					))}
+				</ul>
+			</div>
+		))
+	}
+</nav>

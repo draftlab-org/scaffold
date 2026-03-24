@@ -1,0 +1,11 @@
+---
+import { getFirstDocPage } from '@utils/docs';
+
+const firstDoc = await getFirstDocPage();
+
+if (firstDoc) {
+  return Astro.redirect(`/docs/${firstDoc.data.permalink}`, 302);
+}
+
+return Astro.redirect('/', 302);
+---
