@@ -3,7 +3,7 @@
   "description": "Draftlab Scaffold - A Pretty Good Web Development Starter",
   "url": "https://scaffold.draftlab.org",
   "favicon": "/favicon.svg",
-  "defaultOgImage": "/src/assets/draftlab-seo.png",
+  "defaultOgImage": "/src/assets/scaffold-seo.png",
   "defaultLogoLight": "/src/assets/scaffold-logo.svg",
   "defaultLogoDark": "/src/assets/scaffold-logo-dark.svg",
   "defaultLogoSquare": "/src/assets/draftlab-logo-square.svg",
