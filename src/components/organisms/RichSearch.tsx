@@ -9,6 +9,7 @@ import {
 } from '@headlessui/react';
 import Fuse from 'fuse.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import BookOpenIcon from '~icons/heroicons/book-open';
 import DocumentIcon from '~icons/heroicons/document-text';
 import ExclamationTriangleIcon from '~icons/heroicons/exclamation-triangle';
 import FolderIcon from '~icons/heroicons/folder';
@@ -80,6 +81,18 @@ const SEARCH_CATEGORIES: CategoryConfig[] = [
       imageUrl: article.data.heroImage?.src,
     }),
   },
+  {
+    name: 'Docs',
+    apiEndpoint: '/api/docs.json',
+    urlPrefix: '/docs/',
+    icon: BookOpenIcon,
+    modifier: '!',
+    transform: (doc: any) => ({
+      id: doc.id,
+      name: doc.data.title,
+      url: `/docs/${doc.data.permalink}`,
+    }),
+  },
 ];
 
 function classNames(...classes: string[]) {
@@ -133,9 +146,9 @@ export default function RichSearch() {
         categoryDataArrays.forEach((data, index) => {
           const category = SEARCH_CATEGORIES[index];
           const items = data
-            // Filter out unpublished articles if applicable
+            // Filter out unpublished entries for content collections (articles, docs)
             .filter((item: any) =>
-              category.name === 'Articles'
+              category.name === 'Articles' || category.name === 'Docs'
                 ? item.data?.status === 'published' ||
                   item.data?.status === 'archived'
                 : true

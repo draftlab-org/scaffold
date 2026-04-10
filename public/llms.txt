@@ -1,0 +1,110 @@
+# Draftlab Scaffold
+
+> A modern website starter built with Astro v5, Tailwind CSS v4, and React v19.
+> Provides a flexible page-building system, type-safe content collections, and
+> an integrated Git-based CMS (PagesCMS). Pre-configured for Netlify deployment.
+
+Scaffold is a template, not a finished site — use it as the starting point
+for your own content-focused website. Once installed, everything is editable
+either by hand (YAML/JSON/Markdown) or through a visual CMS interface. The
+articles, people, partners, and resources that ship with the live demo are
+placeholder content meant to be replaced.
+
+## Quick start
+
+Requires Node.js v20+ and Git.
+
+    npx create-astro --template draftlab-org/scaffold
+    cd your-project-name
+    npm install
+    npm run dev
+
+Dev server runs at http://localhost:4321. Build with `npm run build`
+(static output in `dist/`); preview with `npm run preview`.
+
+## Deployment
+
+- Pre-configured for **Netlify** via `@astrojs/netlify`. Connect the repo,
+  push to `main`, done — no extra config.
+- Works with any static host (Vercel, Cloudflare Pages, GitHub Pages) by
+  swapping the adapter in `astro.config.mjs`.
+
+## Documentation
+
+- [How to use Scaffold](https://scaffold.draftlab.org/how-to-use): Full guide covering installation, page building, content collections, PagesCMS, and deployment
+- [GitHub repository](https://github.com/draftlab-org/scaffold): Source code, issues, releases
+- [README](https://github.com/draftlab-org/scaffold/blob/main/README.md): Install instructions, commands, project structure
+
+## Content model
+
+Content lives in `src/content/` with schemas in `src/content/config.ts`.
+Nine collections ship by default:
+
+- **Site** (`src/content/site/config.json`): Singleton with title, description, SEO defaults, social links, cookie consent, archived banners
+- **Pages** (`src/content/pages/*.yaml`): Each file is a route, built from a `sections` array
+- **Navigation** (`src/content/navigation/*.json`): Header and footer menus
+- **Articles** (`src/content/articles/*.md`): Markdown blog posts with frontmatter
+- **Docs** (`src/content/docs/*.md`): Multi-chapter markdown documentation, grouped by `chapter`/`chapterOrder` and sorted by `order`
+- **People** (`src/content/people/*.json`): Team profiles
+- **Partners** (`src/content/partners/*.json`): Organizations with logo, URL, category
+- **Resources** (`src/content/resources/*.json`): Publications, reports, guides
+- **Categories** (`src/content/categories/*.json`): Category definitions used by filters
+
+All collections use a unified `status` field (`draft`, `published`, `archived`).
+Drafts are only visible in `npm run dev` or with `PUBLIC_PREVIEW=true`.
+
+## Page sections
+
+Every page is assembled from sections. Available types:
+
+- `hero` — Full-width banner with title, subtitle, optional background image
+- `richText` — Markdown with optional table of contents
+- `button` — Row of call-to-action buttons
+- `card` — Grid of cards with markdown, images, links
+- `people` — Grid of team profiles, filterable by category
+- `partners` — Grid of partner logos, filterable by category
+- `featuredPartners` — Curated partner row
+- `articlesRoll` — Feed of recent articles
+- `resourcesRoll` — Feed of recent resources
+- `flexi` — Nested container for combining sections
+
+A GitHub Action (`.github/workflows/auto-fix-permalinks.yml`) keeps page
+filenames and `permalink` fields in sync automatically.
+
+## PagesCMS
+
+Scaffold ships with a complete `.pages.yml` configuration for
+[PagesCMS](https://pagescms.org) — a free, open-source, Git-based CMS.
+
+- Sign in at [app.pagescms.org](https://app.pagescms.org) with GitHub
+- Select your repository; PagesCMS reads `.pages.yml` and configures the editor automatically
+- No API keys, no database, no separate hosting — edits commit directly to your repo and trigger a rebuild
+
+## Architecture
+
+- **Stack**: Astro v5, React v19, Tailwind CSS v4 (Vite plugin), MDX
+- **Components**: Atomic design — `atoms` → `molecules` → `organisms` → `sections`
+- **TypeScript**: Strict mode with path aliases (`@components/*`, `@utils/*`, `@lib/*`, `@content/*`, `@styles/*`, `@layouts/*`, `@assets/*`, `@pages/*`)
+- **Icons**: [unplugin-icons](https://github.com/unplugin/unplugin-icons) + [@iconify/json](https://icon-sets.iconify.design/) — import as `~icons/[collection]/[icon-name]`
+- **Styling**: Tailwind v4 with `@theme` tokens in `src/styles/colors.css`, `typography.css`, `breakpoints.css`
+
+## API endpoints
+
+All content collections are automatically exposed as JSON at build time via `src/pages/api/[collection].json.ts`:
+
+- `/api/pages.json`
+- `/api/articles.json`
+- `/api/docs.json`
+- `/api/people.json`
+- `/api/partners.json`
+- `/api/resources.json`
+- `/api/navigation.json`
+- `/api/categories.json`
+- `/api/site.json`
+
+## External references
+
+- [Astro documentation](https://docs.astro.build)
+- [Tailwind CSS v4](https://tailwindcss.com)
+- [PagesCMS documentation](https://pagescms.org/docs)
+- [Atomic design principles](https://atomicdesign.bradfrost.com/chapter-2/)

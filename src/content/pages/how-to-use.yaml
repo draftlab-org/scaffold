@@ -185,7 +185,11 @@ sections:
 
       *   **Articles** (`src/content/articles/`) — Markdown blog posts with
       frontmatter for title, excerpt, authors, tags, and hero image.
-          
+
+      *   **Docs** (`src/content/docs/`) — Multi-chapter markdown documentation.
+      Each doc belongs to a chapter and has an order, so you can build a
+      structured handbook, user guide, or reference section.
+
       *   **People** (`src/content/people/`) — Team member profiles with name,
       title, headshot, affiliation, and category tags.
           

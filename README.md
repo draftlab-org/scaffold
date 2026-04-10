@@ -73,7 +73,7 @@ import DevOnly from '@components/atoms/DevOnly.astro'; import {devClass} from '@
 
 ### Content Collections
 
-Content lives in `src/content/` with schemas defined in `config.ts`. The scaffold includes seven content collections:
+Content lives in `src/content/` with schemas defined in `config.ts`. The scaffold includes nine content collections:
 
 **Site Configuration** (`src/content/site/config.json`) - Global site settings including title, description, default SEO images, social media links, favicon, cookie consent configuration, and archived banner settings. This serves as the single source of truth for site-wide metadata and is fully editable through Pages CMS.
 
@@ -83,7 +83,11 @@ Content lives in `src/content/` with schemas defined in `config.ts`. The scaffol
 
 **People** (`src/content/people/`) - Team member information as individual JSON files with headshots, titles, and department tags.
 
+**Partners** (`src/content/partners/`) - Partner organizations as individual JSON files with name, logo, URL, category, display order, and featured flag. Partners have individual detail pages at `/partners/[id]`.
+
 **Articles** (`src/content/articles/`) - Markdown blog posts with frontmatter including permalink, authors, tags, status, and hero images.
+
+**Docs** (`src/content/docs/`) - Markdown documentation pages organized into chapters. Each doc has a permalink, title, chapter label, chapterOrder, and order — used to build a structured, multi-chapter documentation section with navigation at `/docs/[slug]`.
 
 **Resources** (`src/content/resources/`) - Data collection for publications like reports, whitepapers, case studies, and guides. Each resource has a title, category, year, optional contributors (linked to people), external links, and tags. Resources have individual detail pages at `/resources/[id]` with cross-links to contributor profiles.
 
@@ -105,7 +109,9 @@ Dynamic API endpoints automatically expose all content collections as JSON:
 
 - `/api/pages.json` - All page data
 - `/api/people.json` - All team members
+- `/api/partners.json` - All partner organizations
 - `/api/articles.json` - All articles with metadata and content
+- `/api/docs.json` - All documentation pages with metadata and content
 - `/api/navigation.json` - All navigation menus
 - `/api/resources.json` - All resources
 - `/api/categories.json` - All category definitions
@@ -133,7 +139,9 @@ Access the CMS by logging into https://app.pagescms.org with your Github profile
 - **Pages** - Page builder with drag-and-drop sections
 - **Navigation Menus** - Header and footer menu management
 - **Articles** - Blog post editor with markdown support
+- **Docs** - Multi-chapter documentation editor with markdown support
 - **People** - Team member profiles
+- **Partners** - Partner organizations with logos, categories, and display order
 - **Resources** - Publications, reports, whitepapers, and guides
 
 The interface lets you add, edit, and reorder page sections with a drag-and-drop builder. All components include validation and helpful descriptions.
@@ -199,6 +207,7 @@ src/
 ├── content/
 │   ├── articles/    # Blog posts (Markdown)
 │   ├── categories/  # Category definitions (JSON)
+│   ├── docs/        # Documentation pages (Markdown)
 │   ├── navigation/  # Menu definitions (JSON)
 │   ├── pages/       # Page definitions (YAML)
 │   ├── partners/    # Partner organizations (JSON)
@@ -230,9 +239,14 @@ src/
 │   ├── dev.ts             # Development & preview utilities
 │   ├── content.ts         # Content visibility (status filtering)
 │   ├── slugify.ts         # URL slug generation
+│   ├── renderMarkdown.ts  # Markdown rendering pipeline
+│   ├── og.ts              # Open Graph image generation
+│   ├── navigation.ts      # Navigation menu utilities
 │   ├── pages.ts           # Pages collection utilities
 │   ├── articles.ts        # Articles collection utilities
+│   ├── docs.ts            # Docs collection utilities
 │   ├── people.ts          # People collection utilities
+│   ├── partners.ts        # Partners collection utilities
 │   └── resources.ts       # Resources collection utilities
 └── styles/
     ├── global.css         # Base imports
