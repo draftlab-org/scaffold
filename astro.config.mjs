@@ -16,6 +16,7 @@ export default defineConfig({
   devToolbar: {
     enabled: false,
   },
+ 
     fonts: [
       {
         provider: fontProviders.bunny(),
@@ -36,6 +37,7 @@ export default defineConfig({
         cssVariable: '--font-jetbrains-mono',
       },
     ],
+ 
 
   vite: {
     // TODO #1 - remove expect error when Astro updates to Vite 7

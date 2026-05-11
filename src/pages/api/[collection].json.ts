@@ -1,6 +1,6 @@
 import { getCollection } from 'astro:content';
 import type { APIRoute } from 'astro';
-import { collections } from '../../content/config';
+import { collections } from '../../content.config';
 
 // Get collection names from the config - single source of truth
 const COLLECTION_NAMES = Object.keys(collections) as Array<
