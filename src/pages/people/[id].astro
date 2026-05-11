@@ -116,7 +116,7 @@ const formatDate = (date: Date) => {
 						{personArticles.map((article) => (
 							<Link
 								variant="unstyled"
-								href={`/articles/${article.slug}`}
+								href={`/articles/${article.id}`}
 								class="flex flex-col overflow-hidden rounded-lg bg-white no-underline transition hover:shadow-lg"
 							>
 								{article.data.heroImage && (

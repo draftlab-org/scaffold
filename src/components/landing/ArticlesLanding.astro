@@ -20,7 +20,7 @@ const tags = await getAllTags();
 
 // Serialize articles for the React component
 const serializedArticles = articles.map((article) => ({
-  slug: article.slug,
+  slug: article.id,
   title: article.data.title,
   permalink: article.data.permalink,
   excerpt: article.data.excerpt,

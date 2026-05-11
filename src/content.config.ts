@@ -1,15 +1,15 @@
-import { defineCollection, type ImageFunction, z } from 'astro:content';
-import articleCategories from './categories/articles.json';
-import partnerCategories from './categories/partners.json';
-import peopleCategories from './categories/people.json';
-import resourceCategories from './categories/resources.json';
+import { defineCollection, type ImageFunction } from 'astro:content';
+import { glob } from 'astro/loaders';
+import { z } from 'astro/zod';
+import articleCategories from './content/categories/articles.json';
+import partnerCategories from './content/categories/partners.json';
+import peopleCategories from './content/categories/people.json';
+import resourceCategories from './content/categories/resources.json';
 
-// Shared status field for content visibility across all collections
 const statusSchema = z
   .enum(['draft', 'published', 'archived'])
   .default('draft');
 
-// Shared color palette enum matching the site's design tokens
 const colorPaletteSchema = z.enum([
   'primary',
   'secondary',
@@ -17,9 +17,7 @@ const colorPaletteSchema = z.enum([
   'neutral',
 ]);
 
-// Helper to create schemas with image support
 const createSchemas = (image: ImageFunction) => {
-  // Atoms
   const buttonSchema = z.object({
     variant: z.string(),
     size: z.string(),
@@ -27,7 +25,6 @@ const createSchemas = (image: ImageFunction) => {
     text: z.string(),
   });
 
-  // Card
   const cardSchema = z.object({
     title: z.string(),
     content: z.string().optional(),
@@ -36,7 +33,6 @@ const createSchemas = (image: ImageFunction) => {
     color: colorPaletteSchema.optional(),
   });
 
-  //  Person
   const personSchema = z.object({
     id: z.string(),
     name: z.string(),
@@ -51,7 +47,6 @@ const createSchemas = (image: ImageFunction) => {
     status: statusSchema,
   });
 
-  //  Partner
   const partnerSchema = z.object({
     name: z.string(),
     affiliation: z.string().optional(),
@@ -69,7 +64,7 @@ const createSchemas = (image: ImageFunction) => {
 };
 
 const pagesCollection = defineCollection({
-  type: 'data',
+  loader: glob({ pattern: '**/*.yaml', base: './src/content/pages' }),
   schema: ({ image }) => {
     const { buttonSchema, cardSchema } = createSchemas(image);
 
@@ -82,7 +77,6 @@ const pagesCollection = defineCollection({
         .optional(),
     });
 
-    // Sections defined as a union type so they can be used as variable components
     const sectionsSchema = z.discriminatedUnion('type', [
       SectionCommonSchema.extend({
         type: z.literal('hero'),
@@ -127,7 +121,7 @@ const pagesCollection = defineCollection({
         type: z.literal('featuredPartners'),
         title: z.string().optional(),
         description: z.string().optional(),
-        partners: z.array(z.string()).optional(), // Specific partner IDs
+        partners: z.array(z.string()).optional(),
         limit: z.number().optional().default(4),
         showViewAll: z.boolean().optional().default(false),
       }),
@@ -166,12 +160,12 @@ const pagesCollection = defineCollection({
 });
 
 const peopleCollection = defineCollection({
-  type: 'data',
+  loader: glob({ pattern: '**/*.json', base: './src/content/people' }),
   schema: ({ image }) => createSchemas(image).personSchema,
 });
 
 const partnersCollection = defineCollection({
-  type: 'data',
+  loader: glob({ pattern: '**/*.json', base: './src/content/partners' }),
   schema: ({ image }) => {
     const { partnerSchema } = createSchemas(image);
     return partnerSchema.extend({
@@ -184,13 +178,13 @@ const partnersCollection = defineCollection({
 });
 
 const articlesCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.md', base: './src/content/articles' }),
   schema: ({ image }) =>
     z.object({
       permalink: z.string(),
       title: z.string(),
       excerpt: z.string().optional(),
-      authors: z.array(z.string()), // References to people collection IDs
+      authors: z.array(z.string()),
       status: statusSchema,
       tags: z.array(z.string()),
       categories: z
@@ -198,17 +192,17 @@ const articlesCollection = defineCollection({
         .optional(),
       publishedDate: z.date(),
       heroImage: image().optional(),
-      relatedArticles: z.array(z.string()).max(3).optional(), // Array of article permalinks (max 3)
+      relatedArticles: z.array(z.string()).max(3).optional(),
     }),
 });
 
 const siteCollection = defineCollection({
-  type: 'data',
+  loader: glob({ pattern: '**/*.json', base: './src/content/site' }),
   schema: ({ image }) =>
     z.object({
       title: z.string(),
       description: z.string(),
-      url: z.string().url(),
+      url: z.url(),
       favicon: z.string().default('/favicon.svg'),
       defaultOgImage: image().optional(),
       defaultLogoLight: image().optional(),
@@ -245,7 +239,6 @@ const siteCollection = defineCollection({
     }),
 });
 
-// Flexible link schema - supports internal page refs and external URLs
 const flexibleLinkSchema = z.discriminatedUnion('type', [
   z.object({
     type: z.literal('internal'),
@@ -253,11 +246,10 @@ const flexibleLinkSchema = z.discriminatedUnion('type', [
   }),
   z.object({
     type: z.literal('external'),
-    url: z.string().url(),
+    url: z.url(),
   }),
 ]);
 
-// Navigation item schema - supports single links and dropdowns
 const navItemLinkSchema = z.object({
   type: z.literal('link'),
   label: z.string(),
@@ -283,7 +275,7 @@ const navigationItemSchema = z.discriminatedUnion('type', [
 ]);
 
 const navigationCollection = defineCollection({
-  type: 'data',
+  loader: glob({ pattern: '**/*.json', base: './src/content/navigation' }),
   schema: z.object({
     slug: z.string(),
     title: z.string(),
@@ -292,7 +284,7 @@ const navigationCollection = defineCollection({
 });
 
 const categoriesCollection = defineCollection({
-  type: 'data',
+  loader: glob({ pattern: '**/*.json', base: './src/content/categories' }),
   schema: z.object({
     id: z.string(),
     name: z.string(),
@@ -301,21 +293,21 @@ const categoriesCollection = defineCollection({
 });
 
 const resourcesCollection = defineCollection({
-  type: 'data',
+  loader: glob({ pattern: '**/*.json', base: './src/content/resources' }),
   schema: z.object({
     id: z.string(),
     title: z.string(),
     status: statusSchema,
     description: z.string().optional(),
-    authors: z.string().optional(), // Citation string
-    contributors: z.array(z.string()).optional(), // References to people collection IDs
+    authors: z.string().optional(),
+    contributors: z.array(z.string()).optional(),
     year: z.number(),
     category: z.enum(resourceCategories.categories as [string, ...string[]]),
     externalLinks: z
       .array(
         z.object({
           label: z.string(),
-          url: z.string().url(),
+          url: z.url(),
         })
       )
       .optional(),
@@ -325,7 +317,7 @@ const resourcesCollection = defineCollection({
 });
 
 const docsCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.md', base: './src/content/docs' }),
   schema: z.object({
     permalink: z.string(),
     title: z.string(),

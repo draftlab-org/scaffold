@@ -64,7 +64,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   for (const article of articles) {
     if (!isVisible(article) || !article.data.heroImage) continue;
     entries.push({
-      ogPath: `articles/${article.slug}`,
+      ogPath: `articles/${article.id}`,
       image: article.data.heroImage,
     });
   }

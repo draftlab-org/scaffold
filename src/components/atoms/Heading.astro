@@ -13,7 +13,7 @@ const {
   ...props
 } = Astro.props;
 
-const Tag = as || `h${level}`;
+const Tag = (as || `h${level}`) as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 
 const styles = {
   h1: 'text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight',

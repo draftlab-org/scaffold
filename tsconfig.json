@@ -5,17 +5,16 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "jsxImportSource": "react",
-    "baseUrl": "src",
     "paths": {
-      "@lib/*": ["lib/*"],
-      "@components/*": ["components/*"],
-      "@layouts/*": ["layouts/*"],
-      "@assets/*": ["assets/*"],
-      "@pages/*": ["content/pages/*"],
-      "@content/*": ["content/*"],
-      "@styles/*": ["styles/*"],
-      "@utils/*": ["utils/*"]
+      "@lib/*": ["./src/lib/*"],
+      "@components/*": ["./src/components/*"],
+      "@layouts/*": ["./src/layouts/*"],
+      "@assets/*": ["./src/assets/*"],
+      "@pages/*": ["./src/content/pages/*"],
+      "@content/*": ["./src/content/*"],
+      "@styles/*": ["./src/styles/*"],
+      "@utils/*": ["./src/utils/*"]
     },
-    "types": ["unplugin-icons/types/astro"]
+    "types": ["unplugin-icons/types/react"]
   }
 }

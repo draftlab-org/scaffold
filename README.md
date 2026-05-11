@@ -1,6 +1,6 @@
 # Draftlab Scaffold
 
-A modern, content-focused web template built with Astro v5, Tailwind CSS v4, and React v19. This scaffold provides a flexible page-building system with reusable components, type-safe content collections, and an integrated headless CMS.
+A modern, content-focused web template built with Astro v6, Tailwind CSS v4, and React v19. This scaffold provides a flexible page-building system with reusable components, type-safe content collections, and an integrated headless CMS.
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/9a10e2af-511b-48c6-8ed2-e450ae007148/deploy-status)](https://app.netlify.com/projects/draftlab-scaffold/deploys)
 
@@ -26,7 +26,7 @@ npm run dev
 
 ## Stack
 
-The template combines Astro v5 for static site generation with Tailwind CSS v4 for styling and React v19 for interactive components. Content is managed through Astro's type-safe content collections with Pages CMS providing a visual editing interface. The build includes automatic image optimization and is preconfigured for Netlify deployment.
+The template combines Astro v6 for static site generation with Tailwind CSS v4 for styling and React v19 for interactive components. Content is managed through Astro's type-safe content collections (Content Layer API) with Pages CMS providing a visual editing interface. The build includes automatic image optimization and is preconfigured for Netlify deployment. Requires Node.js v22.12+.
 
 ## Screenshots
 
@@ -73,7 +73,7 @@ import DevOnly from '@components/atoms/DevOnly.astro'; import {devClass} from '@
 
 ### Content Collections
 
-Content lives in `src/content/` with schemas defined in `config.ts`. The scaffold includes nine content collections:
+Content lives in `src/content/` with schemas defined in `src/content.config.ts` using Astro's Content Layer API. The scaffold includes nine content collections:
 
 **Site Configuration** (`src/content/site/config.json`) - Global site settings including title, description, default SEO images, social media links, favicon, cookie consent configuration, and archived banner settings. This serves as the single source of truth for site-wide metadata and is fully editable through Pages CMS.
 
@@ -117,7 +117,7 @@ Dynamic API endpoints automatically expose all content collections as JSON:
 - `/api/categories.json` - All category definitions
 - `/api/site.json` - Site configuration
 
-The endpoint implementation at `src/pages/api/[collection].json.ts` automatically generates these routes from your content collections. Add a new collection to `config.ts` and it becomes available as an API endpoint with no additional configuration.
+The endpoint implementation at `src/pages/api/[collection].json.ts` automatically generates these routes from your content collections. Add a new collection to `src/content.config.ts` and it becomes available as an API endpoint with no additional configuration.
 
 ### Navigation & SEO
 
@@ -182,7 +182,7 @@ The `CookieBanner` component renders automatically when configured. It stores co
 
 ### Extending
 
-To add new section types, update the schema in `src/content/config.ts`, create a component in `src/components/sections/`, and add the configuration to `.pages.yml`. The dynamic page route supports new sections automatically.
+To add new section types, update the schema in `src/content.config.ts`, create a component in `src/components/sections/`, and add the configuration to `.pages.yml`. The dynamic page route supports new sections automatically.
 
 ## Commands
 
@@ -213,8 +213,8 @@ src/
 │   ├── partners/    # Partner organizations (JSON)
 │   ├── people/      # Team members (JSON)
 │   ├── resources/   # Publications and guides (JSON)
-│   ├── site/        # Global configuration (JSON)
-│   └── config.ts    # Content schemas with Zod validation
+│   └── site/        # Global configuration (JSON)
+├── content.config.ts  # Content collection schemas (Content Layer API + Zod)
 ├── layouts/
 │   ├── BaseLayout.astro     # Document wrapper
 │   ├── PageLayout.astro     # Page structure with header/footer

@@ -39,7 +39,7 @@ const landingPages: Record<string, string> = {
   partners: 'partners',
   resources: 'resources',
 };
-const landingType = landingPages[permalink];
+const landingType = permalink ? landingPages[permalink] : undefined;
 ---
 
 <PageLayout title={page.data.title} description={page.data.description} image={page.data.heroImage}>

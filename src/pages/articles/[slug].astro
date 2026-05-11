@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import { getCollection, getEntry } from 'astro:content';
+import { getCollection, getEntry, render } from 'astro:content';
 import Banner from '@components/atoms/Banner.astro';
 import Link from '@components/atoms/Link.astro'
 import Tag from '@components/atoms/Tag.astro';
@@ -17,13 +17,13 @@ export async function getStaticPaths() {
   return articles
     .filter((article) => isVisible(article))
     .map((article) => ({
-      params: { slug: article.slug },
+      params: { slug: article.id },
       props: { article },
     }));
 }
 
 const { article } = Astro.props;
-const { Content } = await article.render();
+const { Content } = await render(article);
 
 // Fetch all people for author lookups
 const allPeople = await getCollection('people');
@@ -154,7 +154,7 @@ const archivedBanner = siteConfig?.data.archivedBanner;
 						{relatedArticles.map((relatedArticle) => (
 							<Link
 								variant="unstyled"
-								href={`/articles/${relatedArticle.slug}`}
+								href={`/articles/${relatedArticle.id}`}
 								class="flex flex-col overflow-hidden rounded-lg bg-white no-underline transition hover:shadow-lg"
 							>
 								{/* Hero Image */}

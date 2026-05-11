@@ -150,5 +150,5 @@ export function formatArticleDate(date: Date): string {
  * Get the URL for an article
  */
 export function getArticleUrl(article: Article): string {
-  return `/articles/${article.slug}`;
+  return `/articles/${article.id}`;
 }

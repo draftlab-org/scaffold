@@ -1,6 +1,6 @@
 # Draftlab Scaffold
 
-> A modern website starter built with Astro v5, Tailwind CSS v4, and React v19.
+> A modern website starter built with Astro v6, Tailwind CSS v4, and React v19.
 > Provides a flexible page-building system, type-safe content collections, and
 > an integrated Git-based CMS (PagesCMS). Pre-configured for Netlify deployment.
 
@@ -12,7 +12,7 @@ placeholder content meant to be replaced.
 
 ## Quick start
 
-Requires Node.js v20+ and Git.
+Requires Node.js v22.12+ and Git.
 
     npx create-astro --template draftlab-org/scaffold
     cd your-project-name
@@ -37,8 +37,8 @@ Dev server runs at http://localhost:4321. Build with `npm run build`
 
 ## Content model
 
-Content lives in `src/content/` with schemas in `src/content/config.ts`.
-Nine collections ship by default:
+Content lives in `src/content/` with schemas in `src/content.config.ts`
+(Astro's Content Layer API). Nine collections ship by default:
 
 - **Site** (`src/content/site/config.json`): Singleton with title, description, SEO defaults, social links, cookie consent, archived banners
 - **Pages** (`src/content/pages/*.yaml`): Each file is a route, built from a `sections` array
@@ -82,7 +82,7 @@ Scaffold ships with a complete `.pages.yml` configuration for
 
 ## Architecture
 
-- **Stack**: Astro v5, React v19, Tailwind CSS v4 (Vite plugin), MDX
+- **Stack**: Astro v6, React v19, Tailwind CSS v4 (Vite plugin), MDX
 - **Components**: Atomic design — `atoms` → `molecules` → `organisms` → `sections`
 - **TypeScript**: Strict mode with path aliases (`@components/*`, `@utils/*`, `@lib/*`, `@content/*`, `@styles/*`, `@layouts/*`, `@assets/*`, `@pages/*`)
 - **Icons**: [unplugin-icons](https://github.com/unplugin/unplugin-icons) + [@iconify/json](https://icon-sets.iconify.design/) — import as `~icons/[collection]/[icon-name]`

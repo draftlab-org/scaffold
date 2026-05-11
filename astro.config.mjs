@@ -16,36 +16,30 @@ export default defineConfig({
   devToolbar: {
     enabled: false,
   },
-  experimental: {
-    fonts: [
-      {
-        provider: fontProviders.bunny(),
-        name: 'Rubik',
-        weights: [300, 400, 500, 600, 700, 800],
-        cssVariable: '--font-rubik',
-      },
-      {
-        provider: fontProviders.bunny(),
-        name: 'IBM Plex Serif',
-        weights: [300, 400, 500, 600, 700],
-        cssVariable: '--font-ibm-plex-serif',
-      },
-      {
-        provider: fontProviders.bunny(),
-        name: 'JetBrains Mono',
-        weights: [300, 400],
-        cssVariable: '--font-jetbrains-mono',
-      },
-    ],
-  },
+  fonts: [
+    {
+      provider: fontProviders.bunny(),
+      name: 'Rubik',
+      weights: [300, 400, 500, 600, 700, 800],
+      cssVariable: '--font-rubik',
+    },
+    {
+      provider: fontProviders.bunny(),
+      name: 'IBM Plex Serif',
+      weights: [300, 400, 500, 600, 700],
+      cssVariable: '--font-ibm-plex-serif',
+    },
+    {
+      provider: fontProviders.bunny(),
+      name: 'JetBrains Mono',
+      weights: [300, 400],
+      cssVariable: '--font-jetbrains-mono',
+    },
+  ],
 
   vite: {
-    // TODO #1 - remove expect error when Astro updates to Vite 7
-    // https://github.com/withastro/astro/issues/14030#issuecomment-3027129338
     plugins: [
-      // @ts-expect-error
       tailwindcss(),
-      // @ts-expect-error
       Icons({
         compiler: 'jsx',
         jsx: 'react',

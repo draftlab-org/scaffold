@@ -1,6 +1,6 @@
 import { getCollection } from 'astro:content';
 import type { APIRoute } from 'astro';
-import { collections } from '../../content/config';
+import { collections } from '../../content.config';
 
 // Get collection names from the config - single source of truth
 const COLLECTION_NAMES = Object.keys(collections) as Array<
@@ -24,19 +24,16 @@ export const GET: APIRoute = async ({ params }) => {
     // Fetch all entries from the specified collection
     const entries = await getCollection(collection as keyof typeof collections);
 
-    // Map entries to include both data and id/slug
     const collectionData = entries.map((entry) => {
-      // For content collections (like articles), include the body
-      if ('body' in entry) {
+      if ('body' in entry && entry.body !== undefined) {
         return {
           id: entry.id,
-          slug: 'slug' in entry ? entry.slug : entry.id,
+          slug: entry.id,
           data: entry.data,
           body: entry.body,
         };
       }
 
-      // For data collections (like pages, people), just return data with id
       return {
         id: entry.id,
         ...entry.data,
