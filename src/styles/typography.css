@@ -1,8 +1,14 @@
-@theme {
-  --font-sans: var(--font-rubik);
-  --font-serif: var(--font-ibm-plex-serif);
-  --font-mono: var(--font-jetbrains-mono);
+/* Wire Tailwind's font-* utilities to the CSS variables that fonts.config.mjs
+   sets at :root. `@theme inline` makes Tailwind emit the utilities as
+   `font-family: var(--font-sans)` directly, instead of trying to redefine
+   --font-sans itself (which would be circular). */
+@theme inline {
+  --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif);
+  --font-mono: var(--font-mono);
+}
 
+@theme {
   /* TODO: #19 explore custom text sizes */
   /* --text-sm: 0.625rem;
   --text-base: 0.875rem;

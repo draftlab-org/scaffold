@@ -366,6 +366,38 @@ sections:
       Change the color palette in `colors.css` and the entire site updates.
 
 
+      ### Changing fonts
+
+
+      Fonts are configured in `fonts.config.mjs` at the repo root — split out
+      from `astro.config.mjs` so you can change them without conflicting with
+      template updates. The file is also protected on merge, so your font
+      choices survive `npm run update-from-scaffold`.
+
+
+      Scaffold uses [Bunny Fonts](https://fonts.bunny.net) as the provider —
+      a privacy-friendly CDN that mirrors Google Fonts' catalogue without
+      third-party tracking. To change a font:
+
+
+      1.  Browse [fonts.bunny.net](https://fonts.bunny.net) and pick what you
+      want.
+
+      2.  Open `fonts.config.mjs` and update the `name` and `weights` for the
+      slot you want to change (`--font-sans`, `--font-serif`, or `--font-mono`).
+
+      3.  Restart `npm run dev` so Astro re-fetches the new font.
+
+
+      Keep the `cssVariable` names as they are — `--font-sans` / `--font-serif`
+      / `--font-mono` are referenced from typography, components, and Tailwind
+      utilities. Just point them at different fonts.
+
+
+      If you want a different provider (Google Fonts, local files, etc.) see
+      [Astro's font docs](https://docs.astro.build/en/guides/fonts/).
+
+
       ### API endpoints
 
 
@@ -441,6 +473,8 @@ sections:
 
       *   `public/**` — favicons, OG images, robots.txt, and anything else
       you've added there
+
+      *   `fonts.config.mjs` — your font choices (see "Changing fonts" below)
 
 
       Everything else merges normally. Real code conflicts get flagged like any

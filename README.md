@@ -50,6 +50,7 @@ Scaffold ships a `.gitattributes` file that marks these paths as **downstream-wi
 - `src/assets/**` — uploaded images, logos, artwork
 - `src/styles/**` — your theme tokens, typography, component utilities
 - `public/**` — favicons, OG images, robots.txt, and anything else you've added there
+- `fonts.config.mjs` — your font choices (see "Changing fonts" below)
 
 Everything else merges normally. Real code conflicts get flagged like any merge, and the script stops so you can resolve them by hand.
 
@@ -374,6 +375,20 @@ Icons inherit text color and can be styled with Tailwind classes or standard CSS
 Tailwind CSS v4 uses @theme definitions in the style files. Update `src/styles/colors.css` for color schemes and `src/styles/typography.css` for text sizing. Components follow atomic design hierarchy, so start with atoms and compose upward when building new features.
 
 BaseLayout handles document-level concerns while PageLayout adds header, footer, and content structure. Create specialized layouts by extending these base layouts.
+
+### Changing fonts
+
+Fonts are configured in `fonts.config.mjs` at the repo root — separated out from `astro.config.mjs` so you can change them without conflicting with template updates. The file is also marked `merge=ours` in `.gitattributes`, so your font choices survive `npm run update-from-scaffold`.
+
+Scaffold uses [Bunny Fonts](https://fonts.bunny.net) as the provider — a privacy-friendly CDN that mirrors Google Fonts' catalogue without the third-party tracking. To change a font:
+
+1. Browse [fonts.bunny.net](https://fonts.bunny.net) and pick what you want.
+2. Open `fonts.config.mjs` and update the `name` and `weights` for the slot you want to change (`--font-sans`, `--font-serif`, or `--font-mono`).
+3. Restart `npm run dev` so Astro re-fetches the new font.
+
+Keep the `cssVariable` names as they are — `--font-sans` / `--font-serif` / `--font-mono` are referenced from typography, components, and Tailwind utilities. Just point them at different fonts.
+
+If you want to use a different provider (Google Fonts, local files, etc.) see [Astro's font docs](https://docs.astro.build/en/guides/fonts/).
 
 ## Learn More
 
