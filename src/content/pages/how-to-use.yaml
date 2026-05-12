@@ -437,6 +437,8 @@ sections:
 
       *   `src/assets/**` — uploaded images, logos, artwork
 
+      *   `src/styles/**` — your theme tokens, typography, component utilities
+
       *   `public/**` — favicons, OG images, robots.txt, and anything else
       you've added there
 

@@ -13,6 +13,7 @@
 
 src/content/**          merge=ours
 src/assets/**           merge=ours
+src/styles/**           merge=ours
 public/**               merge=ours
 
 # --- Binary types (no merge attempts, no noisy diffs) ---------------------

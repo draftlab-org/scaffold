@@ -48,6 +48,7 @@ Scaffold ships a `.gitattributes` file that marks these paths as **downstream-wi
 
 - `src/content/**` — all content collections (pages, articles, people, etc.)
 - `src/assets/**` — uploaded images, logos, artwork
+- `src/styles/**` — your theme tokens, typography, component utilities
 - `public/**` — favicons, OG images, robots.txt, and anything else you've added there
 
 Everything else merges normally. Real code conflicts get flagged like any merge, and the script stops so you can resolve them by hand.

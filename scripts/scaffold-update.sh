@@ -16,7 +16,7 @@ set -euo pipefail
 
 REMOTE="${1:-template}"
 BRANCH="${2:-main}"
-PROTECTED=(src/content src/assets public)
+PROTECTED=(src/content src/assets src/styles public)
 
 # --- preflight -------------------------------------------------------------
 
