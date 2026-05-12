@@ -29,6 +29,35 @@ Dev server runs at http://localhost:4321. Build with `npm run build`
 - Works with any static host (Vercel, Cloudflare Pages, GitHub Pages) by
   swapping the adapter in `astro.config.mjs`.
 
+## Updating from upstream
+
+Scaffold is designed to be forked. Downstream sites can pull future Scaffold
+updates without losing content, assets, styles, or branding:
+
+    git remote add template https://github.com/draftlab-org/scaffold.git
+    npm run update-from-scaffold
+
+`scripts/scaffold-update.sh` (wrapped as `npm run update-from-scaffold`):
+
+- Fetches `template/main` and merges (auto-handling `--allow-unrelated-histories`
+  on first merge after `npx create-astro --template ...`, which has no shared root)
+- Resolves modify/delete conflicts in protected paths by re-applying the
+  downstream deletion (Git's `merge=ours` driver only handles content conflicts)
+- Reports new upstream files in protected paths at the end of the run, without
+  auto-pruning — leaves the call to the user
+
+A checked-in `.gitattributes` marks these paths as `merge=ours` (downstream
+always wins on conflict):
+
+- `src/content/**` — content collections
+- `src/assets/**` — uploaded images, logos, artwork
+- `src/styles/**` — theme tokens, typography, component utilities
+- `public/**` — favicons, OG images, robots.txt, branding
+- `fonts.config.mjs` — font choices (see Architecture)
+
+Everything else (components, layouts, utils, `astro.config.mjs`, `package.json`)
+merges normally and consumers receive template improvements.
+
 ## Documentation
 
 - [How to use Scaffold](https://scaffold.draftlab.org/how-to-use): Full guide covering installation, page building, content collections, PagesCMS, and deployment
@@ -87,6 +116,7 @@ Scaffold ships with a complete `.pages.yml` configuration for
 - **TypeScript**: Strict mode with path aliases (`@components/*`, `@utils/*`, `@lib/*`, `@content/*`, `@styles/*`, `@layouts/*`, `@assets/*`, `@pages/*`)
 - **Icons**: [unplugin-icons](https://github.com/unplugin/unplugin-icons) + [@iconify/json](https://icon-sets.iconify.design/) — import as `~icons/[collection]/[icon-name]`
 - **Styling**: Tailwind v4 with `@theme` tokens in `src/styles/colors.css`, `typography.css`, `breakpoints.css`
+- **Fonts**: Declared in `fonts.config.mjs` at repo root (split out from `astro.config.mjs` so consumers can swap fonts without conflicting with template updates). Three slots — `--font-sans`, `--font-serif`, `--font-mono` — loaded from [Bunny Fonts](https://fonts.bunny.net) by default. Change a font by editing `name` and `weights` in `fonts.config.mjs`; the CSS variable names should not be renamed.
 
 ## API endpoints
 
