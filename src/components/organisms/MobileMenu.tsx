@@ -40,7 +40,7 @@ export default function MobileMenu({
         className="button-base button-primary inline-flex cursor-pointer items-center justify-center rounded-md p-1"
         aria-label="Open menu"
       >
-        <IconBars3 class="size-6" aria-hidden="true" />
+        <IconBars3 className="size-6" aria-hidden="true" />
       </button>
 
       {/* Mobile menu dialog */}
@@ -66,7 +66,7 @@ export default function MobileMenu({
                 className="-m-2.5 p-2.5"
                 aria-label="Close menu"
               >
-                <IconXMark class="size-6 text-white" aria-hidden="true" />
+                <IconXMark className="size-6 text-white" aria-hidden="true" />
               </button>
             </div>
 
@@ -90,7 +90,7 @@ export default function MobileMenu({
                               <Disclosure as="div">
                                 <DisclosureButton className="group flex w-full items-center gap-x-4 text-xl text-black">
                                   {item.label}
-                                  <IconChevronDown class="ml-auto h-5 w-5 shrink-0 transition-transform group-data-open:rotate-180" />
+                                  <IconChevronDown className="ml-auto h-5 w-5 shrink-0 transition-transform group-data-open:rotate-180" />
                                 </DisclosureButton>
                                 <DisclosurePanel
                                   as="ul"
@@ -121,7 +121,7 @@ export default function MobileMenu({
                                         >
                                           {child.label}
                                           {external && (
-                                            <IconExternalLink class="h-4 w-4 opacity-70" />
+                                            <IconExternalLink className="h-4 w-4 opacity-70" />
                                           )}
                                         </a>
                                       </li>
@@ -149,7 +149,7 @@ export default function MobileMenu({
                             >
                               {item.label}
                               {external && (
-                                <IconExternalLink class="h-4 w-4 opacity-70" />
+                                <IconExternalLink className="h-4 w-4 opacity-70" />
                               )}
                             </a>
                           </li>

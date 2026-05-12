@@ -46,7 +46,7 @@ export default function FilterBar({
           onClick={onClear}
           className="mb-0.5 inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900"
         >
-          <IconXMark class="h-4 w-4" aria-hidden="true" />
+          <IconXMark className="h-4 w-4" aria-hidden="true" />
           Clear filters
         </button>
       )}

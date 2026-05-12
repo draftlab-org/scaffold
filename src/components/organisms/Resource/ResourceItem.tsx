@@ -81,7 +81,7 @@ export default function ResourceItem({ item }: ResourceItemProps) {
                 className="inline-flex items-center gap-1 text-sm font-medium text-secondary-600 underline decoration-dotted underline-offset-4 transition-colors hover:text-secondary-700 hover:decoration-solid"
               >
                 {link.label}
-                <IconExternalLink class="h-4 w-4" />
+                <IconExternalLink className="h-4 w-4" />
               </a>
             ))}
           </div>

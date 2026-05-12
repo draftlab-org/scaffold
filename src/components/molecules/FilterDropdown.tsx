@@ -32,7 +32,7 @@ function ChevronIcon({ open }: { open: boolean }) {
 
 function CheckIcon() {
   return (
-    <IconCheck class="h-5 w-5 text-primary-600" aria-hidden="true" />
+    <IconCheck className="h-5 w-5 text-primary-600" aria-hidden="true" />
   );
 }
 

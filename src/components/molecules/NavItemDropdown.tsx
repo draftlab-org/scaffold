@@ -34,7 +34,7 @@ export default function NavItemDropdown({
     <Menu as="div" className="relative inline-block text-left">
       <MenuButton className={buttonClasses}>
         {item.label}
-        <IconChevronDown class="ml-1 h-5 w-5" aria-hidden="true" />
+        <IconChevronDown className="ml-1 h-5 w-5" aria-hidden="true" />
       </MenuButton>
 
       <MenuItems
