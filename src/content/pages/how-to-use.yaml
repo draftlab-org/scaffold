@@ -230,6 +230,34 @@ sections:
       content without deleting it.
 
 
+      ### Embedding videos and social posts
+
+
+      Any rich-text or markdown content — article bodies, docs, and `richText`
+      page sections — supports embeds for YouTube, Vimeo, Bluesky, and Mastodon
+      using a plain markdown link with the literal text `EmbedLink`:
+
+
+      ```markdown
+
+      [EmbedLink](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
+
+      [EmbedLink](https://vimeo.com/76979871)
+
+      [EmbedLink](https://bsky.app/profile/bsky.app/post/3l6oveex3ii2l)
+
+      [EmbedLink](https://mastodon.social/@Mastodon/116539053870420123)
+
+      ```
+
+
+      The link must be the sole content of its paragraph (a blank line before
+      and after). YouTube and Vimeo render as lazy-loaded video players;
+      Bluesky and Mastodon posts are fetched at build time and inlined as
+      static cards. If a URL isn't supported or a post can't be fetched,
+      the original link is kept as a regular link.
+
+
       ## Using PagesCMS
 
 

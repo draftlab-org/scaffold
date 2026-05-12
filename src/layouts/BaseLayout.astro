@@ -1,5 +1,6 @@
 ---
 import '@styles/global.css';
+import 'lite-youtube-embed/src/lite-yt-embed.css';
 import Head from '@components/organisms/Head.astro';
 
 export interface Props {
@@ -40,3 +41,12 @@ const canonicalURL = Astro.site
 		<slot />
 	</body>
 </html>
+
+<script>
+	const loadEmbeds = () => {
+		if (document.querySelector('lite-youtube')) import('lite-youtube-embed');
+		if (document.querySelector('lite-vimeo')) import('lite-vimeo-embed');
+	};
+	loadEmbeds();
+	document.addEventListener('astro:page-load', loadEmbeds);
+</script>

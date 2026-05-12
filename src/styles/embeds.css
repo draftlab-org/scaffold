@@ -1,0 +1,159 @@
+/*
+  -------------
+  Embeds (YouTube, Vimeo, Bluesky, Mastodon)
+  Output of remark-embed-link.
+  -------------
+*/
+
+.embed-video {
+  margin-block: 1.5em;
+  max-width: 100%;
+}
+
+.embed-video lite-youtube,
+.embed-video lite-vimeo {
+  max-width: 100%;
+  width: 100%;
+}
+
+.embed-post {
+  margin-block: 1.5em;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--color-gray-200, #e5e7eb);
+  border-radius: 0.5rem;
+  background-color: var(--color-white, #ffffff);
+  max-width: 36rem;
+  font-size: 0.95em;
+  line-height: 1.5;
+}
+
+.embed-post__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.embed-post__avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  object-fit: cover;
+  flex-shrink: 0;
+  margin: 0;
+}
+
+.embed-post__author {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.embed-post__name {
+  font-weight: 600;
+  color: inherit;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.embed-post__name:hover {
+  text-decoration: underline;
+}
+
+.embed-post__handle {
+  font-size: 0.875em;
+  color: var(--color-gray-500, #6b7280);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.embed-post__badge {
+  font-size: 0.75em;
+  font-weight: 500;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  background-color: var(--color-gray-100, #f3f4f6);
+  color: var(--color-gray-700, #374151);
+}
+
+.embed-post--bluesky .embed-post__badge {
+  background-color: rgba(16, 131, 254, 0.1);
+  color: #1083fe;
+}
+
+.embed-post--mastodon .embed-post__badge {
+  background-color: rgba(99, 100, 255, 0.1);
+  color: #6364ff;
+}
+
+.embed-post__content {
+  margin: 0;
+  overflow-wrap: break-word;
+}
+
+.embed-post__content p {
+  margin: 0 0 0.5em 0;
+}
+
+.embed-post__content p:last-child {
+  margin-bottom: 0;
+}
+
+.embed-post__content a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.embed-post__media {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+
+.embed-post__media img,
+.embed-post__media video {
+  width: 100%;
+  height: auto;
+  border-radius: 0.375rem;
+  margin: 0;
+  display: block;
+}
+
+.embed-post__footer {
+  margin-top: 0.75rem;
+  font-size: 0.875em;
+  color: var(--color-gray-500, #6b7280);
+}
+
+.embed-post__footer a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.embed-post__footer a:hover {
+  text-decoration: underline;
+}
+
+/* Neutralise prose defaults that would otherwise restyle these embeds */
+.prose .embed-video,
+.prose .embed-post {
+  margin-block: 1.5em;
+}
+
+.prose .embed-post img,
+.prose .embed-post video {
+  margin: 0;
+}
+
+.prose .embed-post__content p {
+  margin: 0 0 0.5em 0;
+}
+
+.prose .embed-post__content p:last-child {
+  margin-bottom: 0;
+}

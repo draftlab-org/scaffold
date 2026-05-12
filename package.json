@@ -10,6 +10,10 @@
     "update-from-scaffold": "bash scripts/scaffold-update.sh"
   },
   "dependencies": {
+    "@astro-community/astro-embed-bluesky": "^0.2.1",
+    "@astro-community/astro-embed-mastodon": "^0.1.1",
+    "@astro-community/astro-embed-vimeo": "^0.3.12",
+    "@astro-community/astro-embed-youtube": "^0.5.10",
     "@astrojs/mdx": "^5.0.4",
     "@astrojs/netlify": "^7.0.8",
     "@astrojs/react": "^5.0.4",
@@ -24,6 +28,8 @@
     "astro-expressive-code": "^0.42.0",
     "canvas-confetti": "^1.9.4",
     "fuse.js": "^7.3.0",
+    "lite-vimeo-embed": "^0.3.0",
+    "lite-youtube-embed": "^0.3.4",
     "prettier-plugin-astro": "^0.14.1",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",

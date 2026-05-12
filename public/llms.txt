@@ -109,6 +109,40 @@ Every page is assembled from sections. Available types:
 A GitHub Action (`.github/workflows/auto-fix-permalinks.yml`) keeps page
 filenames and `permalink` fields in sync automatically.
 
+## Embedded media in markdown
+
+Any rich-text or markdown body (article and doc bodies, `richText` page
+sections, and PagesCMS rich-text fields) supports embeds via a plain markdown
+link whose text is the literal string `EmbedLink`:
+
+    [EmbedLink](https://www.youtube.com/watch?v=...)
+    [EmbedLink](https://vimeo.com/...)
+    [EmbedLink](https://bsky.app/profile/<handle>/post/<id>)
+    [EmbedLink](https://<instance>/@<user>/<status-id>)
+
+The link must be the sole content of its paragraph. Implemented as a single
+remark plugin (`src/lib/remark-embed-link.ts`) wired into both markdown
+pipelines: Astro's built-in markdown (via `markdown.remarkPlugins` in
+`astro.config.mjs`) and the custom `src/utils/renderMarkdown.ts` processor
+chain. No MDX migration is required.
+
+- **YouTube / Vimeo**: URL→ID transform, rendered as `<lite-youtube>` /
+  `<lite-vimeo>` web components (lazy poster + click-to-load). The
+  `lite-youtube-embed` / `lite-vimeo-embed` modules are registered once in
+  `src/layouts/BaseLayout.astro`.
+- **Bluesky**: fetched at build time from `public.api.bsky.app` (handle
+  resolution + `app.bsky.feed.getPosts`); rendered as a static post card.
+- **Mastodon**: fetched at build time from the source instance's
+  `/api/v1/statuses/:id` endpoint; rendered as a static post card.
+- **Fallback**: any URL that doesn't match a provider, and any failed
+  build-time fetch (deleted post, rate limit, network error), leaves the
+  original link in place and emits a build warning.
+
+Build-time tradeoff: each Bluesky/Mastodon embed is one outbound HTTP request
+during `astro build`. Post edits or deletions only reflect on the next deploy.
+
+To add a provider, extend `buildEmbedHTML()` in `src/lib/remark-embed-link.ts`.
+
 ## PagesCMS
 
 Scaffold ships with a complete `.pages.yml` configuration for

@@ -10,6 +10,7 @@ import expressiveCode from 'astro-expressive-code';
 import Icons from 'unplugin-icons/vite';
 import { fonts } from './fonts.config.mjs';
 import { siteConfig } from './src/lib/config.ts';
+import remarkEmbedLink from './src/lib/remark-embed-link.ts';
 
 // https://astro.build/config
 export default defineConfig({
@@ -18,6 +19,10 @@ export default defineConfig({
     enabled: false,
   },
   fonts,
+
+  markdown: {
+    remarkPlugins: [remarkEmbedLink],
+  },
 
   vite: {
     plugins: [

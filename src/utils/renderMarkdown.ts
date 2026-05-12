@@ -1,4 +1,5 @@
 import { getImage } from 'astro:assets';
+import remarkEmbedLink from '@lib/remark-embed-link';
 import rehypeTableAlign from '@lib/rehype-table-align';
 import rehypeExtractToc from '@stefanprobst/rehype-extract-toc';
 import rehypeExpressiveCode from 'rehype-expressive-code';
@@ -54,6 +55,11 @@ const processImageNodes = () => async (tree: any) => {
       return;
     }
 
+    // Remote URLs (e.g. embed avatars) bypass Astro's getImage — leave them as-is.
+    if (typeof src === 'string' && /^(https?:)?\/\//.test(src)) {
+      return;
+    }
+
     // Get the imported image from our glob map
     const importedImage = images[src];
 
@@ -99,6 +105,7 @@ const createMarkdownProcessor = (withTOC = false, idPrefix?: string): any => {
   let processor: any = unified()
     .use(remarkParse)
     .use(remarkGfm) // Enable GFM tables with alignment
+    .use(remarkEmbedLink) // Transform [EmbedLink](url) → embed HTML
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeSlug)
     .use(rehypeTableAlign) // Apply alignment classes to table cells

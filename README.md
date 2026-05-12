@@ -255,6 +255,23 @@ Configure cookie consent and Google Analytics in `src/content/site/config.json`:
 
 The `CookieBanner` component renders automatically when configured. It stores consent in localStorage and conditionally loads the GA script. Works with Astro View Transitions.
 
+### Embedding media in markdown
+
+Any rich-text or markdown body — article bodies, docs, and `richText` page sections — supports embeds for YouTube, Vimeo, Bluesky, and Mastodon using a plain markdown link with the literal text `EmbedLink`:
+
+```markdown
+[EmbedLink](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
+[EmbedLink](https://vimeo.com/76979871)
+[EmbedLink](https://bsky.app/profile/bsky.app/post/3l6oveex3ii2l)
+[EmbedLink](https://mastodon.social/@Mastodon/116539053870420123)
+```
+
+The link must be the sole content of its paragraph. A remark plugin (`src/lib/remark-embed-link.ts`) runs in both markdown pipelines — Astro's built-in renderer (for articles/docs) and `src/utils/renderMarkdown.ts` (for `richText` sections) — so the syntax works in PagesCMS rich-text fields without any custom shortcodes or MDX.
+
+YouTube and Vimeo use the `lite-youtube-embed` / `lite-vimeo-embed` web components (lazy poster + click-to-load). Bluesky and Mastodon posts are fetched from their public APIs at build time and inlined as static HTML — no client-side widget JS, but post edits or deletions only reflect on the next deploy. If a URL doesn't match a supported provider, or a Bluesky/Mastodon fetch fails (deleted post, rate limit, network blip), the original link is left as-is and a warning is logged at build.
+
+To add another provider, extend `buildEmbedHTML()` in `src/lib/remark-embed-link.ts`.
+
 ### Extending
 
 To add new section types, update the schema in `src/content.config.ts`, create a component in `src/components/sections/`, and add the configuration to `.pages.yml`. The dynamic page route supports new sections automatically.
