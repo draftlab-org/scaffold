@@ -34,42 +34,57 @@ Add Scaffold as a remote (one-time):
 git remote add template https://github.com/draftlab-org/scaffold.git
 ```
 
-Pull updates whenever you want them:
+Then, whenever you want updates:
 
 ```sh
-git fetch template
-git merge template/main
+npm run update-from-scaffold
 ```
 
-> **First merge only:** if you installed via `npx create-astro --template ...` (which starts a fresh git history with no shared root), add `--allow-unrelated-histories` to the **first** merge from `template/main`. Every subsequent merge shares history and works without the flag.
+That's it. The script handles `--allow-unrelated-histories` on the first merge, re-applies any deletions you've made in protected paths (so demo content doesn't reappear via modify/delete conflicts), and reports any new upstream files that landed in protected paths for you to review.
 
-### What's protected on merge
+### What's protected
 
-Scaffold ships a `.gitattributes` file that marks these paths as **downstream-wins** using Git's built-in `merge=ours` driver — your version is always kept on merge, no per-clone setup required:
+Scaffold ships a `.gitattributes` file that marks these paths as **downstream-wins** on merge — your version is always kept:
 
 - `src/content/**` — all content collections (pages, articles, people, etc.)
 - `src/assets/**` — uploaded images, logos, artwork
 - `public/**` — favicons, OG images, robots.txt, and anything else you've added there
 
-Everything else merges normally. If there's a real conflict in code, Git will flag it and you resolve it as usual.
+Everything else merges normally. Real code conflicts get flagged like any merge, and the script stops so you can resolve them by hand.
 
-### Heads-up about new upstream files
+### One thing the script can't decide for you
 
-`merge=ours` resolves *conflicts*, but it doesn't stop **new** upstream files in protected paths from appearing in your working tree (no conflict exists when the file is new on the upstream side). After merging, run `git diff HEAD~1 --stat` and `git rm` any demo content you don't want.
+When upstream adds a *brand new* file in a protected path (no conflict, since there's no downstream counterpart), the script lists it at the end of its run but leaves it in place — a new section component shipped as a demo might be genuinely useful, so we don't auto-prune. If you don't want it: `git rm <path> && git commit`.
 
-### If you forked before `.gitattributes` existed
+### If you forked before this update script existed
 
-Git reads `.gitattributes` from the working tree *at the start* of a merge. If you forked Scaffold before this file was added, run this one-time bootstrap so the rules apply to your first merge:
+Git reads `.gitattributes` from the working tree *at the start* of a merge, so existing forks need a one-time bootstrap to land the protection rules and the script itself:
 
 ```sh
 git fetch template
-git checkout template/main -- .gitattributes
-git add .gitattributes
-git commit -m "Adopt Scaffold merge driver"
-git merge --allow-unrelated-histories template/main
+git checkout template/main -- .gitattributes scripts/scaffold-update.sh
+git commit -m "Adopt Scaffold update script"
+bash scripts/scaffold-update.sh
 ```
 
-(The `--allow-unrelated-histories` flag is needed for this first merge if your repo was created via `npx create-astro --template ...`. After it, the two-command flow above is all you need.)
+Then add the npm shortcut to your `package.json` scripts so you don't have to remember the bash path:
+
+```json
+"update-from-scaffold": "bash scripts/scaffold-update.sh"
+```
+
+After this, `npm run update-from-scaffold` is all you need.
+
+### Doing it without the script
+
+If you'd rather invoke Git directly, the equivalent is:
+
+```sh
+git fetch template
+git merge template/main          # add --allow-unrelated-histories on first run
+```
+
+You'll be on your own for modify/delete conflict resolution and new-file review.
 
 ## Stack
 
