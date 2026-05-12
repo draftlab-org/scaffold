@@ -1,0 +1,26 @@
+# Default line endings + auto text detection
+* text=auto eol=lf
+
+# --- Downstream-protected paths -------------------------------------------
+# These paths keep the downstream (consumer) version on merge. A consumer who
+# runs `git fetch template && git merge template/main` will not have their
+# content, uploaded assets, or branding overwritten by Scaffold updates.
+#
+# Note: `merge=ours` resolves *conflicts* in favour of the downstream side.
+# It does not prevent NEW upstream files in these paths from appearing in the
+# working tree (no conflict exists when the file is new). You can `git rm`
+# any demo content that lands this way.
+
+src/content/**          merge=ours
+src/assets/**           merge=ours
+public/**               merge=ours
+
+# --- Binary types (no merge attempts, no noisy diffs) ---------------------
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.webp  binary
+*.gif   binary
+*.ico   binary
+*.woff  binary
+*.woff2 binary

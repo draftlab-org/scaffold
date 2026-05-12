@@ -24,6 +24,51 @@ npm install
 npm run dev
 ```
 
+## Updating to a newer Scaffold version
+
+Scaffold is designed to be forked. Once you've replaced the demo content with your own, you can still pull future Scaffold improvements (components, layouts, utils, tooling) without losing the work you've done.
+
+Add Scaffold as a remote (one-time):
+
+```sh
+git remote add template https://github.com/draftlab-org/scaffold.git
+```
+
+Pull updates whenever you want them:
+
+```sh
+git fetch template
+git merge template/main
+```
+
+### What's protected on merge
+
+Scaffold ships a `.gitattributes` file that marks these paths as **downstream-wins** using Git's built-in `merge=ours` driver — your version is always kept on merge, no per-clone setup required:
+
+- `src/content/**` — all content collections (pages, articles, people, etc.)
+- `src/assets/**` — uploaded images, logos, artwork
+- `public/**` — favicons, OG images, robots.txt, and anything else you've added there
+
+Everything else merges normally. If there's a real conflict in code, Git will flag it and you resolve it as usual.
+
+### Heads-up about new upstream files
+
+`merge=ours` resolves *conflicts*, but it doesn't stop **new** upstream files in protected paths from appearing in your working tree (no conflict exists when the file is new on the upstream side). After merging, run `git diff HEAD~1 --stat` and `git rm` any demo content you don't want.
+
+### If you forked before `.gitattributes` existed
+
+Git reads `.gitattributes` from the working tree *at the start* of a merge. If you forked Scaffold before this file was added, run this one-time bootstrap so the rules apply to your first merge:
+
+```sh
+git fetch template
+git checkout template/main -- .gitattributes
+git add .gitattributes
+git commit -m "Adopt Scaffold merge driver"
+git merge template/main
+```
+
+After that, the two-command flow above is all you need.
+
 ## Stack
 
 The template combines Astro v6 for static site generation with Tailwind CSS v4 for styling and React v19 for interactive components. Content is managed through Astro's type-safe content collections (Content Layer API) with Pages CMS providing a visual editing interface. The build includes automatic image optimization and is preconfigured for Netlify deployment. Requires Node.js v22.12+.
