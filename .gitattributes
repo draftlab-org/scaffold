@@ -13,7 +13,9 @@
 
 src/content/**          merge=ours
 src/assets/**           merge=ours
+src/styles/**           merge=ours
 public/**               merge=ours
+fonts.config.mjs        merge=ours
 
 # --- Binary types (no merge attempts, no noisy diffs) ---------------------
 *.png   binary

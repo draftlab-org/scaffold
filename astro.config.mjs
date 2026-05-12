@@ -5,9 +5,10 @@ import netlify from '@astrojs/netlify';
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
-import { defineConfig, fontProviders } from 'astro/config';
+import { defineConfig } from 'astro/config';
 import expressiveCode from 'astro-expressive-code';
 import Icons from 'unplugin-icons/vite';
+import { fonts } from './fonts.config.mjs';
 import { siteConfig } from './src/lib/config.ts';
 
 // https://astro.build/config
@@ -16,26 +17,7 @@ export default defineConfig({
   devToolbar: {
     enabled: false,
   },
-  fonts: [
-    {
-      provider: fontProviders.bunny(),
-      name: 'Rubik',
-      weights: [300, 400, 500, 600, 700, 800],
-      cssVariable: '--font-rubik',
-    },
-    {
-      provider: fontProviders.bunny(),
-      name: 'IBM Plex Serif',
-      weights: [300, 400, 500, 600, 700],
-      cssVariable: '--font-ibm-plex-serif',
-    },
-    {
-      provider: fontProviders.bunny(),
-      name: 'JetBrains Mono',
-      weights: [300, 400],
-      cssVariable: '--font-jetbrains-mono',
-    },
-  ],
+  fonts,
 
   vite: {
     plugins: [

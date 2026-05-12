@@ -34,40 +34,69 @@ Add Scaffold as a remote (one-time):
 git remote add template https://github.com/draftlab-org/scaffold.git
 ```
 
-Pull updates whenever you want them:
+Then, whenever you want updates:
 
 ```sh
-git fetch template
-git merge template/main
+npm run update-from-scaffold
 ```
 
-### What's protected on merge
+That's it. The script handles `--allow-unrelated-histories` on the first merge, re-applies any deletions you've made in protected paths (so demo content doesn't reappear via modify/delete conflicts), and auto-removes any brand-new upstream files in `src/content/`, `src/assets/`, and `public/` (to keep our demo content out of your production site).
 
-Scaffold ships a `.gitattributes` file that marks these paths as **downstream-wins** using Git's built-in `merge=ours` driver — your version is always kept on merge, no per-clone setup required:
+### What's protected
+
+Scaffold ships a `.gitattributes` file that marks these paths as **downstream-wins** on merge — your version is always kept:
 
 - `src/content/**` — all content collections (pages, articles, people, etc.)
 - `src/assets/**` — uploaded images, logos, artwork
+- `src/styles/**` — your theme tokens, typography, component utilities
 - `public/**` — favicons, OG images, robots.txt, and anything else you've added there
+- `fonts.config.mjs` — your font choices (see "Changing fonts" below)
 
-Everything else merges normally. If there's a real conflict in code, Git will flag it and you resolve it as usual.
+Everything else merges normally. Real code conflicts get flagged like any merge, and the script stops so you can resolve them by hand.
 
-### Heads-up about new upstream files
+### New upstream files and content collections
 
-`merge=ours` resolves *conflicts*, but it doesn't stop **new** upstream files in protected paths from appearing in your working tree (no conflict exists when the file is new on the upstream side). After merging, run `git diff HEAD~1 --stat` and `git rm` any demo content you don't want.
+When upstream adds a brand-new file in `src/content/`, `src/assets/`, or `public/`, the script removes it as part of the merge. Demo content shouldn't sneak into your production site, and you can always add your own files later.
 
-### If you forked before `.gitattributes` existed
+Brand-new files in `src/styles/` are *not* auto-removed — new stylesheets may be required by new components in the merge.
 
-Git reads `.gitattributes` from the working tree *at the start* of a merge. If you forked Scaffold before this file was added, run this one-time bootstrap so the rules apply to your first merge:
+If Scaffold ships an entirely new **content collection** (a new directory under `src/content/`), you'll see a notice at the end of the run:
+
+```
+ℹ There are new content collections on Scaffold — check out https://scaffold.org to see what's new
+```
+
+The collection's schema arrives via `src/content.config.ts` (which isn't protected and merges in normally); the demo files in the new directory are removed. If you want to use the new collection, head to scaffold.org to see what it is, then add your own content under that directory.
+
+### If you forked before this update script existed
+
+Git reads `.gitattributes` from the working tree *at the start* of a merge, so existing forks need a one-time bootstrap to land the protection rules and the script itself:
 
 ```sh
 git fetch template
-git checkout template/main -- .gitattributes
-git add .gitattributes
-git commit -m "Adopt Scaffold merge driver"
-git merge template/main
+git checkout template/main -- .gitattributes scripts/scaffold-update.sh
+git commit -m "Adopt Scaffold update script"
+bash scripts/scaffold-update.sh
 ```
 
-After that, the two-command flow above is all you need.
+Then add the npm shortcut to your `package.json` scripts so you don't have to remember the bash path:
+
+```json
+"update-from-scaffold": "bash scripts/scaffold-update.sh"
+```
+
+After this, `npm run update-from-scaffold` is all you need.
+
+### Doing it without the script
+
+If you'd rather invoke Git directly, the equivalent is:
+
+```sh
+git fetch template
+git merge template/main          # add --allow-unrelated-histories on first run
+```
+
+You'll be on your own for modify/delete conflict resolution and new-file review.
 
 ## Stack
 
@@ -356,6 +385,20 @@ Icons inherit text color and can be styled with Tailwind classes or standard CSS
 Tailwind CSS v4 uses @theme definitions in the style files. Update `src/styles/colors.css` for color schemes and `src/styles/typography.css` for text sizing. Components follow atomic design hierarchy, so start with atoms and compose upward when building new features.
 
 BaseLayout handles document-level concerns while PageLayout adds header, footer, and content structure. Create specialized layouts by extending these base layouts.
+
+### Changing fonts
+
+Fonts are configured in `fonts.config.mjs` at the repo root — separated out from `astro.config.mjs` so you can change them without conflicting with template updates. The file is also marked `merge=ours` in `.gitattributes`, so your font choices survive `npm run update-from-scaffold`.
+
+Scaffold uses [Bunny Fonts](https://fonts.bunny.net) as the provider — a privacy-friendly CDN that mirrors Google Fonts' catalogue without the third-party tracking. To change a font:
+
+1. Browse [fonts.bunny.net](https://fonts.bunny.net) and pick what you want.
+2. Open `fonts.config.mjs` and update the `name` and `weights` for the slot you want to change (`--font-sans`, `--font-serif`, or `--font-mono`).
+3. Restart `npm run dev` so Astro re-fetches the new font.
+
+Keep the `cssVariable` names as they are — `--font-sans` / `--font-serif` / `--font-mono` are referenced from typography, components, and Tailwind utilities. Just point them at different fonts.
+
+If you want to use a different provider (Google Fonts, local files, etc.) see [Astro's font docs](https://docs.astro.build/en/guides/fonts/).
 
 ## Learn More
 
