@@ -39,10 +39,16 @@ updates without losing content, assets, styles, or branding:
 
 `scripts/scaffold-update.sh` (wrapped as `npm run update-from-scaffold`):
 
-- Fetches `template/main` and merges (auto-handling `--allow-unrelated-histories`
-  on first merge after `npx create-astro --template ...`, which has no shared root)
+- Registers the `ours` merge driver in local git config (`merge=ours` in
+  `.gitattributes` is not a built-in driver; without this Git silently falls
+  back to 3-way merge and conflicts every protected file)
+- Fetches `template/main` and merges. First merge after `npx create-astro
+  --template ...` has no shared root, so the script adds
+  `--allow-unrelated-histories -X theirs` — without `-X theirs`, every
+  diverged file becomes an add/add conflict; with it, unprotected files take
+  upstream while protected paths still keep downstream via `merge=ours`
 - Resolves modify/delete conflicts in protected paths by re-applying the
-  downstream deletion (Git's `merge=ours` driver only handles content conflicts)
+  downstream deletion (the `merge=ours` driver only handles content conflicts)
 - Auto-removes brand-new upstream files in `src/content/`, `src/assets/`, and
   `public/` to keep demo content out of production (`src/styles/` is excluded
   since new stylesheets may be required by new components)
