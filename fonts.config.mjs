@@ -12,8 +12,10 @@
 // referenced throughout the codebase. Don't rename them — just change which
 // font they point to.
 
+// @ts-check
 import { fontProviders } from 'astro/config';
 
+/** @type {import('astro').AstroUserConfig['fonts']} */
 export const fonts = [
   {
     provider: fontProviders.bunny(),
