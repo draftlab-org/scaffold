@@ -41,6 +41,8 @@ git fetch template
 git merge template/main
 ```
 
+> **First merge only:** if you installed via `npx create-astro --template ...` (which starts a fresh git history with no shared root), add `--allow-unrelated-histories` to the **first** merge from `template/main`. Every subsequent merge shares history and works without the flag.
+
 ### What's protected on merge
 
 Scaffold ships a `.gitattributes` file that marks these paths as **downstream-wins** using Git's built-in `merge=ours` driver — your version is always kept on merge, no per-clone setup required:
@@ -64,10 +66,10 @@ git fetch template
 git checkout template/main -- .gitattributes
 git add .gitattributes
 git commit -m "Adopt Scaffold merge driver"
-git merge template/main
+git merge --allow-unrelated-histories template/main
 ```
 
-After that, the two-command flow above is all you need.
+(The `--allow-unrelated-histories` flag is needed for this first merge if your repo was created via `npx create-astro --template ...`. After it, the two-command flow above is all you need.)
 
 ## Stack
 
