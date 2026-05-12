@@ -40,7 +40,7 @@ Then, whenever you want updates:
 npm run update-from-scaffold
 ```
 
-That's it. The script handles `--allow-unrelated-histories` on the first merge, re-applies any deletions you've made in protected paths (so demo content doesn't reappear via modify/delete conflicts), and reports any new upstream files that landed in protected paths for you to review.
+That's it. The script handles `--allow-unrelated-histories` on the first merge, re-applies any deletions you've made in protected paths (so demo content doesn't reappear via modify/delete conflicts), and auto-removes any brand-new upstream files in `src/content/`, `src/assets/`, and `public/` (to keep our demo content out of your production site).
 
 ### What's protected
 
@@ -54,9 +54,19 @@ Scaffold ships a `.gitattributes` file that marks these paths as **downstream-wi
 
 Everything else merges normally. Real code conflicts get flagged like any merge, and the script stops so you can resolve them by hand.
 
-### One thing the script can't decide for you
+### New upstream files and content collections
 
-When upstream adds a *brand new* file in a protected path (no conflict, since there's no downstream counterpart), the script lists it at the end of its run but leaves it in place — a new section component shipped as a demo might be genuinely useful, so we don't auto-prune. If you don't want it: `git rm <path> && git commit`.
+When upstream adds a brand-new file in `src/content/`, `src/assets/`, or `public/`, the script removes it as part of the merge. Demo content shouldn't sneak into your production site, and you can always add your own files later.
+
+Brand-new files in `src/styles/` are *not* auto-removed — new stylesheets may be required by new components in the merge.
+
+If Scaffold ships an entirely new **content collection** (a new directory under `src/content/`), you'll see a notice at the end of the run:
+
+```
+ℹ There are new content collections on Scaffold — check out https://scaffold.org to see what's new
+```
+
+The collection's schema arrives via `src/content.config.ts` (which isn't protected and merges in normally); the demo files in the new directory are removed. If you want to use the new collection, head to scaffold.org to see what it is, then add your own content under that directory.
 
 ### If you forked before this update script existed
 

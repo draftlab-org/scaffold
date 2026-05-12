@@ -43,8 +43,11 @@ updates without losing content, assets, styles, or branding:
   on first merge after `npx create-astro --template ...`, which has no shared root)
 - Resolves modify/delete conflicts in protected paths by re-applying the
   downstream deletion (Git's `merge=ours` driver only handles content conflicts)
-- Reports new upstream files in protected paths at the end of the run, without
-  auto-pruning — leaves the call to the user
+- Auto-removes brand-new upstream files in `src/content/`, `src/assets/`, and
+  `public/` to keep demo content out of production (`src/styles/` is excluded
+  since new stylesheets may be required by new components)
+- If a new directory appears under `src/content/` (indicating a new content
+  collection), prints an alert at end of run pointing to https://scaffold.org
 
 A checked-in `.gitattributes` marks these paths as `merge=ours` (downstream
 always wins on conflict):
