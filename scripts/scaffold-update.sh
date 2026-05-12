@@ -49,6 +49,16 @@ if ! git remote get-url "$REMOTE" > /dev/null 2>&1; then
   exit 1
 fi
 
+# .gitattributes declares `merge=ours` on protected paths, but `ours` is NOT a
+# built-in Git merge driver — it must be registered in local config. Without
+# this, Git silently falls back to the default 3-way merge and the user gets
+# conflicts on every protected file. Set it up idempotently on every run so
+# fresh clones and new contributors don't trip over it.
+if [ "$(git config --local --get merge.ours.driver || true)" != "true" ]; then
+  echo "→ Registering 'ours' merge driver in local git config"
+  git config --local merge.ours.driver true
+fi
+
 # --- fetch -----------------------------------------------------------------
 
 echo "→ Fetching $REMOTE/$BRANCH"
@@ -70,8 +80,14 @@ if git merge-base HEAD "$REMOTE/$BRANCH" > /dev/null 2>&1; then
   echo "→ Merging $REMOTE/$BRANCH"
   git merge --no-commit --no-edit "$REMOTE/$BRANCH" || true
 else
-  echo "→ Merging $REMOTE/$BRANCH (no shared history → --allow-unrelated-histories)"
-  git merge --no-commit --no-edit --allow-unrelated-histories "$REMOTE/$BRANCH" || true
+  # No shared history: typical after `npx create-astro --template ...`. Without
+  # a common base, every diverged file becomes an add/add conflict — even ones
+  # the user never touched. `-X theirs` resolves those in favour of upstream
+  # (the up-to-date template version), which is what the user wants for a
+  # first-merge bootstrap. Protected paths still keep downstream because the
+  # `merge=ours` driver overrides the strategy option.
+  echo "→ Merging $REMOTE/$BRANCH (no shared history → --allow-unrelated-histories -X theirs)"
+  git merge --no-commit --no-edit --allow-unrelated-histories -X theirs "$REMOTE/$BRANCH" || true
 fi
 
 # --- modify/delete handling -----------------------------------------------

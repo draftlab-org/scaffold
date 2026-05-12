@@ -92,11 +92,12 @@ After this, `npm run update-from-scaffold` is all you need.
 If you'd rather invoke Git directly, the equivalent is:
 
 ```sh
+git config merge.ours.driver true   # one-time: register the 'ours' merge driver
 git fetch template
-git merge template/main          # add --allow-unrelated-histories on first run
+git merge template/main             # first run: add --allow-unrelated-histories -X theirs
 ```
 
-You'll be on your own for modify/delete conflict resolution and new-file review.
+The `merge.ours.driver` line is required — `.gitattributes` references `merge=ours`, but `ours` isn't a built-in Git driver, so without this config Git falls back to a 3-way merge and conflicts every protected file. For the first merge after `npx create-astro` there's no shared history, so every diverged file is an add/add conflict; `-X theirs` resolves those in favour of upstream while protected paths still keep your version. You'll also be on your own for modify/delete conflict resolution and new-file review.
 
 ## Stack
 
