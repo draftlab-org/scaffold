@@ -54,6 +54,8 @@ updates without losing content, assets, styles, or branding:
   since new stylesheets may be required by new components)
 - If a new directory appears under `src/content/` (indicating a new content
   collection), prints an alert at end of run pointing to https://scaffold.org
+- Compares `package.json` dependency sections before and after the merge; if
+  they differ, prints an alert reminding the user to run `npm install`
 
 A checked-in `.gitattributes` marks these paths as `merge=ours` (downstream
 always wins on conflict):

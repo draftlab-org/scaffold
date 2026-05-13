@@ -40,7 +40,7 @@ Then, whenever you want updates:
 npm run update-from-scaffold
 ```
 
-That's it. The script handles `--allow-unrelated-histories` on the first merge, re-applies any deletions you've made in protected paths (so demo content doesn't reappear via modify/delete conflicts), and auto-removes any brand-new upstream files in `src/content/`, `src/assets/`, and `public/` (to keep our demo content out of your production site).
+That's it. The script handles `--allow-unrelated-histories` on the first merge, re-applies any deletions you've made in protected paths (so demo content doesn't reappear via modify/delete conflicts), and auto-removes any brand-new upstream files in `src/content/`, `src/assets/`, and `public/` (to keep our demo content out of your production site). If the merge changes `package.json` dependencies, the script will remind you to run `npm install`.
 
 ### What's protected
 

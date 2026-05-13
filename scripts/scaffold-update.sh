@@ -72,6 +72,29 @@ MID=$(mktemp)
 trap 'rm -f "$BEFORE" "$MID"' EXIT
 git ls-files -- "${AUTO_REMOVE[@]}" 2>/dev/null | sort -u > "$BEFORE"
 
+# Snapshot package.json dependency sections so we can tell the user to run
+# `npm install` if the merge bumps or adds packages. Lockfile bumps alone
+# don't warrant the alert — the canonical signal is package.json deps.
+# PARSE_ERROR sentinel covers a malformed package.json post-merge (e.g.
+# conflict markers); we still want to fire the alert in that case.
+deps_signature() {
+  node -e "
+    try {
+      const p = require('./package.json');
+      const pick = (o = {}) => Object.entries(o).sort().map(([k, v]) => k + '@' + v).join('\\n');
+      console.log([
+        pick(p.dependencies),
+        pick(p.devDependencies),
+        pick(p.peerDependencies),
+        pick(p.optionalDependencies),
+      ].join('\\n---\\n'));
+    } catch (e) {
+      console.log('PARSE_ERROR');
+    }
+  " 2>/dev/null || echo "PARSE_ERROR"
+}
+PKG_DEPS_BEFORE=$(deps_signature)
+
 # --- merge (no commit; we modify the index before finalising) -------------
 # First merge after `npx create-astro --template ...` has no shared root and
 # needs --allow-unrelated-histories.
@@ -143,12 +166,26 @@ print_collection_alert() {
   fi
 }
 
+print_deps_alert() {
+  local after
+  after=$(deps_signature)
+  if [ "$PKG_DEPS_BEFORE" != "$after" ]; then
+    echo
+    if [ "$after" = "PARSE_ERROR" ]; then
+      echo "ℹ package.json has unresolved conflicts — run 'npm install' after resolving."
+    else
+      echo "ℹ package.json dependencies changed — run 'npm install' to sync node_modules."
+    fi
+  fi
+}
+
 if [ -f .git/MERGE_HEAD ]; then
   if git status --porcelain | grep -qE '^(UU|AA|DD|UD|AU|UA) '; then
     echo
     echo "⚠ Code-side conflicts remain. Resolve them, then run:"
     echo "    git commit"
     print_collection_alert
+    print_deps_alert
     exit 1
   fi
   git commit --no-edit > /dev/null
@@ -158,3 +195,4 @@ else
 fi
 
 print_collection_alert
+print_deps_alert
