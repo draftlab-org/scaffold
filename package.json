@@ -2,6 +2,7 @@
   "name": "draftlab-scaffold",
   "type": "module",
   "version": "0.5.0",
+  "license": "MIT",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",

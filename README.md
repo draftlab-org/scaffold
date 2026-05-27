@@ -424,3 +424,11 @@ If you want to use a different provider (Google Fonts, local files, etc.) see [A
 - [Tailwind CSS v4 Docs](https://tailwindcss.com)
 - [Pages CMS Docs](https://pagescms.org/docs)
 - [Atomic Design Principles](https://atomicdesign.bradfrost.com/chapter-2/)
+
+## Community
+
+This project follows the [Contributor Covenant 3.0 Code of Conduct](./CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
+
+## License
+
+Released under the [MIT License](./LICENSE).
