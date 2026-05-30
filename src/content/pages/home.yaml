@@ -15,7 +15,7 @@ sections:
           support, and reduced motion preferences.
       - title: CMS-ready
         content: >-
-          Pre-configured settings to work with [PagesCMS](https://pagescms.com). Add articles, upload media, change site settings, the works.
+          Pre-configured settings to work with [PagesCMS](https://pagescms.org). Add articles, upload media, change site settings, the works.
         button:
           variant: primary
           size: md
