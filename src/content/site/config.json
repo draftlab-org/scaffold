@@ -15,6 +15,6 @@
     "x": "https://x.com/yourhandle"
   },
   "footer": {
-    "bottom": "Released under the [MIT license](https://github.com/draftlab-org/scaffold/blob/main/LICENSE). Background images by [Anna Magenta](https://unsplash.com/@annamagenta82) (Unsplash). People images by [OpenPeeps](https://openpeeps.com/) via [DiceBear](https://www.dicebear.com/). This site is powered by [Netlify](https://www.netlify.com/)."
+    "bottom": "Released under the [MIT license](https://github.com/draftlab-org/scaffold/blob/main/LICENSE). Background images by [Anna Magenta](https://unsplash.com/@annamagenta82) (Unsplash). People images by [OpenPeeps](https://openpeeps.com/) via [DiceBear](https://www.dicebear.com/). Privacy-preserving analytics provided by self-hosted [Umami](https://umami.is/). This site is powered by [Netlify](https://www.netlify.com/)."
   }
 }

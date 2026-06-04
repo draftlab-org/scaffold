@@ -6,6 +6,9 @@ import { ClientRouter } from "astro:transitions";
 // Fetch site config from content collection
 const siteConfigEntry = await getEntry('site', 'config');
 
+const isProd = import.meta.env.PROD;
+
+
 if (!siteConfigEntry) {
   throw new Error('Site configuration not found');
 }
@@ -65,6 +68,46 @@ if (image) {
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={imageURL} />
+
+{
+	isProd && (
+		<>
+			{/* Privacy-preserving analytics by self-hosted Umami */}
+			<script
+				is:inline
+				defer
+				src="https://umami.draftlab.dev/script.js"
+				data-performance="true"
+				data-do-not-track="true"
+				data-website-id="16c41e6d-a63d-45d0-9fca-ddcc9d6a279b"
+				transition:persist
+			/>
+			{/* Auto-tag outbound links for Umami. Sweep on DOM ready + each
+			    view transition. */}
+			<script>
+				(function () {
+					if (document.documentElement.dataset.outboundLinkTracker) return;
+					document.documentElement.dataset.outboundLinkTracker = 'true';
+					function tagLink(a:any) {
+						if (!a.host || a.host === window.location.host) return;
+						if (a.dataset.umamiEvent) return;
+						a.dataset.umamiEvent = 'outbound-link-click';
+						a.dataset.umamiEventUrl = a.href;
+					}
+					function tagAll() {
+						document.querySelectorAll('a[href]').forEach(tagLink);
+					}
+					if (document.readyState === 'loading') {
+						document.addEventListener('DOMContentLoaded', tagAll);
+					} else {
+						tagAll();
+					}
+					document.addEventListener('astro:page-load', tagAll);
+				})();
+			</script>
+		</>
+	)
+}
 
 <!-- Local Font Declaration (variables defined in fonts.config.mjs) -->
 <Font cssVariable="--font-serif" preload />
