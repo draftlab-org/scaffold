@@ -1,6 +1,6 @@
 # Draftlab Scaffold
 
-> A modern website starter built with Astro v6, Tailwind CSS v4, and React v19.
+> A modern website starter built with Astro v7, Tailwind CSS v4, and React v19.
 > Provides a flexible page-building system, type-safe content collections, and
 > an integrated Git-based CMS (PagesCMS). Pre-configured for Netlify deployment.
 
@@ -156,7 +156,7 @@ Scaffold ships with a complete `.pages.yml` configuration for
 
 ## Architecture
 
-- **Stack**: Astro v6, React v19, Tailwind CSS v4 (Vite plugin), MDX
+- **Stack**: Astro v7, React v19, Tailwind CSS v4 (Vite plugin), MDX
 - **Components**: Atomic design — `atoms` → `molecules` → `organisms` → `sections`
 - **TypeScript**: Strict mode with path aliases (`@components/*`, `@utils/*`, `@lib/*`, `@content/*`, `@styles/*`, `@layouts/*`, `@assets/*`, `@pages/*`)
 - **Icons**: [unplugin-icons](https://github.com/unplugin/unplugin-icons) + [@iconify/json](https://icon-sets.iconify.design/) — import as `~icons/[collection]/[icon-name]`
