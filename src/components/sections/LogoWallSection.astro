@@ -1,0 +1,136 @@
+---
+import Image from '@components/atoms/Image.astro';
+import SectionHeader from '@components/molecules/SectionHeader.astro';
+import type { SectionHeading } from '@content-config';
+import { fitLogo, getAllPartners, getPartnerUrl, type Partner } from '@utils/partners';
+import IconPause from '~icons/heroicons/pause-20-solid';
+import IconPlay from '~icons/heroicons/play-20-solid';
+
+export interface Props {
+  title?: SectionHeading;
+  // Markdown
+  description?: string;
+  // Partner IDs, in display order. Empty shows the featured partners.
+  partners?: string[];
+  layout?: 'grid' | 'scroll';
+  // Spans the viewport, so the section supplies its own side gutters
+  fullBleed?: boolean;
+}
+
+const {
+  title,
+  description,
+  partners: partnerIds = [],
+  layout = 'grid',
+  fullBleed = false,
+} = Astro.props;
+
+const allPartners = await getAllPartners();
+
+const partners: Partner[] =
+  partnerIds.length > 0
+    ? partnerIds
+        .map((id) => allPartners.find((partner) => partner.id === id))
+        .filter((partner): partner is Partner => partner !== undefined)
+    : allPartners.filter((partner) => partner.featured);
+
+const isScroll = layout === 'scroll';
+// Keep the scroll speed steady however many logos there are
+const duration = `${Math.max(20, partners.length * 4)}s`;
+const logoBox = { width: 320, height: 160 };
+const gutter = fullBleed ? 'px-4 sm:px-6 lg:px-8' : '';
+---
+
+<div class="py-8 md:py-12">
+	<div class={gutter}>
+		<SectionHeader title={title} subtitle={description} />
+	</div>
+
+	{
+		partners.length === 0 ? (
+			<p class="py-12 text-center text-muted">No partners selected.</p>
+		) : isScroll ? (
+			<div class="logo-marquee relative overflow-hidden pb-14" style={`--logo-marquee-duration: ${duration}`}>
+				<div class="logo-marquee-track flex w-max">
+					{[false, true].map((duplicate) => (
+						<ul
+							class={`m-0 flex shrink-0 list-none items-center gap-x-14 p-0 pr-14 ${duplicate ? 'logo-marquee-duplicate' : ''}`}
+							aria-hidden={duplicate ? 'true' : undefined}
+						>
+							{partners.map((partner) => (
+								<li class="logo-wall-item m-0 flex h-16 w-40 items-center justify-center sm:h-20">
+									<a
+										href={getPartnerUrl(partner)}
+										class="flex h-full w-full items-center justify-center"
+										tabindex={duplicate ? -1 : undefined}
+									>
+										{partner.image ? (
+											<Image
+												src={partner.image}
+												alt={partner.name}
+												{...fitLogo(partner.image, logoBox)}
+												class="max-h-full w-auto max-w-full object-contain grayscale transition hover:grayscale-0"
+											/>
+										) : (
+											<span class="text-center font-semibold">{partner.name}</span>
+										)}
+									</a>
+								</li>
+							))}
+						</ul>
+					))}
+				</div>
+				<button
+					type="button"
+					class="logo-marquee-toggle button-base button-outline button-size-square absolute right-4 bottom-0"
+					aria-pressed="false"
+					aria-label="Pause logo animation"
+					data-logo-marquee-toggle
+				>
+					<IconPause className="h-4 w-4" aria-hidden="true" data-icon-pause />
+					<IconPlay className="hidden h-4 w-4" aria-hidden="true" data-icon-play />
+				</button>
+			</div>
+		) : (
+			<ul class={`mx-auto m-0 grid max-w-7xl list-none grid-cols-[repeat(auto-fill,8rem)] justify-center gap-x-10 gap-y-8 p-0 sm:grid-cols-[repeat(auto-fill,10rem)] sm:gap-x-14 ${gutter}`}>
+				{partners.map((partner) => (
+					<li class="logo-wall-item m-0 flex h-16 items-center justify-center sm:h-20">
+						<a
+							href={getPartnerUrl(partner)}
+							class="flex h-full w-full items-center justify-center"
+						>
+							{partner.image ? (
+								<Image
+									src={partner.image}
+									alt={partner.name}
+									{...fitLogo(partner.image, logoBox)}
+									class="max-h-full w-auto max-w-full object-contain grayscale transition hover:grayscale-0"
+								/>
+							) : (
+								<span class="text-center font-semibold">{partner.name}</span>
+							)}
+						</a>
+					</li>
+				))}
+			</ul>
+		)
+	}
+</div>
+
+<script>
+	// One delegated listener survives view transitions without rebinding
+	document.addEventListener('click', (event) => {
+		const toggle = (event.target as Element | null)?.closest<HTMLButtonElement>(
+			'[data-logo-marquee-toggle]'
+		);
+		const marquee = toggle?.closest<HTMLElement>('.logo-marquee');
+		if (!toggle || !marquee) return;
+
+		const paused = !marquee.hasAttribute('data-paused');
+		marquee.toggleAttribute('data-paused', paused);
+		// Fixed label + aria-pressed: "Pause logo animation, pressed" = paused
+		toggle.setAttribute('aria-pressed', String(paused));
+		toggle.querySelector('[data-icon-pause]')?.classList.toggle('hidden', paused);
+		toggle.querySelector('[data-icon-play]')?.classList.toggle('hidden', !paused);
+	});
+</script>

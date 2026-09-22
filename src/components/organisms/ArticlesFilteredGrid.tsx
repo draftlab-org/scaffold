@@ -1,6 +1,10 @@
-import type { FilterConfig } from '@components/molecules/FilterBar';
-import FilterBar from '@components/molecules/FilterBar';
-import { useCallback, useEffect, useState } from 'react';
+import FilterableContent, {
+  type FilterField,
+  type SearchConfig,
+  type SortOption,
+} from '@components/organisms/FilterableContent';
+import type { CardImage } from '@utils/images';
+import { useMemo } from 'react';
 
 interface Article {
   slug: string;
@@ -8,138 +12,93 @@ interface Article {
   permalink: string;
   excerpt?: string;
   authors: string[];
-  tags: string[];
   categories?: string[];
   publishedDate: string;
-  heroImage?: string;
+  heroImage?: CardImage;
   status: 'draft' | 'published' | 'archived';
 }
 
 interface ArticlesFilteredGridProps {
   articles: Article[];
   categories: string[];
-  tags: string[];
   authorMap: Record<string, string>;
   isDev: boolean;
 }
 
+const byDate = (a: Article, b: Article) =>
+  new Date(a.publishedDate).getTime() - new Date(b.publishedDate).getTime();
+
+const sortOptions: SortOption<Article>[] = [
+  { value: 'newest', label: 'Newest first', compare: (a, b) => byDate(b, a) },
+  { value: 'oldest', label: 'Oldest first', compare: byDate },
+  {
+    value: 'title',
+    label: 'Title (A–Z)',
+    compare: (a, b) => a.title.localeCompare(b.title),
+  },
+];
+
+const search: SearchConfig = {
+  keys: [
+    { name: 'title', weight: 2 },
+    { name: 'excerpt', weight: 1 },
+    { name: 'authorNames', weight: 1 },
+  ],
+  placeholder: 'Search articles…',
+};
+
+const formatDate = (dateStr: string) =>
+  new Intl.DateTimeFormat('en-US', {
+    timeZone: 'UTC',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }).format(new Date(dateStr));
+
 export default function ArticlesFilteredGrid({
   articles,
   categories,
-  tags,
   authorMap,
   isDev,
 }: ArticlesFilteredGridProps) {
-  const getInitialFilters = useCallback((): Record<string, string | null> => {
-    const initial: Record<string, string | null> = {
-      category: null,
-      tag: null,
-    };
+  // Resolve author names once, so they can be searched and displayed
+  const items = useMemo(
+    () =>
+      articles.map((article) => ({
+        ...article,
+        authorNames: article.authors
+          .map((id) => authorMap[id])
+          .filter(Boolean)
+          .join(', '),
+      })),
+    [articles, authorMap]
+  );
 
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      const category = params.get('category');
-      const tag = params.get('tag');
-      if (category) initial.category = category;
-      if (tag) initial.tag = tag;
-    }
-
-    return initial;
-  }, []);
-
-  const [filters, setFilters] =
-    useState<Record<string, string | null>>(getInitialFilters);
-
-  // Sync URL on filter change
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const params = new URLSearchParams(window.location.search);
-
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value) {
-        params.set(key, value);
-      } else {
-        params.delete(key);
-      }
-    });
-
-    const newUrl = params.toString()
-      ? `${window.location.pathname}?${params.toString()}`
-      : window.location.pathname;
-
-    window.history.replaceState({}, '', newUrl);
-  }, [filters]);
-
-  const handleFilterChange = (key: string, value: string | null) => {
-    setFilters((prev) => ({ ...prev, [key]: value }));
-  };
-
-  const handleClearFilters = () => {
-    setFilters({ category: null, tag: null });
-  };
-
-  const filterConfig: FilterConfig[] = [
-    {
-      key: 'category',
-      label: 'Category',
-      options: categories.map((cat) => ({ value: cat, label: cat })),
-      placeholder: 'All Categories',
-    },
-    {
-      key: 'tag',
-      label: 'Tag',
-      options: tags.map((tag) => ({ value: tag, label: tag })),
-      placeholder: 'All Tags',
-    },
-  ];
-
-  // Filter articles
-  const filteredArticles = articles.filter((article) => {
-    if (filters.category && !article.categories?.includes(filters.category)) {
-      return false;
-    }
-    if (
-      filters.tag &&
-      !article.tags.some((t) => t.toLowerCase() === filters.tag?.toLowerCase())
-    ) {
-      return false;
-    }
-    return true;
-  });
-
-  const formatDate = (dateStr: string) => {
-    return new Intl.DateTimeFormat('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    }).format(new Date(dateStr));
-  };
-
-  const getAuthorNames = (authorIds: string[]) => {
-    return authorIds
-      .map((id) => authorMap[id])
-      .filter(Boolean)
-      .join(', ');
-  };
+  const filterFields = useMemo<FilterField<(typeof items)[number]>[]>(
+    () => [
+      {
+        key: 'category',
+        label: 'Category',
+        options: categories.map((cat) => ({ value: cat, label: cat })),
+        placeholder: 'All Categories',
+        multiple: true,
+        getValue: (article) => article.categories,
+      },
+    ],
+    [categories]
+  );
 
   return (
-    <div>
-      <FilterBar
-        filters={filterConfig}
-        values={filters}
-        onChange={handleFilterChange}
-        onClear={handleClearFilters}
-        className="mb-8"
-      />
-
-      {filteredArticles.length === 0 ? (
-        <div className="py-12 text-center">
-          <p className="text-lg">
-            No articles match your filters. Try adjusting your selection.
-          </p>
-        </div>
-      ) : (
+    <FilterableContent
+      items={items}
+      filterFields={filterFields}
+      search={search}
+      sortOptions={sortOptions}
+      itemLabel={{ singular: 'article', plural: 'articles' }}
+      emptyMessage="No articles have been published yet. Check back soon!"
+      noResultsMessage="No articles match your filters."
+    >
+      {(filteredArticles) => (
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {filteredArticles.map((article) => (
             <div
@@ -147,14 +106,17 @@ export default function ArticlesFilteredGrid({
               className="card-bordered flex h-full flex-col overflow-hidden rounded-lg"
             >
               {article.heroImage && (
-                <a href={`/articles/${article.slug}`} className="block">
+                // Decorative: the title below is the card's link
+                <div className="overflow-hidden">
                   <img
-                    src={article.heroImage}
-                    alt={article.title}
+                    src={article.heroImage.src}
+                    width={article.heroImage.width}
+                    height={article.heroImage.height}
+                    alt=""
                     className="h-48 w-full object-cover transition-transform duration-300 hover:scale-105"
                     loading="lazy"
                   />
-                </a>
+                </div>
               )}
               <div className="flex h-full flex-col p-6">
                 {/* Draft badge */}
@@ -166,17 +128,19 @@ export default function ArticlesFilteredGrid({
                   </div>
                 )}
 
-                {/* Tags */}
-                <div className="mb-3 flex flex-wrap gap-2">
-                  {article.tags.slice(0, 2).map((tag) => (
-                    <span
-                      key={tag}
-                      className="tag-base tag-primary tag-size-sm"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
+                {/* Categories */}
+                {article.categories && article.categories.length > 0 && (
+                  <div className="mb-3 flex flex-wrap gap-2">
+                    {article.categories.slice(0, 2).map((category) => (
+                      <span
+                        key={category}
+                        className="tag-base tag-primary tag-size-sm"
+                      >
+                        {category}
+                      </span>
+                    ))}
+                  </div>
+                )}
 
                 {/* Title */}
                 <h3 className="text-xl font-bold md:text-2xl">
@@ -189,10 +153,14 @@ export default function ArticlesFilteredGrid({
                 </h3>
 
                 {/* Metadata */}
-                <div className="mb-4 space-y-1 text-sm text-gray-500">
-                  <p>By {getAuthorNames(article.authors)}</p>
+                <div className="mb-4 space-y-1 text-sm text-faint">
+                  {article.authorNames && <p>By {article.authorNames}</p>}
                   <p>{formatDate(article.publishedDate)}</p>
                 </div>
+
+                {article.excerpt && (
+                  <p className="line-clamp-3 text-muted">{article.excerpt}</p>
+                )}
 
                 <div className="grow" />
               </div>
@@ -200,6 +168,6 @@ export default function ArticlesFilteredGrid({
           ))}
         </div>
       )}
-    </div>
+    </FilterableContent>
   );
 }

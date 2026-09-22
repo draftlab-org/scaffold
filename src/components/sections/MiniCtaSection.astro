@@ -1,0 +1,35 @@
+---
+import Button from '@components/atoms/Button';
+import type { ButtonData } from '@content-config';
+import { renderMarkdown } from '@utils/renderMarkdown';
+
+export interface Props {
+  // Markdown (inline formatting and links)
+  text: string;
+  button?: ButtonData;
+}
+
+const { text, button } = Astro.props;
+
+const textHtml = (await renderMarkdown(text)).html;
+---
+
+<div
+	class="flex flex-col items-center justify-between gap-6 py-2 text-center md:flex-row md:text-left"
+>
+	<div class="text-xl font-medium md:text-2xl [&_p]:m-0" set:html={textHtml} />
+	{
+		button && (
+			<Button
+				class="shrink-0"
+				variant={button.variant}
+				size={button.size}
+				link={button.link}
+				href={button.href}
+				icon={button.icon ?? 'arrow-right'}
+			>
+				{button.text}
+			</Button>
+		)
+	}
+</div>

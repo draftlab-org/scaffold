@@ -20,7 +20,8 @@ if (!page) {
 >
 	<SectionLayout
 		bgImage={page.data.heroImage}
-		bgType={page.data.background}
+		bgColor={page.data.background === 'highlight' ? undefined : page.data.background}
+		bgType={page.data.background === 'highlight' ? 'highlight' : 'full'}
 		sectionLabel="hero"
 	>
 		<HeroSection

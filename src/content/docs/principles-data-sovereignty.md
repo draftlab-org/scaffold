@@ -51,7 +51,7 @@ interface ExportManifest {
 }
 ```
 
-![Sample background](/src/assets/backgrounds/anna-magenta-oT639KoYTKM-unsplash.jpg)
+![Sample background](../../assets/backgrounds/anna-magenta-oT639KoYTKM-unsplash.jpg)
 
 ## Governance Models
 

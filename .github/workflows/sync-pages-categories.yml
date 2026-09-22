@@ -1,0 +1,45 @@
+name: Sync PagesCMS Category Dropdowns
+
+# PagesCMS `select` fields only support hardcoded local `values:` lists (no
+# fetch-from-API). This keeps those lists in `.pages.yml` in sync with the
+# category source of truth in `src/content/categories/*.json` — including edits
+# made through PagesCMS itself, which commit the JSON directly and never touch a
+# local pre-commit hook. See scripts/sync-pages-categories.mjs.
+
+on:
+  push:
+    paths:
+      - "src/content/categories/**/*.json"
+      - "scripts/sync-pages-categories.mjs"
+      - ".github/workflows/sync-pages-categories.yml"
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Sync category dropdowns into .pages.yml
+        run: node scripts/sync-pages-categories.mjs
+
+      - name: Commit and push changes (if any)
+        run: |
+          if [[ -n "$(git status --porcelain .pages.yml)" ]]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add .pages.yml
+            git commit -m "Sync PagesCMS category dropdowns from categories collection"
+            git push
+          else
+            echo "No category dropdown changes to commit."
+          fi

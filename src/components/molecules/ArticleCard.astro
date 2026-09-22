@@ -1,0 +1,84 @@
+---
+import Image from '@components/atoms/Image.astro';
+import Tag from '@components/atoms/Tag';
+import Card from '@components/molecules/Card.astro';
+import {
+  type Article,
+  formatArticleDate,
+  getArticleExcerpt,
+  getArticleUrl,
+} from '@utils/articles';
+import { isDev } from '@utils/dev';
+import { getPersonNames } from '@utils/people';
+import type { ImageMetadata } from 'astro';
+
+export interface Props {
+  article: Article;
+}
+
+const { article } = Astro.props;
+const excerpt = getArticleExcerpt(article);
+
+// Author IDs → names of visible people (draft profiles stay hidden)
+const authorNames = await getPersonNames(article.data.authors);
+---
+
+<Card variant="bordered" class="flex h-full flex-col overflow-hidden">
+	{
+		article.data.heroImage && (
+			<a href={getArticleUrl(article)} class="block" tabindex="-1" aria-hidden="true">
+				<Image
+					src={article.data.heroImage as ImageMetadata}
+					alt=""
+					width={400}
+					height={225}
+					class="h-48 w-full object-cover transition-transform duration-300 hover:scale-105"
+				/>
+			</a>
+		)
+	}
+	<div class="flex h-full flex-col p-6">
+		{/* Draft badge (only visible in dev) */}
+		{
+			isDev && article.data.status === 'draft' && (
+				<div class="mb-3">
+					<Tag variant="highlight" class="font-bold">
+						DRAFT
+					</Tag>
+				</div>
+			)
+		}
+
+		{/* Categories */}
+		<div class="mb-3 flex flex-wrap gap-2">
+			{
+				(article.data.categories ?? []).slice(0, 2).map((category) => (
+					<Tag variant="primary" size="sm">
+						{category}
+					</Tag>
+				))
+			}
+		</div>
+
+		{/* Title */}
+		<h3 class="text-xl font-bold md:text-2xl">
+			<a
+				href={getArticleUrl(article)}
+				class="text-inherit no-underline transition-colors hover:text-secondary-600"
+			>
+				{article.data.title}
+			</a>
+		</h3>
+
+		{/* Metadata */}
+		<div class="mb-4 space-y-1 text-sm text-faint">
+			{authorNames && <p>By {authorNames}</p>}
+			<p>{formatArticleDate(article.data.publishedDate)}</p>
+		</div>
+
+		{excerpt && <p class="line-clamp-3 text-muted">{excerpt}</p>}
+
+		{/* Spacer */}
+		<div class="grow" />
+	</div>
+</Card>

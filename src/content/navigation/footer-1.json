@@ -1,45 +1,45 @@
 {
   "slug": "footer-1",
-  "title": "Footer Nav 1",
+  "title": "Explore",
   "items": [
     {
       "type": "link",
-      "label": "Menu Item",
+      "label": "Articles",
       "link": {
         "type": "internal",
-        "pageRef": "/about"
+        "pageRef": "/articles"
       }
     },
     {
       "type": "link",
-      "label": "Menu Item",
+      "label": "People",
       "link": {
         "type": "internal",
-        "pageRef": "/about"
+        "pageRef": "/people"
       }
     },
     {
       "type": "link",
-      "label": "Menu Item",
+      "label": "Partners",
       "link": {
         "type": "internal",
-        "pageRef": "/about"
+        "pageRef": "/partners"
       }
     },
     {
       "type": "link",
-      "label": "Menu Item",
+      "label": "Resources",
       "link": {
         "type": "internal",
-        "pageRef": "/about"
+        "pageRef": "/resources"
       }
     },
     {
       "type": "link",
-      "label": "Menu Item",
+      "label": "Docs",
       "link": {
         "type": "internal",
-        "pageRef": "/about"
+        "pageRef": "/docs"
       }
     }
   ]

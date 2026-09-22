@@ -2,13 +2,21 @@
 import { Image } from 'astro:assets';
 import { getCollection, getEntry, render } from 'astro:content';
 import Banner from '@components/atoms/Banner.astro';
-import Link from '@components/atoms/Link.astro'
-import Tag from '@components/atoms/Tag.astro';
+import Link from '@components/atoms/Link'
+import Tag from '@components/atoms/Tag';
+import ShareButtons from '@components/molecules/ShareButtons.astro';
+import ContentSidebar from '@components/organisms/ContentSidebar.astro';
+import RelatedContentItems from '@components/organisms/RelatedContentItems.astro';
+import TOC from '@components/organisms/TOC';
 import HeroSection from '@components/sections/HeroSection.astro';
 import PageLayout from '@layouts/PageLayout.astro';
 import SectionLayout from '@layouts/SectionLayout.astro';
+import { getArticleExcerpt, getRelatedArticles } from '@utils/articles';
 import { isVisible, mapColorToVariant } from '@utils/content';
 import { isDev } from '@utils/dev';
+import { resolvePeople } from '@utils/people';
+import { countTocEntries, getTocEntries } from '@utils/renderMarkdown';
+import { getResourcesByIds } from '@utils/resources';
 
 export async function getStaticPaths() {
   const articles = await getCollection('articles');
@@ -23,43 +31,24 @@ export async function getStaticPaths() {
 }
 
 const { article } = Astro.props;
-const { Content } = await render(article);
+const { Content, headings } = await render(article);
 
-// Fetch all people for author lookups
-const allPeople = await getCollection('people');
-const peopleMap = new Map(allPeople.map((person) => [person.data.id, person.data]));
+// Table of contents: only worth showing with at least two headings
+const tocEntries = getTocEntries(headings);
+const showToc = countTocEntries(tocEntries) >= 2;
 
-// Get author details
-const authors = article.data.authors
-  .map((id) => peopleMap.get(id))
-  .filter(Boolean);
+// Author details — visible people only, so draft profiles aren't named or
+// linked (their pages don't exist in production)
+const authors = await resolvePeople(article.data.authors);
 
-// Get related articles
-const allArticles = await getCollection('articles');
-const relatedArticles = article.data.relatedArticles
-  ? article.data.relatedArticles
-      .filter(permalink => permalink !== article.data.permalink) // Don't show current article
-      .map((permalink) => {
-        const relatedArticle = allArticles.find(
-          (a) => a.data.permalink === permalink && isVisible(a)
-        );
-        if (!relatedArticle) {
-          console.warn(`Related article not found: ${permalink}`);
-          return null;
-        }
+// Related content: explicit picks first, then articles sharing categories
+const relatedArticles = await getRelatedArticles(article);
+const relatedResources = await getResourcesByIds(
+  article.data.relatedResources ?? []
+);
 
-        // Resolve authors for the related article
-        const relatedAuthors = relatedArticle.data.authors
-          .map((id) => peopleMap.get(id))
-          .filter(Boolean);
-
-        return {
-          ...relatedArticle,
-          resolvedAuthors: relatedAuthors
-        };
-      })
-      .filter((article): article is NonNullable<typeof article> => article !== null)
-  : [];
+// Absolute URL for share links
+const shareUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
 
 // Format date
 const formatDate = (date: Date) => {
@@ -67,10 +56,11 @@ const formatDate = (date: Date) => {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
+    timeZone: 'UTC',
   }).format(date);
 };
 
-const {title, publishedDate, heroImage, tags, status } = article.data
+const {title, publishedDate, heroImage, categories, status } = article.data
 
 const siteConfig = await getEntry('site', 'config');
 const archivedBanner = siteConfig?.data.archivedBanner;
@@ -78,7 +68,10 @@ const archivedBanner = siteConfig?.data.archivedBanner;
 
 <PageLayout
 	title={article.data.title}
-	description={`Article by ${authors.map((a) => a?.name).join(', ')}`}
+	description={
+		getArticleExcerpt(article, 160) ??
+		`Article by ${authors.map((a) => a?.name).join(', ')}`
+	}
 	image={heroImage}
 >
 	{
@@ -102,12 +95,12 @@ const archivedBanner = siteConfig?.data.archivedBanner;
 					</div>
 				)
 			}
-			{/* Tags */}
+			{/* Categories */}
 			<div class="mb-4 flex flex-wrap gap-2">
 				{
-					tags.map((tag) => (
+					(categories ?? []).map((category) => (
 						<Tag variant="primary" size="md">
-							{tag}
+							{category}
 						</Tag>
 					))
 				}
@@ -139,70 +132,40 @@ const archivedBanner = siteConfig?.data.archivedBanner;
 
 	<!-- Article Content -->
 	<SectionLayout>
-		<article class="mx-auto prose max-w-4xl py-12 prose-blue">
-			<Content />
-		</article>
+		<div class="py-12 lg:grid lg:grid-cols-[minmax(0,1fr)_16rem] lg:gap-12">
+			<div class="min-w-0">
+				{/* Mobile table of contents (the sidebar handles desktop) */}
+				{
+					showToc && (
+						<details class="mx-auto mb-8 max-w-4xl rounded-lg border border-gray-200 p-4 lg:hidden">
+							<summary class="cursor-pointer font-medium">On this page</summary>
+							<div class="mt-4">
+								<TOC client:visible entries={tocEntries} title="" sticky={false} />
+							</div>
+						</details>
+					)
+				}
+
+				<article class="mx-auto prose max-w-4xl prose-blue">
+					<Content />
+				</article>
+
+				<ShareButtons url={shareUrl} title={title} id="share-inline" class="mx-auto mt-12 max-w-4xl lg:hidden" />
+			</div>
+
+			<ContentSidebar
+				tocEntries={showToc ? tocEntries : []}
+				shareUrl={shareUrl}
+				shareTitle={title}
+			/>
+		</div>
 	</SectionLayout>
 
-	<!-- Related Articles Section -->
+	<!-- Related Content -->
 	{
-		relatedArticles.length > 0 && (
+		(relatedArticles.length > 0 || relatedResources.length > 0) && (
 			<SectionLayout bgColor="gray">
-				<div class="mx-auto max-w-4xl py-12">
-					<h2 class="mb-8 text-2xl font-bold">Related Articles</h2>
-					<div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-						{relatedArticles.map((relatedArticle) => (
-							<Link
-								variant="unstyled"
-								href={`/articles/${relatedArticle.id}`}
-								class="flex flex-col overflow-hidden rounded-lg bg-white no-underline transition hover:shadow-lg"
-							>
-								{/* Hero Image */}
-								{relatedArticle.data.heroImage && (
-									<Image
-										src={relatedArticle.data.heroImage}
-										alt={relatedArticle.data.title}
-										class="h-48 w-full object-cover"
-									/>
-								)}
-
-								{/* Card Content */}
-								<div class="flex flex-col gap-3 p-6">
-									{/* Tags */}
-									<div class="flex flex-wrap gap-2">
-										{relatedArticle.data.tags.slice(0, 2).map((tag) => (
-											<Tag variant="primary" size="sm">
-												{tag}
-											</Tag>
-										))}
-									</div>
-
-									{/* Title */}
-									<h3 class="line-clamp-2 text-lg font-semibold">
-										{relatedArticle.data.title}
-									</h3>
-
-									{/* Metadata: Authors and Date */}
-									<div class="mt-auto text-sm">
-										<p>
-											By{' '}
-											{relatedArticle.resolvedAuthors.map((a, i) => (
-												<>
-													{a?.name}
-													{i < relatedArticle.resolvedAuthors.length - 1 &&
-														', '}
-												</>
-											))}
-										</p>
-										<p class="mt-1 text-xs text-gray-500">
-											{formatDate(relatedArticle.data.publishedDate)}
-										</p>
-									</div>
-								</div>
-							</Link>
-						))}
-					</div>
-				</div>
+				<RelatedContentItems articles={relatedArticles} resources={relatedResources} />
 			</SectionLayout>
 		)
 	}
@@ -210,7 +173,7 @@ const archivedBanner = siteConfig?.data.archivedBanner;
 	<!-- Authors Section -->
 	{
 		authors && (
-			<SectionLayout bgColor="bg-gray-50">
+			<SectionLayout bgColor="gray">
 				<div class="mx-auto max-w-4xl py-12">
 					<h2 class="mb-8 text-2xl font-bold">
 						{authors.length === 1 ? 'About the Author' : 'About the Authors'}

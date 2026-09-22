@@ -72,9 +72,9 @@ export default function ResourceItem({ item }: ResourceItemProps) {
         {/* External Links */}
         {item.externalLinks && item.externalLinks.length > 0 && (
           <div className="flex flex-wrap gap-3 pt-2">
-            {item.externalLinks.map((link, index) => (
+            {item.externalLinks.map((link) => (
               <a
-                key={`${link.url}:${index}`}
+                key={`${link.label}:${link.url}`}
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"

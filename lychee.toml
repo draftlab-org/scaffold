@@ -1,0 +1,40 @@
+timeout = 20
+max_retries = 3
+max_concurrency = 32
+
+exclude = [
+  '^https?://localhost',
+  '^https?://127\.0\.0\.1',
+  # skip netlify's preprocessed images, we will still catch broken images in the astro build process
+  '/\.netlify/images',
+  # the 404 page's canonical URL; the build emits 404.html, not 404/index.html
+  '/404/?$',
+
+  # --- crawler blocking ---------------------------------------------------------
+  # The entries below 403 (forbid access) or refuse automated clients,
+  # so they are removed from the link checker since they aren't giving relevant information.
+  # If adding new URLs, first confirm that the test returns 403, then ideally check the page
+  # manually to make sure it is actually blocked.
+  '^https?://([^/]+\.)?x\.com(/|$)',
+  '^https?://([^/]+\.)?twitter\.com(/|$)',
+  '^https?://([^/]+\.)?linkedin\.com(/|$)',
+  '^https?://([^/]+\.)?medium\.com(/|$)',
+  '^https?://([^/]+\.)?doi\.org(/|$)',
+  '^https?://([^/]+\.)?nytimes\.com(/|$)',
+
+  # --- site-specific ------------------------------------------------------------
+  # Add URLs here that you have verified by hand but the checker reports as broken
+  # (bot protection, certificate quirks). Prefer exact URLs over whole domains, so
+  # genuinely broken links on the same domain are still reported.
+]
+
+# 429 (rate limited) is accepted because it means the server
+# answered and asked us to slow down.
+# 202 is accepted because some publishers answer a bot challenge
+# with 202 while the page itself exists.
+accept = ["200", "202", "206", "429"]
+
+user_agent = "Mozilla/5.0 (compatible; lychee)"
+
+cache = true
+max_cache_age = "1d"

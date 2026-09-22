@@ -12,7 +12,7 @@ description: Governance models for open source projects serving the public inter
 
 Open source without governance defaults to the rule of whoever has commit access. This creates bus factor risks, corporate capture, and contributor burnout.
 
-![Sample background](/src/assets/backgrounds/anna-magenta--NUiL7xSUHA-unsplash.jpg)
+![Sample background](../../assets/backgrounds/anna-magenta--NUiL7xSUHA-unsplash.jpg)
 
 ## Governance Models
 

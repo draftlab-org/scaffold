@@ -2,15 +2,15 @@
 import { getEntry } from 'astro:content';
 import Banner from '@components/atoms/Banner.astro';
 import ArticlesLanding from '@components/landing/ArticlesLanding.astro';
-import PeopleLanding from '@components/landing/PeopleLanding.astro';
 import PartnersLanding from '@components/landing/PartnersLanding.astro';
+import PeopleLanding from '@components/landing/PeopleLanding.astro';
 import ResourcesLanding from '@components/landing/ResourcesLanding.astro';
 import HeroSection from '@components/sections/HeroSection.astro';
 import Sections from '@components/sections/Sections.astro';
 import PageLayout from '@layouts/PageLayout.astro';
 import SectionLayout from '@layouts/SectionLayout.astro';
-import { getPages } from '@utils/pages';
 import { mapColorToVariant } from '@utils/content';
+import { getPages } from '@utils/pages';
 
 import type { GetStaticPaths } from 'astro';
 
@@ -42,7 +42,12 @@ const landingPages: Record<string, string> = {
 const landingType = permalink ? landingPages[permalink] : undefined;
 ---
 
-<PageLayout title={page.data.title} description={page.data.description} image={page.data.heroImage}>
+<PageLayout
+	title={page.data.title}
+	description={page.data.description}
+	image={page.data.heroImage}
+	breadcrumbs={page.data.breadcrumbs}
+>
 	{page.data.status === 'archived' && archivedBanner && (
 		<Banner variant={mapColorToVariant(archivedBanner.color)} dismissible>
 			{archivedBanner.message}

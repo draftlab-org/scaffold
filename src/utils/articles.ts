@@ -1,5 +1,6 @@
 import type { CollectionEntry } from 'astro:content';
 import { getVisibleEntries } from '@utils/content';
+import { getExcerpt } from '@utils/excerpt';
 
 export type Article = CollectionEntry<'articles'>;
 
@@ -23,17 +24,7 @@ export async function getArticlesByCategory(
 }
 
 /**
- * Get articles filtered by tag
- */
-export async function getArticlesByTag(tag: string): Promise<Article[]> {
-  const articles = await getPublishedArticles();
-  return articles.filter((article) =>
-    article.data.tags.some((t) => t.toLowerCase() === tag.toLowerCase())
-  );
-}
-
-/**
- * Get related articles based on shared tags and categories
+ * Get related articles based on shared categories
  */
 export async function getRelatedArticles(
   article: Article,
@@ -57,8 +48,7 @@ export async function getRelatedArticles(
     return explicitRelated.slice(0, limit);
   }
 
-  // Otherwise, find related articles by tags and categories
-  const articleTags = new Set(article.data.tags.map((t) => t.toLowerCase()));
+  // Otherwise, find related articles by shared categories
   const articleCategories = new Set(article.data.categories || []);
 
   const scoredArticles = allArticles
@@ -68,13 +58,8 @@ export async function getRelatedArticles(
     )
     .map((a) => {
       let score = 0;
-      // Score based on shared tags
-      a.data.tags.forEach((tag) => {
-        if (articleTags.has(tag.toLowerCase())) score += 2;
-      });
-      // Score based on shared categories
       a.data.categories?.forEach((cat) => {
-        if (articleCategories.has(cat)) score += 3;
+        if (articleCategories.has(cat)) score += 1;
       });
       return { article: a, score };
     })
@@ -120,26 +105,11 @@ export async function getAllCategories(): Promise<string[]> {
 }
 
 /**
- * Get all unique tags from articles
- */
-export async function getAllTags(): Promise<string[]> {
-  const articles = await getPublishedArticles();
-  const tags = new Set<string>();
-
-  for (const article of articles) {
-    for (const tag of article.data.tags) {
-      tags.add(tag);
-    }
-  }
-
-  return Array.from(tags).sort();
-}
-
-/**
  * Format a date for display
  */
 export function formatArticleDate(date: Date): string {
   return new Intl.DateTimeFormat('en-US', {
+    timeZone: 'UTC',
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -151,4 +121,27 @@ export function formatArticleDate(date: Date): string {
  */
 export function getArticleUrl(article: Article): string {
   return `/articles/${article.id}`;
+}
+
+/**
+ * Get articles by permalink, in the order given (drafts are dropped outside
+ * dev/preview, and unknown permalinks are skipped)
+ */
+export async function getArticlesByPermalinks(
+  permalinks: string[]
+): Promise<Article[]> {
+  const articles = await getPublishedArticles();
+  return permalinks
+    .map((permalink) => articles.find((a) => a.data.permalink === permalink))
+    .filter((article): article is Article => article !== undefined);
+}
+
+/**
+ * The article's excerpt, falling back to one generated from its body
+ */
+export function getArticleExcerpt(
+  article: Article,
+  maxLength?: number
+): string | undefined {
+  return article.data.excerpt || getExcerpt(article.body, maxLength);
 }

@@ -1,5 +1,6 @@
 ---
 import PeopleFilteredGrid from '@components/organisms/PeopleFilteredGrid';
+import { getCardImage } from '@utils/images';
 import { getAllPeople, getAllSections } from '@utils/people';
 
 // Get all visible people
@@ -9,13 +10,14 @@ const people = await getAllPeople();
 const sections = await getAllSections();
 
 // Serialize people for the React component
-const serializedPeople = people.map((person) => ({
+const serializedPeople = await Promise.all(people.map(async (person) => ({
   id: person.id,
   name: person.name,
   title: person.title || '',
-  headshot: person.headshot.src,
+  // Headshots render at 192px; 400 covers 2× screens
+  headshot: await getCardImage(person.headshot, 400),
   sections: person.sections,
-}));
+})));
 ---
 
 <section class="py-16">

@@ -1,14 +1,18 @@
-import type { FilterConfig } from '@components/molecules/FilterBar';
-import FilterBar from '@components/molecules/FilterBar';
-import { useCallback, useEffect, useState } from 'react';
+import FilterableContent, {
+  type FilterField,
+  type SearchConfig,
+  type SortOption,
+} from '@components/organisms/FilterableContent';
+import type { CardImage } from '@utils/images';
+import { useMemo } from 'react';
 
 interface Partner {
   id: string;
   name: string;
   affiliation?: string;
   url?: string;
-  category: string;
-  image?: string;
+  category: string[];
+  image?: CardImage;
 }
 
 interface PartnersFilteredGridProps {
@@ -17,94 +21,48 @@ interface PartnersFilteredGridProps {
   groupByCategory?: boolean;
 }
 
+// Default keeps the CMS order (featured first, then `order`)
+const sortOptions: SortOption<Partner>[] = [
+  { value: 'default', label: 'Featured' },
+  {
+    value: 'name',
+    label: 'Name (A–Z)',
+    compare: (a, b) => a.name.localeCompare(b.name),
+  },
+];
+
+const search: SearchConfig = {
+  keys: [
+    { name: 'name', weight: 2 },
+    { name: 'affiliation', weight: 1 },
+  ],
+  placeholder: 'Search partners…',
+};
+
+const formatCategory = (category: string) =>
+  category.charAt(0).toUpperCase() + category.slice(1);
+
 export default function PartnersFilteredGrid({
   partners,
   categories,
   groupByCategory = false,
 }: PartnersFilteredGridProps) {
-  const getInitialFilters = useCallback((): Record<string, string | null> => {
-    const initial: Record<string, string | null> = {
-      category: null,
-    };
-
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      const category = params.get('category');
-      if (category) initial.category = category;
-    }
-
-    return initial;
-  }, []);
-
-  const [filters, setFilters] =
-    useState<Record<string, string | null>>(getInitialFilters);
-
-  // Sync URL on filter change
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const params = new URLSearchParams(window.location.search);
-
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value) {
-        params.set(key, value);
-      } else {
-        params.delete(key);
-      }
-    });
-
-    const newUrl = params.toString()
-      ? `${window.location.pathname}?${params.toString()}`
-      : window.location.pathname;
-
-    window.history.replaceState({}, '', newUrl);
-  }, [filters]);
-
-  const handleFilterChange = (key: string, value: string | null) => {
-    setFilters((prev) => ({ ...prev, [key]: value }));
-  };
-
-  const handleClearFilters = () => {
-    setFilters({ category: null });
-  };
-
-  const filterConfig: FilterConfig[] = [
-    {
-      key: 'category',
-      label: 'Category',
-      options: categories.map((cat) => ({
-        value: cat,
-        label: cat.charAt(0).toUpperCase() + cat.slice(1),
-      })),
-      placeholder: 'All Categories',
-    },
-  ];
-
-  // Filter partners
-  const filteredPartners = partners.filter((partner) => {
-    if (filters.category && partner.category !== filters.category) {
-      return false;
-    }
-    return true;
-  });
-
-  // Group by category if enabled and no filter is active
-  const shouldGroup = groupByCategory && !filters.category;
-
-  const groupedPartners = shouldGroup
-    ? categories.reduce(
-        (acc, category) => {
-          const categoryPartners = filteredPartners.filter(
-            (p) => p.category === category
-          );
-          if (categoryPartners.length > 0) {
-            acc[category] = categoryPartners;
-          }
-          return acc;
-        },
-        {} as Record<string, Partner[]>
-      )
-    : null;
+  const filterFields = useMemo<FilterField<Partner>[]>(
+    () => [
+      {
+        key: 'category',
+        label: 'Category',
+        options: categories.map((cat) => ({
+          value: cat,
+          label: formatCategory(cat),
+        })),
+        placeholder: 'All Categories',
+        multiple: true,
+        getValue: (partner) => partner.category,
+      },
+    ],
+    [categories]
+  );
 
   const renderPartnerCard = (partner: Partner) => (
     <a
@@ -115,8 +73,10 @@ export default function PartnersFilteredGrid({
       {partner.image && (
         <div className="mb-4 flex h-32 w-full items-center justify-center rounded-lg bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
           <img
-            src={partner.image}
-            alt={partner.name}
+            src={partner.image.src}
+            width={partner.image.width}
+            height={partner.image.height}
+            alt=""
             className="max-h-full max-w-full object-contain"
             loading="lazy"
           />
@@ -129,42 +89,46 @@ export default function PartnersFilteredGrid({
     </a>
   );
 
-  return (
-    <div>
-      <FilterBar
-        filters={filterConfig}
-        values={filters}
-        onChange={handleFilterChange}
-        onClear={handleClearFilters}
-        className="mb-8"
-      />
+  // Group by category when no category is selected. A partner in several
+  // categories appears under each of them.
+  const groupPartners = (filteredPartners: Partner[]) =>
+    categories
+      .map((category) => ({
+        category,
+        partners: filteredPartners.filter((p) => p.category.includes(category)),
+      }))
+      .filter((group) => group.partners.length > 0);
 
-      {filteredPartners.length === 0 ? (
-        <div className="py-12 text-center">
-          <p className="text-lg">
-            No partners match your filters. Try adjusting your selection.
-          </p>
-        </div>
-      ) : groupedPartners ? (
-        // Grouped display
-        <div className="space-y-12">
-          {Object.entries(groupedPartners).map(([category, categoryPartners]) => (
-            <div key={category}>
-              <h3 className="mb-6 text-2xl font-semibold capitalize">
-                {category}
-              </h3>
-              <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                {categoryPartners.map(renderPartnerCard)}
+  return (
+    <FilterableContent
+      items={partners}
+      filterFields={filterFields}
+      search={search}
+      sortOptions={sortOptions}
+      itemLabel={{ singular: 'partner', plural: 'partners' }}
+      emptyMessage="No partners have been added yet."
+      noResultsMessage="No partners match your filters."
+    >
+      {(filteredPartners, { values }) =>
+        groupByCategory && (values.category ?? []).length === 0 ? (
+          <div className="space-y-12">
+            {groupPartners(filteredPartners).map((group) => (
+              <div key={group.category}>
+                <h3 className="mb-6 text-2xl font-semibold">
+                  {formatCategory(group.category)}
+                </h3>
+                <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                  {group.partners.map(renderPartnerCard)}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        // Flat display
-        <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {filteredPartners.map(renderPartnerCard)}
-        </div>
-      )}
-    </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {filteredPartners.map(renderPartnerCard)}
+          </div>
+        )
+      }
+    </FilterableContent>
   );
 }

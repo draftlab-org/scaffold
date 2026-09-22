@@ -1,8 +1,8 @@
 ---
-import { getCollection } from 'astro:content';
 import Heading from '@components/atoms/Heading.astro';
 import type { Person as PersonType } from '@components/organisms/Person.astro';
 import Person from '@components/organisms/Person.astro';
+import { getVisibleEntries } from '@utils/content';
 
 export interface Props {
   category?: string;
@@ -11,7 +11,7 @@ export interface Props {
 
 const { category } = Astro.props;
 // Query all people from the collection
-const peopleEntries = await getCollection('people');
+const peopleEntries = await getVisibleEntries('people');
 const allPeople: PersonType[] = peopleEntries.map((entry) => entry.data);
 
 // If category specified, filter by that category; otherwise show all
@@ -41,7 +41,7 @@ const sectionTitle = category || 'Our Team';
 	<!-- Empty State -->
 	{
 		peopleGrid.length === 0 && (
-			<div class="py-12 text-center text-gray-500">
+			<div class="py-12 text-center text-muted">
 				No people found in this section.
 			</div>
 		)

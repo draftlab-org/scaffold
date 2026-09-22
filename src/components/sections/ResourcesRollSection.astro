@@ -1,8 +1,12 @@
 ---
-import Button from '@components/atoms/Button.astro';
+import Button from '@components/atoms/Button';
 import Heading from '@components/atoms/Heading.astro';
 import ResourceItem from '@components/organisms/Resource/ResourceItem';
-import { getResources, prepareResourcesCardData } from '@utils/resources';
+import {
+  getResources,
+  prepareResourcesCardData,
+  serializeResourceCardData,
+} from '@utils/resources';
 import IconArrowRight from '~icons/heroicons/arrow-right-20-solid';
 
 export interface Props {
@@ -24,16 +28,7 @@ const limitedResources = resources.slice(0, limit);
 const resourcesData = await prepareResourcesCardData(limitedResources);
 
 // Serialize for the React component
-const serializedResources = resourcesData.map(({ resource, contributorNames }) => ({
-  id: resource.id,
-  title: resource.data.title,
-  description: resource.data.description,
-  category: resource.data.category,
-  year: resource.data.year,
-  tags: resource.data.tags,
-  externalLinks: resource.data.externalLinks,
-  contributorNames,
-}));
+const serializedResources = resourcesData.map(serializeResourceCardData);
 ---
 
 <div class="py-12">

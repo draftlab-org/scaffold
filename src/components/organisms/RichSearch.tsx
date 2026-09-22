@@ -7,9 +7,11 @@ import {
   DialogBackdrop,
   DialogPanel,
 } from '@headlessui/react';
-import Fuse from 'fuse.js';
+import type { SearchIndexItem } from '@utils/search';
+import Fuse, { type FuseResult } from 'fuse.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import BookOpenIcon from '~icons/heroicons/book-open';
+import ChevronRightIcon from '~icons/heroicons/chevron-right-16-solid';
 import DocumentIcon from '~icons/heroicons/document-text';
 import ExclamationTriangleIcon from '~icons/heroicons/exclamation-triangle';
 import FolderIcon from '~icons/heroicons/folder';
@@ -17,157 +19,116 @@ import LifebuoyIcon from '~icons/heroicons/lifebuoy';
 import MagnifyingGlassIcon from '~icons/heroicons/magnifying-glass-20-solid';
 import UserIcon from '~icons/heroicons/user';
 
-type SearchResult = {
-  id: string;
-  name: string;
-  url: string;
-  category: string;
-  imageUrl?: string;
-};
+type SearchResult = SearchIndexItem;
 
-// Type for unplugin-icons components which use 'class' instead of 'className'
+// unplugin-icons React components (compiled as JSX) take `className`
 type IconComponent = React.ComponentType<{
-  class?: string;
+  className?: string;
   'aria-hidden'?: 'true' | 'false';
 }>;
 
 type CategoryConfig = {
-  name: string;
-  apiEndpoint: string;
-  urlPrefix: string;
+  // Matches `category` in the search index built by @utils/search
+  name: SearchIndexItem['category'];
   icon: IconComponent;
   modifier: string;
-  transform: (item: any) => Omit<SearchResult, 'category'>;
 };
 
-// Configuration for search categories
+// Display order, icons and query modifiers for each result category. The
+// entries themselves come from /api/search.json (see @utils/search).
 const SEARCH_CATEGORIES: CategoryConfig[] = [
-  {
-    name: 'Pages',
-    apiEndpoint: '/api/pages.json',
-    urlPrefix: '/',
-    icon: FolderIcon,
-    modifier: '#',
-    transform: (page: any) => ({
-      id: page.id,
-      name: page.title,
-      url: `/${page.id}`,
-      imageUrl: page.heroImage?.src,
-    }),
-  },
-  {
-    name: 'People',
-    apiEndpoint: '/api/people.json',
-    urlPrefix: '/people/',
-    icon: UserIcon,
-    modifier: '>',
-    transform: (person: any) => ({
-      id: person.id,
-      name: person.name,
-      url: `/people/${person.id}`,
-      imageUrl: person.headshot?.src,
-    }),
-  },
-  {
-    name: 'Articles',
-    apiEndpoint: '/api/articles.json',
-    urlPrefix: '/articles/',
-    icon: DocumentIcon,
-    modifier: '@',
-    transform: (article: any) => ({
-      id: article.id,
-      name: article.data.title,
-      url: `/articles/${article.slug || article.id}`,
-      imageUrl: article.data.heroImage?.src,
-    }),
-  },
-  {
-    name: 'Docs',
-    apiEndpoint: '/api/docs.json',
-    urlPrefix: '/docs/',
-    icon: BookOpenIcon,
-    modifier: '!',
-    transform: (doc: any) => ({
-      id: doc.id,
-      name: doc.data.title,
-      url: `/docs/${doc.data.permalink}`,
-    }),
-  },
+  { name: 'Pages', icon: FolderIcon, modifier: '#' },
+  { name: 'People', icon: UserIcon, modifier: '>' },
+  { name: 'Articles', icon: DocumentIcon, modifier: '@' },
+  { name: 'Docs', icon: BookOpenIcon, modifier: '!' },
 ];
+
+const MODIFIER_PATTERN = new RegExp(
+  `^[${SEARCH_CATEGORIES.map((c) => `\\${c.modifier}`).join('')}]`
+);
+
+const DEBOUNCE_MS = 150;
+
+const FUSE_OPTIONS = {
+  keys: [
+    { name: 'name', weight: 2 },
+    { name: 'content', weight: 1 },
+  ],
+  threshold: 0.4,
+  // Content is long; match anywhere in it, not just near the start
+  ignoreLocation: true,
+  includeMatches: true,
+  minMatchCharLength: 3,
+};
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
-// Helper function to create fuzzy search results
-function fuzzySearch(
-  items: SearchResult[],
-  query: string,
-  threshold: number = 0.4
-): SearchResult[] {
-  const fuse = new Fuse(items, {
-    keys: ['name'],
-    threshold,
-    includeScore: true,
-  });
-  return fuse.search(query).map((result) => result.item);
+type Snippet = { before: string; match: string; after: string };
+
+const SNIPPET_CONTEXT = 40;
+
+function sliceSnippet(text: string, start: number, end: number): Snippet {
+  const from = Math.max(0, start - SNIPPET_CONTEXT);
+  const to = Math.min(text.length, end + SNIPPET_CONTEXT);
+  return {
+    before: `${from > 0 ? '…' : ''}${text.slice(from, start)}`,
+    match: text.slice(start, end),
+    after: `${text.slice(end, to)}${to < text.length ? '…' : ''}`,
+  };
+}
+
+// A short excerpt around the first content match, for display under a result
+function getMatchSnippet(
+  result: FuseResult<SearchResult>,
+  query: string
+): Snippet | null {
+  const text = result.item.content;
+  if (!text) return null;
+
+  // Prefer an exact substring match — most meaningful to the reader
+  const idx = text.toLowerCase().indexOf(query);
+  if (idx !== -1) return sliceSnippet(text, idx, idx + query.length);
+
+  // Otherwise use the longest fuzzy match in the content
+  const indices = result.matches?.find((m) => m.key === 'content')?.indices;
+  if (!indices?.length) return null;
+  const [start, end] = indices.reduce((best, cur) =>
+    cur[1] - cur[0] > best[1] - best[0] ? cur : best
+  );
+  return sliceSnippet(text, start, end + 1);
 }
 
 export default function RichSearch() {
   const [open, setOpen] = useState(false);
   const [rawQuery, setRawQuery] = useState('');
+  const [debouncedRawQuery, setDebouncedRawQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(true);
   const hasFetched = useRef(false);
-  const query = rawQuery.toLowerCase().replace(/^[#>@]/, '');
+  const query = debouncedRawQuery
+    .toLowerCase()
+    .replace(MODIFIER_PATTERN, '')
+    .trim();
 
-  // Fetch data lazily when search opens for the first time
+  // Run the (comparatively expensive) search after typing pauses
+  useEffect(() => {
+    const timeout = setTimeout(
+      () => setDebouncedRawQuery(rawQuery),
+      DEBOUNCE_MS
+    );
+    return () => clearTimeout(timeout);
+  }, [rawQuery]);
+
+  // Fetch the index lazily when search opens for the first time
   useEffect(() => {
     async function fetchSearchData() {
       setLoading(true);
       try {
-        // Fetch site config for default image and all category endpoints
-        const responses = await Promise.all([
-          fetch('/api/site.json'),
-          ...SEARCH_CATEGORIES.map((category) => fetch(category.apiEndpoint)),
-        ]);
-
-        const [siteData, ...categoryDataArrays] = await Promise.all(
-          responses.map((res) => res.json())
-        );
-
-        // Extract default OG image from site config
-        const siteConfig = siteData[0]; // site collection returns array with single item
-        const defaultImageUrl = siteConfig?.defaultOgImage?.src;
-
-        // Transform and combine results from all categories
-        const searchResults: SearchResult[] = [];
-
-        categoryDataArrays.forEach((data, index) => {
-          const category = SEARCH_CATEGORIES[index];
-          const items = data
-            // Filter out unpublished entries for content collections (articles, docs)
-            .filter((item: any) =>
-              category.name === 'Articles' || category.name === 'Docs'
-                ? item.data?.status === 'published' ||
-                  item.data?.status === 'archived'
-                : true
-            )
-            .map((item: any) => {
-              const transformed = category.transform(item);
-              // Use hero image if available, otherwise use default
-              const imageUrl = transformed.imageUrl || defaultImageUrl;
-              return {
-                ...transformed,
-                imageUrl,
-                category: category.name,
-              };
-            });
-
-          searchResults.push(...items);
-        });
-
-        setResults(searchResults);
+        const response = await fetch('/api/search.json');
+        const data = await response.json();
+        setResults(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error('Failed to fetch search data:', error);
       } finally {
@@ -185,28 +146,43 @@ export default function RichSearch() {
   // Open/close event listener
   useEffect(() => {
     const handleOpenSearch = () => {
+      delete document.documentElement.dataset.searchPending;
       setOpen(true);
     };
 
     window.addEventListener('open-search', handleOpenSearch);
+
+    // Search may have been requested before this island hydrated
+    if (document.documentElement.dataset.searchPending) handleOpenSearch();
 
     return () => {
       window.removeEventListener('open-search', handleOpenSearch);
     };
   }, []);
 
-  // Dynamically filter results for each category
-  const filteredResultsByCategory = useMemo(() => {
+  // One Fuse index per category, rebuilt only when the data changes
+  const fuseByCategory = useMemo(() => {
+    const instances: Record<string, Fuse<SearchResult>> = {};
+    for (const category of SEARCH_CATEGORIES) {
+      instances[category.name] = new Fuse(
+        results.filter((r) => r.category === category.name),
+        FUSE_OPTIONS
+      );
+    }
+    return instances;
+  }, [results]);
+
+  // Filter results for each category, with content-match snippets
+  const { filteredResultsByCategory, snippets } = useMemo(() => {
     const filtered: Record<string, SearchResult[]> = {};
+    const snippetsById: Record<string, Snippet> = {};
 
     SEARCH_CATEGORIES.forEach((category) => {
-      const categoryResults = results.filter(
-        (r) => r.category === category.name
-      );
-
-      // If modifier is used, show all items from that category
-      if (rawQuery === category.modifier) {
-        filtered[category.name] = categoryResults;
+      // If modifier is used on its own, show all items from that category
+      if (debouncedRawQuery === category.modifier) {
+        filtered[category.name] = results.filter(
+          (r) => r.category === category.name
+        );
         return;
       }
 
@@ -217,18 +193,22 @@ export default function RichSearch() {
 
       if (
         query === '' ||
-        otherModifiers.some((mod) => rawQuery.startsWith(mod))
+        otherModifiers.some((mod) => debouncedRawQuery.startsWith(mod))
       ) {
         filtered[category.name] = [];
         return;
       }
 
-      // Otherwise, use fuzzy search
-      filtered[category.name] = fuzzySearch(categoryResults, query);
+      const matches = fuseByCategory[category.name]?.search(query) ?? [];
+      filtered[category.name] = matches.map((match) => match.item);
+      for (const match of matches) {
+        const snippet = getMatchSnippet(match, query);
+        if (snippet) snippetsById[match.item.id] = snippet;
+      }
     });
 
-    return filtered;
-  }, [rawQuery, query, results]);
+    return { filteredResultsByCategory: filtered, snippets: snippetsById };
+  }, [debouncedRawQuery, query, results, fuseByCategory]);
 
   return (
     <Dialog
@@ -237,6 +217,7 @@ export default function RichSearch() {
       onClose={() => {
         setOpen(false);
         setRawQuery('');
+        setDebouncedRawQuery('');
       }}
     >
       <DialogBackdrop
@@ -265,7 +246,7 @@ export default function RichSearch() {
                 onBlur={() => setRawQuery('')}
               />
               <MagnifyingGlassIcon
-                class="pointer-events-none col-start-1 row-start-1 ml-4 size-5 self-center text-gray-400"
+                className="pointer-events-none col-start-1 row-start-1 ml-4 size-5 self-center text-gray-400"
                 aria-hidden="true"
               />
             </div>
@@ -332,13 +313,28 @@ export default function RichSearch() {
                                 />
                               ) : (
                                 <Icon
-                                  class="size-6 flex-none text-gray-500 group-data-focus:text-gray-700"
+                                  className="size-6 flex-none text-gray-500 group-data-focus:text-gray-700"
                                   aria-hidden="true"
                                 />
                               )}
-                              <span className="ml-3 flex-auto truncate">
-                                {item.name}
+                              <span className="ml-3 min-w-0 flex-auto">
+                                <span className="block truncate">
+                                  {item.name}
+                                </span>
+                                {snippets[item.id] && (
+                                  <span className="mt-0.5 block truncate text-xs text-gray-500 group-data-focus:text-gray-700">
+                                    {snippets[item.id].before}
+                                    <mark className="rounded-sm bg-highlight-200 px-0.5 text-gray-900">
+                                      {snippets[item.id].match}
+                                    </mark>
+                                    {snippets[item.id].after}
+                                  </span>
+                                )}
                               </span>
+                              <ChevronRightIcon
+                                className="ml-3 size-4 flex-none text-gray-400 group-data-focus:text-gray-700"
+                                aria-hidden="true"
+                              />
                             </ComboboxOption>
                           ))}
                         </ul>
@@ -351,7 +347,7 @@ export default function RichSearch() {
             {!loading && rawQuery === '?' && (
               <div className="px-6 py-14 text-center text-sm sm:px-14">
                 <LifebuoyIcon
-                  class="mx-auto size-6 text-gray-400"
+                  className="mx-auto size-6 text-gray-400"
                   aria-hidden="true"
                 />
                 <p className="mt-4 font-semibold text-gray-900">
@@ -373,7 +369,7 @@ export default function RichSearch() {
               ) && (
                 <div className="px-6 py-14 text-center text-sm sm:px-14">
                   <ExclamationTriangleIcon
-                    class="mx-auto size-6 text-gray-400"
+                    className="mx-auto size-6 text-gray-400"
                     aria-hidden="true"
                   />
                   <p className="mt-4 font-semibold text-gray-900">

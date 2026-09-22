@@ -3,7 +3,9 @@
   "name": "Civic Forge",
   "affiliation": "Civic Tech Community",
   "url": "https://civicforge.example.org",
-  "category": "community",
+  "category": [
+    "community"
+  ],
   "image": "/src/assets/partners/rings-3.png",
   "order": 4,
   "status": "published"

@@ -1,0 +1,41 @@
+---
+import type { BreadcrumbItem } from '@utils/navigation';
+import IconChevronRight from '~icons/heroicons/chevron-right-20-solid';
+
+export interface Props {
+  items: BreadcrumbItem[];
+  class?: string;
+}
+
+const { items, class: className = '' } = Astro.props;
+---
+
+{
+	items.length > 1 && (
+		<nav aria-label="Breadcrumb" class={`text-sm text-gray-600 ${className}`}>
+			<ol class="flex flex-wrap items-center gap-x-1.5 gap-y-1">
+				{items.map(({ label, href }, index) => {
+					const isLast = index === items.length - 1;
+					return (
+						<li class="flex items-center gap-x-1.5">
+							{index > 0 && (
+								<IconChevronRight className="h-4 w-4 shrink-0 text-gray-400" aria-hidden="true" />
+							)}
+							{isLast ? (
+								<span aria-current="page" class="font-medium text-gray-900">
+									{label}
+								</span>
+							) : href ? (
+								<a href={href} class="underline-offset-4 hover:underline focus-visible:underline">
+									{label}
+								</a>
+							) : (
+								<span>{label}</span>
+							)}
+						</li>
+					);
+				})}
+			</ol>
+		</nav>
+	)
+}

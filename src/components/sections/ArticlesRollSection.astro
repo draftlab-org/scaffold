@@ -1,18 +1,12 @@
 ---
-import { getCollection } from 'astro:content';
-import Button from '@components/atoms/Button.astro';
+import Button from '@components/atoms/Button';
 import Heading from '@components/atoms/Heading.astro';
-import Image from '@components/atoms/Image.astro';
-import Tag from '@components/atoms/Tag.astro';
-import Card from '@components/molecules/Card.astro';
+import ArticleCard from '@components/molecules/ArticleCard.astro';
 import {
-  formatArticleDate,
   getArticlesByCategory,
-  getArticleUrl,
   getPublishedArticles,
   sortArticlesByDate,
 } from '@utils/articles';
-import { isDev } from '@utils/dev';
 import IconArrowRight from '~icons/heroicons/arrow-right-20-solid';
 
 export interface Props {
@@ -36,18 +30,6 @@ let articles = category
 
 // Sort by date and limit
 articles = sortArticlesByDate(articles, 'desc').slice(0, limit);
-
-// Fetch all people for author lookups
-const allPeople = await getCollection('people');
-const peopleMap = new Map(allPeople.map((person) => [person.data.id, person.data]));
-
-// Helper to get author names
-const getAuthorNames = (authorIds: string[]) => {
-  return authorIds
-    .map((id) => peopleMap.get(id)?.name)
-    .filter(Boolean)
-    .join(', ');
-};
 ---
 
 <div class="py-12">
@@ -68,64 +50,14 @@ const getAuthorNames = (authorIds: string[]) => {
 	{
 		articles.length === 0 ? (
 			<div class="py-12 text-center">
-				<p class="text-lg text-gray-600">
+				<p class="text-lg text-muted">
 					No articles available yet. Check back soon!
 				</p>
 			</div>
 		) : (
 			<div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
 				{articles.map((article) => (
-					<Card variant="bordered" class="flex h-full flex-col overflow-hidden">
-						{article.data.heroImage && (
-							<a href={getArticleUrl(article)} class="block">
-								<Image
-									src={article.data.heroImage as ImageMetadata}
-									alt={article.data.title}
-									width={400}
-									height={225}
-									class="h-48 w-full object-cover transition-transform duration-300 hover:scale-105"
-								/>
-							</a>
-						)}
-						<div class="flex h-full flex-col p-6">
-							{/* Draft badge (only visible in dev) */}
-							{isDev && article.data.status === 'draft' && (
-								<div class="mb-3">
-									<Tag variant="highlight" class="font-bold">
-										DRAFT
-									</Tag>
-								</div>
-							)}
-
-							{/* Tags */}
-							<div class="mb-3 flex flex-wrap gap-2">
-								{article.data.tags.slice(0, 2).map((tag) => (
-									<Tag variant="primary" size="sm">
-										{tag}
-									</Tag>
-								))}
-							</div>
-
-							{/* Title */}
-							<h3 class="text-xl font-bold md:text-2xl">
-								<a
-									href={getArticleUrl(article)}
-									class="text-inherit no-underline transition-colors hover:text-secondary-600"
-								>
-									{article.data.title}
-								</a>
-							</h3>
-
-							{/* Metadata */}
-							<div class="mb-4 space-y-1 text-sm text-gray-500">
-								<p>By {getAuthorNames(article.data.authors)}</p>
-								<p>{formatArticleDate(article.data.publishedDate)}</p>
-							</div>
-
-							{/* Spacer */}
-							<div class="grow" />
-						</div>
-					</Card>
+					<ArticleCard article={article} />
 				))}
 			</div>
 		)

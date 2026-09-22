@@ -1,12 +1,15 @@
 ---
 import { getEntry } from 'astro:content';
+import Breadcrumbs from '@components/molecules/Breadcrumbs.astro';
 import CookieBanner from '@components/organisms/CookieBanner.astro';
 import Footer from '@components/organisms/Footer.astro';
 import Header from '@components/sections/Header.astro';
 import Main from '@components/sections/Main.astro';
 import BaseLayout from '@layouts/BaseLayout.astro';
+import { siteConfig } from '@lib/config';
 import type { NavItem } from '@utils/navigation';
-import { convertNavigationItems } from '@utils/navigation';
+import { buildBreadcrumbs, convertNavigationItems } from '@utils/navigation';
+import { getPages } from '@utils/pages';
 
 // Fetch navigation data from content collections
 const mainNav = await getEntry('navigation', 'main');
@@ -26,7 +29,12 @@ export interface Props {
   containerized?: boolean;
   maxWidth?: 'full' | '7xl' | '6xl' | '5xl' | '4xl';
   class?: string;
-  padding?: boolean
+  padding?: boolean;
+  // 'auto' shows breadcrumbs when the trail has at least two levels below Home
+  // (nested pages, collection detail pages); 'show'/'hide' force it
+  breadcrumbs?: 'auto' | 'show' | 'hide';
+  // Label for the final crumb, when `title` includes extra text (e.g. site name)
+  breadcrumbTitle?: string;
 }
 
 const {
@@ -34,13 +42,33 @@ const {
   description,
   image,
   navItems = defaultNavItems,
-  siteName = 'Draftlab Scaffold',
+  siteName = siteConfig.title,
   stickyHeader = true,
   containerized = false,
   padding = false,
   maxWidth = '7xl',
   class: className = '',
+  breadcrumbs = 'auto',
+  breadcrumbTitle,
 } = Astro.props;
+
+// Breadcrumbs: derived from the main navigation, falling back to URL segments
+let breadcrumbItems: ReturnType<typeof buildBreadcrumbs> = [];
+const siteEntry = await getEntry('site', 'config');
+if (siteEntry?.data.showBreadcrumbs !== false && breadcrumbs !== 'hide') {
+  const pages = await getPages();
+  const pageTitles = new Map(
+    pages.map((page) => [`/${page.id}`, page.data.title])
+  );
+  const items = buildBreadcrumbs({
+    navItems,
+    path: Astro.url.pathname,
+    currentTitle: breadcrumbTitle ?? title,
+    pageTitles,
+  });
+  const minLength = breadcrumbs === 'show' ? 2 : 3;
+  breadcrumbItems = items.length >= minLength ? items : [];
+}
 ---
 
 <BaseLayout title={title} description={description} image={image}>
@@ -64,6 +92,11 @@ const {
 			maxWidth={maxWidth}
 			class={className}
 		>
+			{breadcrumbItems.length > 0 && (
+				<div class="mx-auto w-full max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">
+					<Breadcrumbs items={breadcrumbItems} />
+				</div>
+			)}
 			<slot />
 		</Main>
 

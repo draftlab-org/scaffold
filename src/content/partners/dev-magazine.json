@@ -3,7 +3,10 @@
   "name": "The Lighthouse Report",
   "affiliation": "Investigative Tech Journalism",
   "url": "https://lighthousereport.example.org",
-  "category": "media",
+  "category": [
+    "media",
+    "community"
+  ],
   "image": "/src/assets/partners/rings-6.png",
   "order": 7,
   "status": "published"

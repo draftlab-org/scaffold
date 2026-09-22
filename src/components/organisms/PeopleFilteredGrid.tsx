@@ -1,12 +1,16 @@
-import type { FilterConfig } from '@components/molecules/FilterBar';
-import FilterBar from '@components/molecules/FilterBar';
-import { useCallback, useEffect, useState } from 'react';
+import FilterableContent, {
+  type FilterField,
+  type SearchConfig,
+  type SortOption,
+} from '@components/organisms/FilterableContent';
+import type { CardImage } from '@utils/images';
+import { useMemo } from 'react';
 
 interface Person {
   id: string;
   name: string;
   title: string;
-  headshot: string;
+  headshot: CardImage;
   sections: string[];
 }
 
@@ -16,91 +20,42 @@ interface PeopleFilteredGridProps {
   groupBySection?: boolean;
 }
 
+// Default keeps the CMS order
+const sortOptions: SortOption<Person>[] = [
+  { value: 'default', label: 'Default' },
+  {
+    value: 'name',
+    label: 'Name (A–Z)',
+    compare: (a, b) => a.name.localeCompare(b.name),
+  },
+];
+
+const search: SearchConfig = {
+  keys: [
+    { name: 'name', weight: 2 },
+    { name: 'title', weight: 1 },
+  ],
+  placeholder: 'Search people…',
+};
+
 export default function PeopleFilteredGrid({
   people,
   sections,
   groupBySection = false,
 }: PeopleFilteredGridProps) {
-  const getInitialFilters = useCallback((): Record<string, string | null> => {
-    const initial: Record<string, string | null> = {
-      section: null,
-    };
-
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      const section = params.get('section');
-      if (section) initial.section = section;
-    }
-
-    return initial;
-  }, []);
-
-  const [filters, setFilters] =
-    useState<Record<string, string | null>>(getInitialFilters);
-
-  // Sync URL on filter change
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const params = new URLSearchParams(window.location.search);
-
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value) {
-        params.set(key, value);
-      } else {
-        params.delete(key);
-      }
-    });
-
-    const newUrl = params.toString()
-      ? `${window.location.pathname}?${params.toString()}`
-      : window.location.pathname;
-
-    window.history.replaceState({}, '', newUrl);
-  }, [filters]);
-
-  const handleFilterChange = (key: string, value: string | null) => {
-    setFilters((prev) => ({ ...prev, [key]: value }));
-  };
-
-  const handleClearFilters = () => {
-    setFilters({ section: null });
-  };
-
-  const filterConfig: FilterConfig[] = [
-    {
-      key: 'section',
-      label: 'Section',
-      options: sections.map((sec) => ({ value: sec, label: sec })),
-      placeholder: 'All Sections',
-    },
-  ];
-
-  // Filter people
-  const filteredPeople = people.filter((person) => {
-    if (filters.section && !person.sections.includes(filters.section)) {
-      return false;
-    }
-    return true;
-  });
-
-  // Group by section if enabled and no filter is active
-  const shouldGroup = groupBySection && !filters.section;
-
-  const groupedPeople = shouldGroup
-    ? sections.reduce(
-        (acc, section) => {
-          const sectionPeople = filteredPeople.filter((p) =>
-            p.sections.includes(section)
-          );
-          if (sectionPeople.length > 0) {
-            acc[section] = sectionPeople;
-          }
-          return acc;
-        },
-        {} as Record<string, Person[]>
-      )
-    : null;
+  const filterFields = useMemo<FilterField<Person>[]>(
+    () => [
+      {
+        key: 'section',
+        label: 'Section',
+        options: sections.map((sec) => ({ value: sec, label: sec })),
+        placeholder: 'All Sections',
+        multiple: true,
+        getValue: (person) => person.sections,
+      },
+    ],
+    [sections]
+  );
 
   const renderPersonCard = (person: Person) => (
     <a
@@ -111,8 +66,10 @@ export default function PeopleFilteredGrid({
       <div className="text-center">
         <div className="mb-4 flex justify-center">
           <img
-            src={person.headshot}
-            alt={person.name}
+            src={person.headshot.src}
+            width={person.headshot.width}
+            height={person.headshot.height}
+            alt=""
             className="h-48 w-48 rounded-lg object-cover"
             loading="lazy"
           />
@@ -123,40 +80,43 @@ export default function PeopleFilteredGrid({
     </a>
   );
 
-  return (
-    <div>
-      <FilterBar
-        filters={filterConfig}
-        values={filters}
-        onChange={handleFilterChange}
-        onClear={handleClearFilters}
-        className="mb-8"
-      />
+  // Group by section when no section is selected
+  const groupPeople = (filteredPeople: Person[]) =>
+    sections
+      .map((section) => ({
+        section,
+        people: filteredPeople.filter((p) => p.sections.includes(section)),
+      }))
+      .filter((group) => group.people.length > 0);
 
-      {filteredPeople.length === 0 ? (
-        <div className="py-12 text-center">
-          <p className="text-lg">
-            No team members match your filters. Try adjusting your selection.
-          </p>
-        </div>
-      ) : groupedPeople ? (
-        // Grouped display
-        <div className="space-y-12">
-          {Object.entries(groupedPeople).map(([section, sectionPeople]) => (
-            <div key={section}>
-              <h3 className="mb-6 text-2xl font-semibold">{section}</h3>
-              <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {sectionPeople.map(renderPersonCard)}
+  return (
+    <FilterableContent
+      items={people}
+      filterFields={filterFields}
+      search={search}
+      sortOptions={sortOptions}
+      itemLabel={{ singular: 'person', plural: 'people' }}
+      emptyMessage="No team members have been added yet."
+      noResultsMessage="No team members match your filters."
+    >
+      {(filteredPeople, { values }) =>
+        groupBySection && (values.section ?? []).length === 0 ? (
+          <div className="space-y-12">
+            {groupPeople(filteredPeople).map((group) => (
+              <div key={group.section}>
+                <h3 className="mb-6 text-2xl font-semibold">{group.section}</h3>
+                <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  {group.people.map(renderPersonCard)}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        // Flat display
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {filteredPeople.map(renderPersonCard)}
-        </div>
-      )}
-    </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {filteredPeople.map(renderPersonCard)}
+          </div>
+        )
+      }
+    </FilterableContent>
   );
 }

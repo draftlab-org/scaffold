@@ -12,7 +12,7 @@ description: An overview of fundamental digital rights principles for technologi
 
 Digital rights are the human rights and legal entitlements that allow individuals to access, use, create, and publish digital media. For technologists working in the public interest, understanding these rights is foundational.
 
-![Sample background](/src/assets/backgrounds/anna-magenta-DJ7FzM_WZXs-unsplash.jpg)
+![Sample background](../../assets/backgrounds/anna-magenta-DJ7FzM_WZXs-unsplash.jpg)
 
 ## Why Digital Rights Matter
 

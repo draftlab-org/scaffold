@@ -1,76 +1,124 @@
 ---
 import { getEntry } from 'astro:content';
+import {
+  SOCIAL_LABELS,
+  type SocialLink,
+  type SocialPlatform,
+  socialHref,
+} from '@utils/social';
+import type { ComponentType, SVGProps } from 'react';
+import IconEnvelope from '~icons/heroicons/envelope';
+import IconGlobe from '~icons/heroicons/globe-alt';
+import IconNewspaper from '~icons/heroicons/newspaper';
 import IconBluesky from '~icons/simple-icons/bluesky';
+import IconCodeberg from '~icons/simple-icons/codeberg';
+import IconDiscord from '~icons/simple-icons/discord';
 import IconFacebook from '~icons/simple-icons/facebook';
 import IconGithub from '~icons/simple-icons/github';
+import IconGitlab from '~icons/simple-icons/gitlab';
 import IconInstagram from '~icons/simple-icons/instagram';
 import IconLinkedin from '~icons/simple-icons/linkedin';
 import IconMastodon from '~icons/simple-icons/mastodon';
+import IconMatrix from '~icons/simple-icons/matrix';
+import IconMedium from '~icons/simple-icons/medium';
+import IconOrcid from '~icons/simple-icons/orcid';
+import IconPeertube from '~icons/simple-icons/peertube';
+import IconRss from '~icons/simple-icons/rss';
+import IconSignal from '~icons/simple-icons/signal';
+import IconSubstack from '~icons/simple-icons/substack';
+import IconThreads from '~icons/simple-icons/threads';
 import IconX from '~icons/simple-icons/x';
 import IconYoutube from '~icons/simple-icons/youtube';
 
-// Fetch site config for social links
-const siteConfig = await getEntry('site', 'config');
-const social = siteConfig?.data.social;
-
-// Map of social network to icon component
-const iconMap = {
+// Typed as a full record so adding a platform in @utils/social without an
+// icon here is a type error
+const iconMap: Record<SocialPlatform, ComponentType<SVGProps<SVGSVGElement>>> = {
+  website: IconGlobe,
+  email: IconEnvelope,
+  newsletter: IconNewspaper,
+  rss: IconRss,
   bluesky: IconBluesky,
-  github: IconGithub,
-  linkedin: IconLinkedin,
   mastodon: IconMastodon,
+  threads: IconThreads,
   x: IconX,
-  facebook: IconFacebook,
+  linkedin: IconLinkedin,
   instagram: IconInstagram,
+  facebook: IconFacebook,
   youtube: IconYoutube,
-};
-
-// Map of social network to label
-const labelMap = {
-  bluesky: 'Bluesky',
-  github: 'GitHub',
-  linkedin: 'LinkedIn',
-  mastodon: 'Mastodon',
-  x: 'X',
-  facebook: 'Facebook',
-  instagram: 'Instagram',
-  youtube: 'YouTube',
+  peertube: IconPeertube,
+  github: IconGithub,
+  gitlab: IconGitlab,
+  codeberg: IconCodeberg,
+  medium: IconMedium,
+  substack: IconSubstack,
+  signal: IconSignal,
+  matrix: IconMatrix,
+  discord: IconDiscord,
+  orcid: IconOrcid,
 };
 
 export interface Props {
+  // Links to render. Falls back to the site-wide links in site config.
+  links?: SocialLink[];
+  size?: 'sm' | 'md' | 'lg';
+  // `inherit` takes the surrounding text colour (e.g. the dark footer)
+  color?: 'inherit' | 'muted';
   class?: string;
+  // Overrides the size preset
   iconClass?: string;
+  // Name prefixed to each link's accessible label, e.g. "Jane Doe on GitHub"
+  owner?: string;
 }
 
-const { class: className = '', iconClass = 'w-5 h-5' } = Astro.props;
+const {
+  links,
+  size = 'md',
+  color = 'inherit',
+  class: className = '',
+  iconClass,
+  owner,
+} = Astro.props;
 
-// Build list of active social links
-const socialLinks = social
-  ? Object.entries(social)
-      .filter(([_, url]) => url && url.trim() !== '')
-      .map(([network, url]) => ({
-        network,
-        url,
-        icon: iconMap[network as keyof typeof iconMap],
-        label: labelMap[network as keyof typeof labelMap],
-      }))
-  : [];
+const siteConfig = links ? undefined : await getEntry('site', 'config');
+const socialLinks = (links ?? siteConfig?.data.social ?? []).filter(
+  (link) => link.url.trim() !== ''
+);
+
+const sizes = {
+  sm: 'h-4 w-4',
+  md: 'h-5 w-5',
+  lg: 'h-6 w-6',
+};
+
+const colors = {
+  inherit: 'text-current opacity-90 hover:opacity-100',
+  muted: 'text-muted hover:text-gray-900',
+};
 ---
 
 {
 	socialLinks.length > 0 && (
-		<div class={`flex items-center gap-4 ${className}`}>
-			{socialLinks.map(({ network, url, icon: Icon, label }) => (
-				<a
-					href={url}
-					target="_blank"
-					rel="noopener noreferrer"
-					class="transition-colors hover:text-gray-900 dark:text-white dark:hover:text-primary-300"
-					aria-label={label}
-				>
-					<Icon class={iconClass} />
-				</a>
-			))}
-		</div>
+		<ul class={`flex flex-wrap items-center gap-4 ${className}`}>
+			{socialLinks.map((link) => {
+				const Icon = iconMap[link.platform];
+				const label = owner
+					? `${owner} on ${SOCIAL_LABELS[link.platform]}`
+					: SOCIAL_LABELS[link.platform];
+				const isWeb = /^https?:\/\//i.test(link.url);
+				return (
+					<li>
+						<a
+							data-component=""
+							href={socialHref(link)}
+							{...(isWeb && { target: '_blank', rel: 'noopener noreferrer me' })}
+							class={`block transition ${colors[color]}`}
+							aria-label={isWeb ? `${label} (opens in a new tab)` : label}
+						>
+							<Icon className={iconClass ?? sizes[size]} aria-hidden="true" />
+						</a>
+					</li>
+				);
+			})}
+		</ul>
 	)
 }

@@ -1,5 +1,5 @@
-import { visit } from 'unist-util-visit';
 import type { Element, Root } from 'hast';
+import { visit } from 'unist-util-visit';
 
 /**
  * Rehype plugin to apply text alignment classes to table cells.
@@ -40,7 +40,8 @@ export default function rehypeTableAlign() {
 
       if (alignClass) {
         // Get existing classes or initialize empty array
-        const existingClasses = node.properties?.className;
+        // hast types className as (string | number)[], but raw HTML can yield a string
+        const existingClasses: unknown = node.properties?.className;
         let classes: string[] = [];
 
         if (Array.isArray(existingClasses)) {

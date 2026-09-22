@@ -3,7 +3,9 @@
   "name": "Pathfinder Mentorship",
   "affiliation": "Open Source Mentorship",
   "url": "https://pathfindermentorship.example.org",
-  "category": "community",
+  "category": [
+    "community"
+  ],
   "image": "/src/assets/partners/rings-7.png",
   "order": 8,
   "status": "published"

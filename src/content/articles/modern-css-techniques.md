@@ -4,12 +4,11 @@ title: "Designing Accessible Interfaces with Modern CSS"
 authors:
   - emily-rodriguez
 status: published
-tags:
-  - css
-  - accessibility
-  - design
 publishedDate: 2024-02-20
 heroImage: /src/assets/backgrounds/anna-magenta-YELG0ZVK5yw-unsplash.jpg
+categories:
+  - Accessibility
+  - Design
 ---
 
 > **Disclaimer:** This is placeholder content created to demonstrate the features of the Scaffold starter template. The organizations, people, and projects referenced here are fictional.

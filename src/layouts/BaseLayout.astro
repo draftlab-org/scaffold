@@ -1,5 +1,6 @@
 ---
 import '@styles/global.css';
+import '@styles/scaffold.css';
 import 'lite-youtube-embed/src/lite-yt-embed.css';
 import Head from '@components/organisms/Head.astro';
 
@@ -13,7 +14,8 @@ export interface Props {
 
 const {
   title,
-  description = 'Draftlab Scaffold - Our Web Development Starter',
+  // Falls back to the site description in Head when omitted
+  description,
   image,
   lang = 'en',
   class: className = '',

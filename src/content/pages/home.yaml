@@ -19,7 +19,9 @@ sections:
         button:
           variant: primary
           size: md
-          href: /how-to-use
+          link:
+            type: internal
+            pageRef: /how-to-use
           text: Learn More
       - title: Open Source
         content: >-
@@ -34,9 +36,15 @@ sections:
     buttons:
       - variant: primary
         size: lg
-        href: /how-to-use
+        link:
+          type: internal
+          pageRef: /how-to-use
         text: Learn more
+        icon: arrow-right
       - variant: outline
         size: lg
-        href: https://github.com/draftlab-org/scaffold
+        link:
+          type: external
+          url: https://github.com/draftlab-org/scaffold
         text: View on GitHub
+        icon: external

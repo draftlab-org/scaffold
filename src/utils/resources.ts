@@ -60,3 +60,33 @@ export function formatCategory(category: string): string {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 }
+
+/**
+ * Get resources by ID, in the order given (drafts are dropped outside
+ * dev/preview, and unknown IDs are skipped)
+ */
+export async function getResourcesByIds(ids: string[]): Promise<Resource[]> {
+  const resources = await getVisibleEntries('resources');
+  return ids
+    .map((id) => resources.find((resource) => resource.data.id === id))
+    .filter((resource): resource is Resource => resource !== undefined);
+}
+
+/**
+ * Serialize prepared card data for the ResourceItem React component
+ */
+export function serializeResourceCardData({
+  resource,
+  contributorNames,
+}: ResourceCardData) {
+  return {
+    id: resource.id,
+    title: resource.data.title,
+    description: resource.data.description,
+    category: resource.data.category,
+    year: resource.data.year,
+    tags: resource.data.tags,
+    externalLinks: resource.data.externalLinks,
+    contributorNames,
+  };
+}

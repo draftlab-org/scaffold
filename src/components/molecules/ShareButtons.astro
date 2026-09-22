@@ -1,0 +1,138 @@
+---
+import { getEntry } from 'astro:content';
+import { buttonClasses } from '@components/atoms/Button';
+import {
+  DEFAULT_SHARE_PLATFORMS,
+  SHARE_LABELS,
+  SHARE_URL_BUILDERS,
+  type SharePlatform,
+} from '@utils/share';
+import type { ComponentType, SVGProps } from 'react';
+import IconEnvelope from '~icons/heroicons/envelope-20-solid';
+import IconLink from '~icons/heroicons/link-20-solid';
+import IconBluesky from '~icons/simple-icons/bluesky';
+import IconLinkedin from '~icons/simple-icons/linkedin';
+import IconMastodon from '~icons/simple-icons/mastodon';
+import IconReddit from '~icons/simple-icons/reddit';
+
+export interface Props {
+  // Absolute URL of the page being shared
+  url: string;
+  title: string;
+  // Overrides the site config's platform list
+  platforms?: SharePlatform[];
+  heading?: string;
+  // Unique per page when the component is rendered more than once
+  id?: string;
+  class?: string;
+}
+
+const siteEntry = await getEntry('site', 'config');
+const shareConfig = siteEntry?.data.share;
+
+const {
+  url,
+  title,
+  platforms = shareConfig?.platforms?.length
+    ? shareConfig.platforms
+    : DEFAULT_SHARE_PLATFORMS,
+  heading = 'Share',
+  id = 'share',
+  class: className = '',
+} = Astro.props;
+
+const icons: Record<SharePlatform, ComponentType<SVGProps<SVGSVGElement>>> = {
+  bluesky: IconBluesky,
+  mastodon: IconMastodon,
+  linkedin: IconLinkedin,
+  reddit: IconReddit,
+  email: IconEnvelope,
+};
+
+const itemClasses = buttonClasses(
+  'outline',
+  'sm',
+  'w-full justify-start gap-2 no-underline py-4'
+);
+---
+
+{
+	shareConfig?.enabled !== false && (
+		<section class={className} aria-labelledby={`${id}-heading`}>
+			<h2
+				id={`${id}-heading`}
+				class="toc-title mb-3 text-sm font-semibold tracking-wide uppercase"
+			>
+				{heading}
+			</h2>
+			<ul class="flex flex-col gap-2" data-share>
+				{platforms.map((platform) => {
+					const Icon = icons[platform];
+					const isEmail = platform === 'email';
+					return (
+						<li>
+							<a
+								href={SHARE_URL_BUILDERS[platform](url, title)}
+								class={itemClasses}
+								target={isEmail ? undefined : '_blank'}
+								rel={isEmail ? undefined : 'noopener noreferrer'}
+							>
+								<Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+								<span>
+									{SHARE_LABELS[platform]}
+									{!isEmail && (
+										<span class="sr-only"> (opens in a new tab)</span>
+									)}
+								</span>
+							</a>
+						</li>
+					);
+				})}
+				{/* Copy link needs the Clipboard API, so it stays hidden until the script enables it */}
+				<li data-share-copy-item hidden>
+					<button
+						type="button"
+						class={itemClasses}
+						data-share-copy
+						data-url={url}
+					>
+						<IconLink className="h-4 w-4 shrink-0" aria-hidden="true" />
+						<span>Copy link</span>
+					</button>
+					<p class="text-muted mt-1 text-sm" role="status" data-share-status />
+				</li>
+			</ul>
+		</section>
+	)
+}
+
+<script>
+	function setupShareButtons() {
+		if (!navigator.clipboard) return;
+		for (const button of document.querySelectorAll<HTMLButtonElement>(
+			'[data-share-copy]'
+		)) {
+			if (button.dataset.bound) continue;
+			button.dataset.bound = 'true';
+			const item = button.closest<HTMLElement>('[data-share-copy-item]');
+			const status = item?.querySelector<HTMLElement>('[data-share-status]');
+			if (item) item.hidden = false;
+
+			button.addEventListener('click', async () => {
+				const url = button.dataset.url ?? window.location.href;
+				try {
+					await navigator.clipboard.writeText(url);
+					if (status) status.textContent = 'Link copied';
+				} catch {
+					if (status) status.textContent = "Couldn't copy the link";
+				}
+				window.setTimeout(() => {
+					if (status) status.textContent = '';
+				}, 3000);
+			});
+		}
+	}
+
+	// Run on initial load and after each View Transition navigation
+	document.addEventListener('astro:page-load', setupShareButtons);
+</script>

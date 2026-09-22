@@ -2,11 +2,12 @@
   "id": "articles",
   "name": "Article Categories",
   "categories": [
-    "Technology",
-    "Development",
+    "Privacy",
+    "Security",
+    "Accessibility",
+    "Civic Tech",
     "Design",
-    "Product",
-    "Business",
+    "Technology",
     "Tutorial",
     "News",
     "Opinion"

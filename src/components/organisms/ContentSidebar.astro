@@ -1,0 +1,26 @@
+---
+import ShareButtons from '@components/molecules/ShareButtons.astro';
+import TOC from '@components/organisms/TOC';
+import type { TocEntry } from '@utils/renderMarkdown';
+
+// Sticky sidebar for long-form content pages (desktop only): table of
+// contents, share links, and a slot for anything page-specific. On small
+// screens, pages render the mobile equivalents inline (see articles/[slug]).
+export interface Props {
+  tocEntries?: TocEntry[];
+  shareUrl?: string;
+  shareTitle?: string;
+  class?: string;
+}
+
+const { tocEntries = [], shareUrl, shareTitle, class: className = '' } =
+  Astro.props;
+---
+
+<aside class={`hidden lg:block ${className}`}>
+	<div class="sticky top-24 flex flex-col gap-10 pt-6">
+		{tocEntries.length > 0 && <TOC client:visible entries={tocEntries} sticky={false} />}
+		<slot />
+		{shareUrl && shareTitle && <ShareButtons url={shareUrl} title={shareTitle} id="share-sidebar" />}
+	</div>
+</aside>

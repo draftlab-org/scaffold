@@ -1,9 +1,9 @@
-import type { Root, RootContent, Link, Paragraph, Parent } from 'mdast';
-import type { Plugin } from 'unified';
-import youtubeMatcher from '@astro-community/astro-embed-youtube/matcher';
-import vimeoMatcher from '@astro-community/astro-embed-vimeo/matcher';
 import blueskyMatcher from '@astro-community/astro-embed-bluesky/matcher';
 import mastodonMatcher from '@astro-community/astro-embed-mastodon/matcher';
+import vimeoMatcher from '@astro-community/astro-embed-vimeo/matcher';
+import youtubeMatcher from '@astro-community/astro-embed-youtube/matcher';
+import type { Link, Paragraph, Parent, Root, RootContent } from 'mdast';
+import type { Plugin } from 'unified';
 import {
   buildBlueskyHTML,
   buildMastodonHTML,

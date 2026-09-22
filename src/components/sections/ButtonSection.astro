@@ -1,16 +1,10 @@
 ---
-import Button from '@components/atoms/Button.astro';
-
-export interface ButtonType {
-  variant: string;
-  size: string;
-  href: string;
-	text: string;
-}
+import Button from '@components/atoms/Button';
+import type { ButtonData } from '@content-config';
 
 export interface Props {
   title?: string;
-  buttons?: ButtonType[];
+  buttons?: ButtonData[];
   class?: string;
 }
 
@@ -37,11 +31,11 @@ const {
 			<div class="flex flex-wrap justify-center gap-4">
 				{buttons.map((button) => (
 					<Button
-						type="button"
-						as="a"
-						variant={button.variant as any}
-						size={button.size as any}
+						variant={button.variant}
+						size={button.size}
+						link={button.link}
 						href={button.href}
+						icon={button.icon}
 					>
 						{button.text}
 					</Button>

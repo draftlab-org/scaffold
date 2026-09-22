@@ -54,8 +54,16 @@ updates without losing content, assets, styles, or branding:
   since new stylesheets may be required by new components)
 - If a new directory appears under `src/content/` (indicating a new content
   collection), prints an alert at end of run pointing to https://scaffold.org
+- Re-syncs the category dropdowns in `.pages.yml` from the downstream site's
+  own `src/content/categories/*.json` (via `scripts/sync-pages-categories.mjs`)
 - Compares `package.json` dependency sections before and after the merge; if
   they differ, prints an alert reminding the user to run `npm install`
+
+Breaking changes and content migrations between versions are listed in
+`UPGRADING.md`. Styles required by Scaffold components live in
+`src/styles/scaffold.css` (imported by `BaseLayout`); downstream sites should
+leave it unedited so updates reach it, since the rest of `src/styles/` is
+downstream-owned.
 
 A checked-in `.gitattributes` marks these paths as `merge=ours` (downstream
 always wins on conflict):
@@ -74,21 +82,22 @@ merges normally and consumers receive template improvements.
 - [How to use Scaffold](https://scaffold.draftlab.org/how-to-use): Full guide covering installation, page building, content collections, PagesCMS, and deployment
 - [GitHub repository](https://github.com/draftlab-org/scaffold): Source code, issues, releases
 - [README](https://github.com/draftlab-org/scaffold/blob/main/README.md): Install instructions, commands, project structure
+- [UPGRADING](https://github.com/draftlab-org/scaffold/blob/main/UPGRADING.md): Breaking changes and migrations for downstream sites
 
 ## Content model
 
 Content lives in `src/content/` with schemas in `src/content.config.ts`
 (Astro's Content Layer API). Nine collections ship by default:
 
-- **Site** (`src/content/site/config.json`): Singleton with title, description, SEO defaults, social links, cookie consent, archived banners
+- **Site** (`src/content/site/config.json`): Singleton with title, description, SEO defaults, social links (`[{platform, url}]`), cookie consent, opt-in Umami analytics (`analytics.umami`), share links, breadcrumbs toggle, archived banners. Redirects live alongside in `src/content/site/_redirects.json`
 - **Pages** (`src/content/pages/*.yaml`): Each file is a route, built from a `sections` array
-- **Navigation** (`src/content/navigation/*.json`): Header and footer menus
-- **Articles** (`src/content/articles/*.md`): Markdown blog posts with frontmatter
+- **Navigation** (`src/content/navigation/*.json`): Header and footer menus, up to three levels (links and labelled groups inside dropdowns); also drives breadcrumbs
+- **Articles** (`src/content/articles/*.md`): Markdown blog posts with frontmatter; a single `categories` taxonomy, optional related articles and resources
 - **Docs** (`src/content/docs/*.md`): Multi-chapter markdown documentation, grouped by `chapter`/`chapterOrder` and sorted by `order`
-- **People** (`src/content/people/*.json`): Team profiles
-- **Partners** (`src/content/partners/*.json`): Organizations with logo, URL, category
+- **People** (`src/content/people/*.json`): Team profiles with optional social links
+- **Partners** (`src/content/partners/*.json`): Organizations with logo, URL, one or more categories
 - **Resources** (`src/content/resources/*.json`): Publications, reports, guides
-- **Categories** (`src/content/categories/*.json`): Category definitions used by filters
+- **Categories** (`src/content/categories/*.json`): Category definitions used by filters, schema enums, and the PagesCMS dropdowns (synced into `.pages.yml` by `npm run sync:pages-categories` and a GitHub Action, because PagesCMS selects can't fetch options)
 
 All collections use a unified `status` field (`draft`, `published`, `archived`).
 Drafts are only visible in `npm run dev` or with `PUBLIC_PREVIEW=true`.
@@ -97,16 +106,25 @@ Drafts are only visible in `npm run dev` or with `PUBLIC_PREVIEW=true`.
 
 Every page is assembled from sections. Available types:
 
-- `hero` — Full-width banner with title, subtitle, optional background image
+- `hero` — Banner with title, subtitle, optional background image or side image
 - `richText` — Markdown with optional table of contents
-- `button` — Row of call-to-action buttons
-- `card` — Grid of cards with markdown, images, links
+- `button` — Row of buttons
+- `card` — Grid of cards with markdown, images, a button
+- `callToAction` — Heading, pitch, buttons, optional image beside them
+- `miniCta` — One line of text and one button
+- `testimonials` — Quotes with name/role/photo, or linked to a person
 - `people` — Grid of team profiles, filterable by category
 - `partners` — Grid of partner logos, filterable by category
 - `featuredPartners` — Curated partner row
+- `logoWall` — Partner logos as a grid or a pausable scrolling row
 - `articlesRoll` — Feed of recent articles
+- `featuredArticles` — Hand-picked articles in editor order
 - `resourcesRoll` — Feed of recent resources
-- `flexi` — Nested container for combining sections
+
+Every section takes a `background` whose `bgColor` comes from the named
+palette in `src/utils/backgrounds.ts` (dark entries flip text and prose to
+light). Buttons take a `link` (internal page picker or external URL), with a
+legacy `href` still accepted.
 
 A GitHub Action (`.github/workflows/auto-fix-permalinks.yml`) keeps page
 filenames and `permalink` fields in sync automatically.
@@ -124,9 +142,10 @@ link whose text is the literal string `EmbedLink`:
 
 The link must be the sole content of its paragraph. Implemented as a single
 remark plugin (`src/lib/remark-embed-link.ts`) wired into both markdown
-pipelines: Astro's built-in markdown (via `markdown.remarkPlugins` in
-`astro.config.mjs`) and the custom `src/utils/renderMarkdown.ts` processor
-chain. No MDX migration is required.
+pipelines: Astro's markdown (an explicit `markdown.processor: unified(...)`
+in `astro.config.mjs`) and the custom `src/utils/renderMarkdown.ts` processor
+chain, with shared options in `src/lib/markdown-plugins.ts`. Both also add
+`#` heading anchors. No MDX migration is required.
 
 - **YouTube / Vimeo**: URL→ID transform, rendered as `<lite-youtube>` /
   `<lite-vimeo>` web components (lazy poster + click-to-load). The
@@ -158,7 +177,10 @@ Scaffold ships with a complete `.pages.yml` configuration for
 
 - **Stack**: Astro v7, React v19, Tailwind CSS v4 (Vite plugin), MDX
 - **Components**: Atomic design — `atoms` → `molecules` → `organisms` → `sections`
-- **TypeScript**: Strict mode with path aliases (`@components/*`, `@utils/*`, `@lib/*`, `@content/*`, `@styles/*`, `@layouts/*`, `@assets/*`, `@pages/*`)
+- **TypeScript**: Strict mode with path aliases (`@components/*`, `@utils/*`, `@lib/*`, `@content/*`, `@content-config`, `@styles/*`, `@layouts/*`, `@assets/*`, `@pages/*`)
+- **Atoms**: `Button`, `Link`, `Tag` are single `.tsx` components used from both Astro and React
+- **Tooling**: `npm run typecheck` (astro check), `npm run lint` (Biome), Node >= 22.12
+- **CI**: GitHub Actions for permalink sync, category sync, and link checking (lychee; `[linkcheck]` / `[linkcheck-full]` in a commit message)
 - **Icons**: [unplugin-icons](https://github.com/unplugin/unplugin-icons) + [@iconify/json](https://icon-sets.iconify.design/) — import as `~icons/[collection]/[icon-name]`
 - **Styling**: Tailwind v4 with `@theme` tokens in `src/styles/colors.css`, `typography.css`, `breakpoints.css`
 - **Fonts**: Declared in `fonts.config.mjs` at repo root (split out from `astro.config.mjs` so consumers can swap fonts without conflicting with template updates). Three slots — `--font-sans`, `--font-serif`, `--font-mono` — loaded from [Bunny Fonts](https://fonts.bunny.net) by default. Change a font by editing `name` and `weights` in `fonts.config.mjs`; the CSS variable names should not be renamed.
@@ -176,6 +198,9 @@ All content collections are automatically exposed as JSON at build time via `src
 - `/api/navigation.json`
 - `/api/categories.json`
 - `/api/site.json`
+- `/api/search.json` — compact full-text index used by site search
+
+Drafts are excluded from every endpoint in production.
 
 ## External references
 

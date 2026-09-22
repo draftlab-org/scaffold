@@ -11,6 +11,8 @@
 #   components.
 # - If new directories appear under src/content/ (typically a new content
 #   collection), an alert is shown at the end of the run.
+# - Category dropdowns in .pages.yml are re-synced from this site's own
+#   src/content/categories/*.json (see scripts/sync-pages-categories.mjs).
 # - Code-side conflicts halt the script for manual resolution.
 #
 # Usage:
@@ -157,7 +159,31 @@ if [ -n "$NEW_FILES" ]; then
   done
 fi
 
+# --- re-sync CMS category dropdowns ----------------------------------------
+# .pages.yml merges normally, so the category `values:` blocks now hold
+# Scaffold's demo categories. Rewrite them from this site's own
+# src/content/categories/*.json and stage the result. Skipped while .pages.yml
+# is conflicted; a failed sync only warns, since the merge itself is fine.
+
+SYNC_CATEGORIES_FAILED=0
+if [ -f .git/MERGE_HEAD ] && [ -f scripts/sync-pages-categories.mjs ] && [ -f .pages.yml ] \
+  && ! git status --porcelain -- .pages.yml | grep -qE '^(UU|AA|DD|UD|AU|UA) '; then
+  echo "→ Syncing CMS category dropdowns from src/content/categories/"
+  if node scripts/sync-pages-categories.mjs > /dev/null; then
+    git add .pages.yml
+  else
+    SYNC_CATEGORIES_FAILED=1
+  fi
+fi
+
 # --- finalize --------------------------------------------------------------
+
+print_sync_alert() {
+  if [ "$SYNC_CATEGORIES_FAILED" -eq 1 ]; then
+    echo
+    echo "⚠ Couldn't sync category dropdowns in .pages.yml — run 'npm run sync:pages-categories' to see why."
+  fi
+}
 
 print_collection_alert() {
   if [ -n "$NEW_CONTENT_DIRS" ]; then
@@ -186,6 +212,7 @@ if [ -f .git/MERGE_HEAD ]; then
     echo "    git commit"
     print_collection_alert
     print_deps_alert
+    print_sync_alert
     exit 1
   fi
   git commit --no-edit > /dev/null
@@ -196,3 +223,4 @@ fi
 
 print_collection_alert
 print_deps_alert
+print_sync_alert

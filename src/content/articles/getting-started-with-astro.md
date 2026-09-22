@@ -5,14 +5,15 @@ authors:
   - sarah-chen
   - david-kim
 status: published
-tags:
-  - astro
-  - privacy
-  - tutorial
 publishedDate: 2024-01-15
 heroImage: /src/assets/backgrounds/anna-magenta-DJ7FzM_WZXs-unsplash.jpg
 relatedArticles:
   - building-scalable-apis
+relatedResources:
+  - api-design-guide
+categories:
+  - Privacy
+  - Tutorial
 ---
 
 > **Disclaimer:** This is placeholder content created to demonstrate the features of the Scaffold starter template. The organizations, people, and projects referenced here are fictional.

@@ -3,7 +3,9 @@
   "name": "Throughline Journal",
   "affiliation": "Technology & Society Publication",
   "url": "https://throughline.example.org",
-  "category": "media",
+  "category": [
+    "media"
+  ],
   "image": "/src/assets/partners/rings-9.png",
   "order": 10,
   "status": "published"

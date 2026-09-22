@@ -143,7 +143,7 @@ sections:
       | --- | --- |
 
       | **hero** | Full-width banner with title, optional subtitle, and optional
-      background image |
+      background image or side image |
 
       | **richText** | Markdown content — supports headings, lists, links,
       images, code blocks, tables. Optional table of contents sidebar |
@@ -169,12 +169,45 @@ sections:
       | **resourcesRoll** | A feed of recent resources (reports, guides, case
       studies) |
 
-      | **flexi** | A container for nesting other sections (richText, button,
-      card) inside a single block |
+      | **featuredArticles** | Hand-picked articles, shown in the order an
+      editor chose them |
+
+      | **callToAction** | A heading, short pitch and buttons, with an optional
+      image beside them |
+
+      | **miniCta** | One line of text and one button — a light nudge between
+      sections |
+
+      | **testimonials** | Quotes with name, role and photo, or linked to a
+      person. One quote becomes a pull quote |
+
+      | **logoWall** | Partner logos in a grid or a pausable scrolling row,
+      optionally full width |
 
 
-      Every section can also set a `background` with `bgColor` (white, gray, or
-      gradient) to create visual rhythm on the page.
+      Every section can also set a `background` to create visual rhythm on the
+      page. `bgColor` picks from a named palette — white, gray, gradient,
+      primary-light, secondary-light, highlight-light, dark, and
+      highlight-dark — and `bgType` sets whether it spans the full width, sits
+      behind the content only, or draws the highlight shape. Dark backgrounds
+      automatically switch text, links, and markdown to light colours. The
+      palette lives in `src/utils/backgrounds.ts`; add an entry there (and to
+      the dropdown in `.pages.yml`) to offer a new background.
+
+
+      Newer sections (callToAction, testimonials, logoWall, featuredArticles)
+      share a section title with an optional marker-style `highlight`, and a
+      markdown subtitle.
+
+
+      ### Buttons
+
+
+      Buttons in any section pick their destination from a **page picker**
+      (internal pages) or take an external URL. The old free-text `href` field
+      is still available as "Custom URL" for anchors and `mailto:` links. Each
+      button has a variant (primary, secondary, outline, ghost), a size, and an
+      optional icon.
 
 
       ### Content collections
@@ -184,30 +217,39 @@ sections:
 
 
       *   **Articles** (`src/content/articles/`) — Markdown blog posts with
-      frontmatter for title, excerpt, authors, tags, and hero image.
+      frontmatter for title, excerpt, authors, categories, and hero image.
 
       *   **Docs** (`src/content/docs/`) — Multi-chapter markdown documentation.
       Each doc belongs to a chapter and has an order, so you can build a
       structured handbook, user guide, or reference section.
 
       *   **People** (`src/content/people/`) — Team member profiles with name,
-      title, headshot, affiliation, and category tags.
+      title, headshot, affiliation, category tags, and optional social links.
           
       *   **Partners** (`src/content/partners/`) — Organizations with logo, URL,
-      category, and display order.
+      one or more categories, and display order.
           
       *   **Resources** (`src/content/resources/`) — Publications like reports,
-      whitepapers, and guides with external download links.
+      whitepapers, and guides with external download links and optional
+      related resources.
           
       *   **Navigation** (`src/content/navigation/`) — Menu definitions for the
-      header and footer. Supports single links and dropdown menus.
+      header and footer. Supports single links and dropdown menus up to three
+      levels deep: a dropdown can hold links and labelled groups of links.
+      Breadcrumbs are built from the same menus.
           
       *   **Site Settings** (`src/content/site/config.json`) — Global
       configuration: site title, description, social links, favicon, Open Graph
-      image, cookie consent, and footer text.
+      image, cookie consent, analytics, share links, breadcrumbs, and footer
+      text.
+
+      *   **Categories** (`src/content/categories/`) — The category lists for
+      articles, people, partners, and resources. These feed the filters on
+      landing pages and the category dropdowns in PagesCMS (see "Keeping
+      category dropdowns in sync" below).
           
 
-      Each collection has a schema defined in `src/content/config.ts`. Astro
+      Each collection has a schema defined in `src/content.config.ts`. Astro
       validates every file against its schema at build time, so you'll get a
       clear error message if something is missing or malformed.
 
@@ -307,10 +349,14 @@ sections:
       contributor cross-references.
           
       *   **Edit navigation** — Change header and footer menus, add dropdown
-      menus, link to internal pages or external URLs.
+      menus and grouped sub-menus, link to internal pages or external URLs.
+
+      *   **Manage redirects** — Under Redirects, send visitors from old URLs
+      to new ones (301 or 302). Changes apply on the next deploy.
           
       *   **Update site settings** — Change the site title, description, social
-      links, analytics ID, and cookie consent copy.
+      links, cookie consent copy, share buttons, breadcrumbs, and analytics.
+      Umami analytics is off until you fill in its script URL and website ID.
           
       *   **Upload images** — All images are stored in `src/assets/` and
       automatically optimized at build time.
@@ -325,8 +371,29 @@ sections:
       `srcset` attributes.
 
 
-      Image paths in content files always start with `/src/assets/`. For
-      example: `/src/assets/team/headshot.jpg`.
+      Image paths in content files usually start with `/src/assets/`. For
+      example: `/src/assets/team/headshot.jpg`. Images inserted into article
+      and doc bodies use a path relative to the markdown file instead
+      (`../../assets/...`), which PagesCMS writes for you.
+
+
+      ### Keeping category dropdowns in sync
+
+
+      PagesCMS dropdowns can't load their options from elsewhere, so the
+      category dropdowns in `.pages.yml` are generated from
+      `src/content/categories/*.json`. After editing a category file, run:
+
+
+      ```bash
+
+      npm run sync:pages-categories
+
+      ```
+
+
+      A GitHub Action does the same on every push, and
+      `npm run update-from-scaffold` re-syncs after each update.
 
 
       ## For developers
@@ -441,9 +508,12 @@ sections:
       *   `/api/partners.json`
           
       *   `/api/resources.json`
+
+      *   `/api/search.json` — the compact index used by site search
           
 
-      These are generated at build time and can be used by external tools or
+      Drafts are left out of every endpoint in production. These are generated
+      at build time and can be used by external tools or
       client-side JavaScript.
 
 
@@ -520,7 +590,14 @@ sections:
 
 
       Brand-new files in `src/styles/` are *not* auto-removed — new
-      stylesheets may be required by new components in the merge.
+      stylesheets may be required by new components in the merge. Styles that
+      Scaffold's own components need live in `src/styles/scaffold.css`: leave
+      that file as it is and override in your own stylesheets, so updates keep
+      reaching it.
+
+
+      After merging, the script also re-syncs the category dropdowns in
+      `.pages.yml` from your own `src/content/categories/` files.
 
 
       If Scaffold ships an entirely new **content collection** (a new

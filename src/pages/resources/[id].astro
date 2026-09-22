@@ -1,16 +1,22 @@
 ---
 import { Image } from 'astro:assets';
-import { getCollection, getEntry } from 'astro:content';
+import { getEntry } from 'astro:content';
 import Banner from '@components/atoms/Banner.astro';
-import Button from '@components/atoms/Button.astro';
-import Link from '@components/atoms/Link.astro';
-import Tag from '@components/atoms/Tag.astro';
+import Button from '@components/atoms/Button';
+import Link from '@components/atoms/Link';
+import Tag from '@components/atoms/Tag';
+import ShareButtons from '@components/molecules/ShareButtons.astro';
 import Hero from '@components/organisms/Hero.astro';
+import RelatedContentItems from '@components/organisms/RelatedContentItems.astro';
 import PageLayout from '@layouts/PageLayout.astro';
 import SectionLayout from '@layouts/SectionLayout.astro';
-import { isVisible, mapColorToVariant } from '@utils/content';
+import { mapColorToVariant } from '@utils/content';
 import { getPeopleMap, resolvePeople } from '@utils/people';
-import { formatCategory, getResources } from '@utils/resources';
+import {
+	formatCategory,
+	getResources,
+	getResourcesByIds,
+} from '@utils/resources';
 import type { GetStaticPaths } from 'astro';
 import IconExternalLink from '~icons/heroicons/arrow-top-right-on-square-20-solid';
 
@@ -29,9 +35,18 @@ const { title, description, authors, contributors, year, category, tags, externa
 const peopleMap = await getPeopleMap();
 const resolvedContributors = await resolvePeople(contributors, peopleMap);
 
+// Hand-picked related resources (excluding this one)
+const relatedResources = (
+	await getResourcesByIds(resource.data.relatedResources ?? [])
+).filter((related) => related.id !== resource.id);
+
+// Absolute URL for share links
+const shareUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
+
 // Format date if available
 const formatDate = (date: Date) => {
 	return new Intl.DateTimeFormat('en-US', {
+		timeZone: 'UTC',
 		year: 'numeric',
 		month: 'long',
 		day: 'numeric',
@@ -43,7 +58,11 @@ const siteConfig = await getEntry('site', 'config');
 const archivedBanner = siteConfig?.data.archivedBanner;
 ---
 
-<PageLayout title={`${title} - Resource`} description={description}>
+<PageLayout
+	title={`${title} - Resource`}
+	description={description}
+	breadcrumbTitle={title}
+>
 	{
 		status === 'archived' && archivedBanner && (
 			<Banner variant={mapColorToVariant(archivedBanner.color)} dismissible>
@@ -136,12 +155,7 @@ const archivedBanner = siteConfig?.data.archivedBanner;
 				)
 			}
 
-			<!-- Back Link -->
-			<div class="mt-8">
-				<a onclick="history.back()" class="default-link cursor-pointer">
-					← Back
-				</a>
-			</div>
+			<ShareButtons url={shareUrl} title={title} class="mt-8 max-w-xs" />
 		</div>
 	</SectionLayout>
 
@@ -177,6 +191,15 @@ const archivedBanner = siteConfig?.data.archivedBanner;
 						))}
 					</div>
 				</div>
+			</SectionLayout>
+		)
+	}
+
+	<!-- Related Resources -->
+	{
+		relatedResources.length > 0 && (
+			<SectionLayout>
+				<RelatedContentItems resources={relatedResources} />
 			</SectionLayout>
 		)
 	}

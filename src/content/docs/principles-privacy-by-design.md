@@ -39,7 +39,7 @@ const storage = {
 };
 ```
 
-![Sample background](/src/assets/backgrounds/anna-magenta-ljSku2TzkrI-unsplash.jpg)
+![Sample background](../../assets/backgrounds/anna-magenta-ljSku2TzkrI-unsplash.jpg)
 
 ## Common Pitfalls
 

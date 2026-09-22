@@ -1,4 +1,4 @@
-import { renderBlueskyText, type BlueskyPost } from './fetch-bluesky';
+import { type BlueskyPost, renderBlueskyText } from './fetch-bluesky';
 import type { MastodonPost } from './fetch-mastodon';
 
 const escapeMap: Record<string, string> = {

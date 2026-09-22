@@ -1,37 +1,41 @@
 ---
+type TextSize = 'sm' | 'base' | 'lg' | 'xl';
+type TextWeight = 'normal' | 'medium' | 'semibold' | 'bold';
+
 export interface Props {
   as?: 'p' | 'span' | 'div' | 'blockquote';
-  size?: 'sm' | 'base' | 'lg' | 'xl';
-  weight?: 'normal' | 'medium' | 'semibold' | 'bold';
+  size?: TextSize;
+  weight?: TextWeight;
   class?: string;
   [key: string]: any;
 }
 
+// `Astro.props` is annotated explicitly: a prop named `as` (a TS keyword)
+// defeats Astro's props type extraction, so every destructured value would
+// silently become `any`. Aliased to `Tag` so the local binding isn't `as`.
 const {
-  as = 'p',
+  as: Tag = 'p',
   size = 'base',
   weight = 'normal',
   class: className = '',
   ...props
-} = Astro.props as Props;
+}: Props = Astro.props;
 
-const Tag = as;
-
-const sizes = {
+const sizes: Record<TextSize, string> = {
   sm: 'text-sm',
   base: 'text-base',
   lg: 'text-lg',
   xl: 'text-xl',
 };
 
-const weights = {
+const weights: Record<TextWeight, string> = {
   normal: 'font-normal',
   medium: 'font-medium',
   semibold: 'font-semibold',
   bold: 'font-bold',
 };
 
-const baseStyles = as === 'blockquote' ? 'border-l-4 border-gray-300 pl-4 italic' : '';
+const baseStyles = Tag === 'blockquote' ? 'border-l-4 border-gray-300 pl-4 italic' : '';
 const classes = `${baseStyles} ${sizes[size]} ${weights[weight]} ${className}`;
 ---
 

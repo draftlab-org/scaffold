@@ -3,7 +3,9 @@
   "name": "Bridgelight Trust",
   "affiliation": "Civic Tech Funder",
   "url": "https://bridgelight.example.org",
-  "category": "sponsor",
+  "category": [
+    "sponsor"
+  ],
   "image": "/src/assets/partners/rings-4.png",
   "order": 5,
   "status": "published"

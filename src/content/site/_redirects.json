@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "from": "about",
+      "to": "how-to-use",
+      "status": 301
+    }
+  ]
+}

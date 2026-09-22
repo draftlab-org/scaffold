@@ -1,0 +1,59 @@
+---
+import ArticleCard from '@components/molecules/ArticleCard.astro';
+import ResourceItem from '@components/organisms/Resource/ResourceItem';
+import type { Article } from '@utils/articles';
+import {
+  prepareResourcesCardData,
+  type Resource,
+  serializeResourceCardData,
+} from '@utils/resources';
+
+// Related content of mixed types, shown at the end of a content page. The
+// heading reflects which types are present unless one is given.
+export interface Props {
+  articles?: Article[];
+  resources?: Resource[];
+  heading?: string;
+  class?: string;
+}
+
+const {
+  articles = [],
+  resources = [],
+  heading,
+  class: className = '',
+} = Astro.props;
+
+const resourceItems = (await prepareResourcesCardData(resources)).map(
+  serializeResourceCardData
+);
+
+const hasArticles = articles.length > 0;
+const hasResources = resourceItems.length > 0;
+
+const title =
+  heading ??
+  (hasArticles && hasResources
+    ? 'Related Content'
+    : hasArticles
+      ? 'Related Articles'
+      : 'Related Resources');
+---
+
+{
+	(hasArticles || hasResources) && (
+		<section aria-labelledby="related-content-heading" class={`py-12 ${className}`}>
+			<h2 id="related-content-heading" class="mb-8 text-2xl font-bold">
+				{title}
+			</h2>
+			<div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+				{articles.map((article) => (
+					<ArticleCard article={article} />
+				))}
+				{resourceItems.map((item) => (
+					<ResourceItem item={item} />
+				))}
+			</div>
+		</section>
+	)
+}

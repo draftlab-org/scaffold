@@ -40,7 +40,9 @@ Then, whenever you want updates:
 npm run update-from-scaffold
 ```
 
-That's it. The script handles `--allow-unrelated-histories` on the first merge, re-applies any deletions you've made in protected paths (so demo content doesn't reappear via modify/delete conflicts), and auto-removes any brand-new upstream files in `src/content/`, `src/assets/`, and `public/` (to keep our demo content out of your production site). If the merge changes `package.json` dependencies, the script will remind you to run `npm install`.
+That's it. The script handles `--allow-unrelated-histories` on the first merge, re-applies any deletions you've made in protected paths (so demo content doesn't reappear via modify/delete conflicts), and auto-removes any brand-new upstream files in `src/content/`, `src/assets/`, and `public/` (to keep our demo content out of your production site). If the merge changes `package.json` dependencies, the script will remind you to run `npm install`. It also re-syncs the category dropdowns in `.pages.yml` from your own `src/content/categories/` files (see [Category dropdowns](#category-dropdowns)).
+
+Upgrading from an older Scaffold? Read [UPGRADING.md](./UPGRADING.md) for breaking changes and content migrations.
 
 ### What's protected
 
@@ -59,6 +61,8 @@ Everything else merges normally. Real code conflicts get flagged like any merge,
 When upstream adds a brand-new file in `src/content/`, `src/assets/`, or `public/`, the script removes it as part of the merge. Demo content shouldn't sneak into your production site, and you can always add your own files later.
 
 Brand-new files in `src/styles/` are *not* auto-removed — new stylesheets may be required by new components in the merge.
+
+Styles that Scaffold's own components need (dark sections, section headings, the logo wall, TOC, heading anchors) live in `src/styles/scaffold.css`, imported by `BaseLayout`. Because `src/styles/**` is `merge=ours`, Scaffold changes to *your* stylesheets never reach you — so leave `scaffold.css` untouched and override its rules in your own files, and updates keep flowing into it.
 
 If Scaffold ships an entirely new **content collection** (a new directory under `src/content/`), you'll see a notice at the end of the run:
 
@@ -111,7 +115,7 @@ The homepage showcases the component architecture with a clean hero section and 
 ![Homepage](./src/assets/readme/homepage.png)
 
 ### Articles
-The articles page displays blog posts in a card grid layout with hero images, tags, author information, and publication dates.
+The articles page displays blog posts in a card grid layout with hero images, categories, author information, and publication dates.
 
 ![Articles Page](./src/assets/readme/articles.png)
 
@@ -121,7 +125,7 @@ The people page features team members in a responsive grid with avatars, names, 
 ![People Page](./src/assets/readme/people.png)
 
 ### Rich Search
-The rich search module provides fuzzy search across all content types with keyboard shortcuts and category filters.
+The rich search module provides full-text fuzzy search across all content types, with highlighted match snippets, keyboard shortcuts and category filters.
 
 ![Rich Search](./src/assets/readme/search.png)
 
@@ -150,33 +154,52 @@ import DevOnly from '@components/atoms/DevOnly.astro'; import {devClass} from '@
 
 Content lives in `src/content/` with schemas defined in `src/content.config.ts` using Astro's Content Layer API. The scaffold includes nine content collections:
 
-**Site Configuration** (`src/content/site/config.json`) - Global site settings including title, description, default SEO images, social media links, favicon, cookie consent configuration, and archived banner settings. This serves as the single source of truth for site-wide metadata and is fully editable through Pages CMS.
+**Site Configuration** (`src/content/site/config.json`) - Global site settings including title, description, default SEO images, social media links, favicon, cookie consent configuration, analytics, share buttons, breadcrumbs, and archived banner settings. This serves as the single source of truth for site-wide metadata and is fully editable through Pages CMS.
 
-**Pages** (`src/content/pages/`) - YAML files where each file becomes a route. Pages contain a sections array that you can populate with any combination of Hero, RichText, Card, People, Partners, FeaturedPartners, ArticlesRoll, ResourcesRoll, FlexiSection, Button, or CallToAction sections.
+**Pages** (`src/content/pages/`) - YAML files where each file becomes a route. Pages contain a sections array that you can populate with any combination of the section types listed under [Page Building](#page-building).
 
-**Navigation** (`src/content/navigation/`) - JSON files defining menu structures. Includes main navigation and footer menus. Add new menus by creating additional JSON files.
+**Navigation** (`src/content/navigation/`) - JSON files defining menu structures. Includes main navigation and footer menus (`footer-1`, `footer-2`). Menus nest up to three levels: a dropdown holds links and labelled groups of links. Breadcrumbs are derived from the same menus.
 
-**People** (`src/content/people/`) - Team member information as individual JSON files with headshots, titles, and department tags.
+**People** (`src/content/people/`) - Team member information as individual JSON files with headshots, titles, department tags, and optional social links.
 
-**Partners** (`src/content/partners/`) - Partner organizations as individual JSON files with name, logo, URL, category, display order, and featured flag. Partners have individual detail pages at `/partners/[id]`.
+**Partners** (`src/content/partners/`) - Partner organizations as individual JSON files with name, logo, URL, one or more categories, display order, and featured flag. Partners have individual detail pages at `/partners/[id]`.
 
-**Articles** (`src/content/articles/`) - Markdown blog posts with frontmatter including permalink, authors, tags, status, and hero images.
+**Articles** (`src/content/articles/`) - Markdown blog posts with frontmatter including permalink, authors, categories, status, hero images, and optional related articles and resources. Article pages get a sticky table of contents, share links, and related content.
 
 **Docs** (`src/content/docs/`) - Markdown documentation pages organized into chapters. Each doc has a permalink, title, chapter label, chapterOrder, and order — used to build a structured, multi-chapter documentation section with navigation at `/docs/[slug]`.
 
-**Resources** (`src/content/resources/`) - Data collection for publications like reports, whitepapers, case studies, and guides. Each resource has a title, category, year, optional contributors (linked to people), external links, and tags. Resources have individual detail pages at `/resources/[id]` with cross-links to contributor profiles.
+**Resources** (`src/content/resources/`) - Data collection for publications like reports, whitepapers, case studies, and guides. Each resource has a title, category, year, optional contributors (linked to people), external links, tags, and optional related resources. Resources have individual detail pages at `/resources/[id]` with cross-links to contributor profiles.
 
-**Categories** (`src/content/categories/`) - Category definitions for articles, people, partners, and resources. Used by filter components across the site.
+**Categories** (`src/content/categories/`) - Category definitions for articles, people, partners, and resources. Used by filter components across the site, validated in the schema, and synced into the CMS dropdowns (see [Category dropdowns](#category-dropdowns)).
 
 All collections support a unified **status field** (`draft`, `published`, `archived`). Drafts are only visible in development and preview modes. Published and archived items are always visible.
 
-Images use absolute paths from the project root (`/src/assets/...`) for consistency. The image() helper in content collections automatically resolves and optimizes these at build time.
+Images use absolute paths from the project root (`/src/assets/...`) for consistency. The image() helper in content collections automatically resolves and optimizes these at build time. Images inside article and doc **bodies** use paths relative to the markdown file (`../../assets/...`) — the `body-images` media entry in `.pages.yml` writes these for you.
 
 ### Page Building
 
 The dynamic route at `src/pages/[...slug].astro` renders pages from the Pages collection. Each page is assembled from sections in the order they appear in the YAML file. To create a new page, add a YAML file to `src/content/pages/` and the route appears automatically.
 
-Section types are defined as a discriminated union in the content schema. Each section has its own structure and corresponding component in `src/components/sections/`. Available section types include Hero, RichText, Card, People, Partners, FeaturedPartners, ArticlesRoll, ResourcesRoll, FlexiSection (nested sections), Button, and CallToAction.
+Section types are defined as a discriminated union in the content schema. Each section has its own structure and corresponding component in `src/components/sections/`. Available section types:
+
+| Type | What it does |
+| --- | --- |
+| `hero` | Banner with title, subtitle, background image, or a side image |
+| `richText` | Markdown content with an optional table of contents |
+| `button` | A row of buttons |
+| `card` | A grid of cards with image, markdown text, and a button |
+| `callToAction` | Heading, pitch, and buttons, with an optional image beside them |
+| `miniCta` | One line of text and one button |
+| `testimonials` | Quotes with name, role, and photo — or linked to a person |
+| `people` / `partners` | Grids from the People / Partners collections, filterable by category |
+| `featuredPartners` | A curated row of partner logos |
+| `logoWall` | Partner logos in a grid or a pausable scrolling row, optionally full-bleed |
+| `articlesRoll` / `resourcesRoll` | Latest articles / resources |
+| `featuredArticles` | Hand-picked articles in editor-chosen order |
+
+Every section takes a `background`: `bgColor` from the named palette in `src/utils/backgrounds.ts` (white, gray, gradient, primary-light, secondary-light, highlight-light, dark, highlight-dark) and `bgType` (full, contained, highlight). Dark backgrounds add `.section-dark`, which flips text, links, code, and prose to light colours.
+
+**Buttons** take a `link` — a page picker for internal pages or an external URL — plus variant, size, and an optional icon. The legacy `href` string is still accepted (as "Custom URL"); when both are set, `link` wins. See `src/utils/buttons.ts`.
 
 ### API Endpoints
 
@@ -191,12 +214,17 @@ Dynamic API endpoints automatically expose all content collections as JSON:
 - `/api/resources.json` - All resources
 - `/api/categories.json` - All category definitions
 - `/api/site.json` - Site configuration
+- `/api/search.json` - Compact full-text index used by site search (built by `src/utils/search.ts`)
 
-The endpoint implementation at `src/pages/api/[collection].json.ts` automatically generates these routes from your content collections. Add a new collection to `src/content.config.ts` and it becomes available as an API endpoint with no additional configuration.
+Drafts are excluded from every endpoint in production builds. The endpoint implementation at `src/pages/api/[collection].json.ts` automatically generates these routes from your content collections. Add a new collection to `src/content.config.ts` and it becomes available as an API endpoint with no additional configuration.
 
 ### Navigation & SEO
 
 Navigation menus are managed through the Navigation collection and automatically populate the header and footer. The PageLayout component fetches menu data at build time, so changes to navigation files immediately reflect across all pages.
+
+Breadcrumbs appear on nested and detail pages. Turn them off site-wide with `showBreadcrumbs`, or per page with the `breadcrumbs` field (auto / show / hide).
+
+Social links are a list of `{ platform, url }` entries (`src/utils/social.ts` lists the supported platforms) on the site config and on people. Share links (Bluesky, Mastodon, LinkedIn, Reddit, email, copy link) appear on articles and resources; configure them under `share` in the site config. They are plain links — no third-party scripts.
 
 SEO defaults are defined in the Site Configuration collection. The Head component uses these as fallbacks when pages don't specify their own metadata. This includes default Open Graph images, site description, favicon, and social media links.
 
@@ -210,7 +238,8 @@ Access the CMS by logging into https://app.pagescms.org with your Github profile
 
 **Available in Pages CMS:**
 
-- **Site Settings** - Global configuration, SEO defaults, social links, cookie consent, and archived banners
+- **Site Settings** - Global configuration, SEO defaults, social links, cookie consent, analytics, share links, breadcrumbs, and archived banners
+- **Redirects** - Old URL → new URL redirects, applied at build time
 - **Pages** - Page builder with drag-and-drop sections
 - **Navigation Menus** - Header and footer menu management
 - **Articles** - Blog post editor with markdown support
@@ -230,6 +259,30 @@ The repository includes GitHub Actions automation that keeps page filenames and 
 
 This bidirectional sync runs via `.github/workflows/auto-fix-permalinks.yml` using the Python script at `.github/scripts/auto_fix_permalinks.py`. The automation commits any changes back to the repository, ensuring filenames and permalinks always stay in sync without manual intervention.
 
+### Category dropdowns
+
+Pages CMS `select` fields only accept a hardcoded `values:` list. So every category dropdown in `.pages.yml` is wrapped in marker comments:
+
+```yaml
+# pages-cms:category-sync start articles
+values:
+  - Privacy
+# pages-cms:category-sync end
+```
+
+`scripts/sync-pages-categories.mjs` rewrites those blocks from `src/content/categories/<id>.json`. Run it after editing categories:
+
+```sh
+npm run sync:pages-categories         # rewrite .pages.yml
+npm run sync:pages-categories:check   # fail if out of date
+```
+
+`.github/workflows/sync-pages-categories.yml` runs it on push and commits the result, so categories edited in the CMS show up in the dropdowns after the next push.
+
+### Redirects
+
+Redirects live in `src/content/site/_redirects.json` (edit them in Pages CMS under **Redirects**). `src/lib/redirects.ts` turns them into Astro's `redirects` config at build time. Paths may be written with or without a leading slash, and `to` may be an external URL. A missing file simply means no redirects.
+
 ### Content Status Workflow
 
 All collections use a unified `status` field with three values:
@@ -239,6 +292,23 @@ All collections use a unified `status` field with three values:
 - **`archived`** - Visible everywhere (useful for marking outdated content while keeping it accessible)
 
 Use the `isVisible()` utility from `@utils/content` to filter collections by status. The collection-specific utilities (`getPages()`, `getResources()`, etc.) already handle this.
+
+### Analytics
+
+[Umami](https://umami.is/) is opt-in through the site config — nothing is loaded until both fields are set, and it only loads on production builds (not in dev or `PUBLIC_PREVIEW`):
+
+```json
+{
+  "analytics": {
+    "umami": {
+      "src": "https://umami.example.org/script.js",
+      "websiteId": "00000000-0000-0000-0000-000000000000"
+    }
+  }
+}
+```
+
+When enabled, outbound links are tagged automatically as `outbound-link-click` events.
 
 ### Cookie Consent
 
@@ -257,7 +327,7 @@ The `CookieBanner` component renders automatically when configured. It stores co
 
 ### Embedding media in markdown
 
-Any rich-text or markdown body — article bodies, docs, and `richText` page sections — supports embeds for YouTube, Vimeo, Bluesky, and Mastodon using a plain markdown link with the literal text `EmbedLink`:
+Any rich-text or markdown body — article bodies, docs, and `richText` page sections — gets `#` heading anchors and supports embeds for YouTube, Vimeo, Bluesky, and Mastodon using a plain markdown link with the literal text `EmbedLink`:
 
 ```markdown
 [EmbedLink](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
@@ -266,7 +336,7 @@ Any rich-text or markdown body — article bodies, docs, and `richText` page sec
 [EmbedLink](https://mastodon.social/@Mastodon/116539053870420123)
 ```
 
-The link must be the sole content of its paragraph. A remark plugin (`src/lib/remark-embed-link.ts`) runs in both markdown pipelines — Astro's built-in renderer (for articles/docs) and `src/utils/renderMarkdown.ts` (for `richText` sections) — so the syntax works in PagesCMS rich-text fields without any custom shortcodes or MDX.
+The link must be the sole content of its paragraph. A remark plugin (`src/lib/remark-embed-link.ts`) runs in both markdown pipelines — Astro's unified processor configured in `astro.config.mjs` (for articles/docs) and `src/utils/renderMarkdown.ts` (for `richText` sections), which share their plugin options through `src/lib/markdown-plugins.ts` — — so the syntax works in PagesCMS rich-text fields without any custom shortcodes or MDX.
 
 YouTube and Vimeo use the `lite-youtube-embed` / `lite-vimeo-embed` web components (lazy poster + click-to-load). Bluesky and Mastodon posts are fetched from their public APIs at build time and inlined as static HTML — no client-side widget JS, but post edits or deletions only reflect on the next deploy. If a URL doesn't match a supported provider, or a Bluesky/Mastodon fetch fails (deleted post, rate limit, network blip), the original link is left as-is and a warning is logged at build.
 
@@ -279,10 +349,22 @@ To add new section types, update the schema in `src/content.config.ts`, create a
 ## Commands
 
 ```sh
-npm run dev          # Development server
-npm run build        # Production build
-npm run preview      # Preview production build
+npm run dev                    # Development server
+npm run build                  # Production build
+npm run preview                # Preview production build
+npm run typecheck              # astro check
+npm run lint                   # Biome lint (npm run lint:fix to apply fixes)
+npm run sync:pages-categories  # Sync CMS category dropdowns from src/content/categories
+npm run update-from-scaffold   # Pull template updates
 ```
+
+Node.js 22.12 or newer is required (`engines` in `package.json`; Netlify builds pin `NODE_VERSION = "22"`).
+
+### GitHub Actions
+
+- `auto-fix-permalinks.yml` — keeps page filenames and permalinks in sync
+- `sync-pages-categories.yml` — keeps CMS category dropdowns in sync with `src/content/categories/`
+- `linkcheck.yml` — checks every link in the built site with [lychee](https://lychee.cli.rs/). Put `[linkcheck]` (internal links) or `[linkcheck-full]` (internal + external) in a commit message on `main`, or run it manually from the Actions tab. Results go to a single rolling GitHub issue labelled `linkcheck`, which closes itself once everything passes. Excludes live in `lychee.toml`.
 
 ## Project Structure
 
@@ -290,11 +372,11 @@ npm run preview      # Preview production build
 src/
 ├── assets/          # Images and media
 ├── components/
-│   ├── atoms/       # Basic elements (Button, Image, Link, DevOnly, Banner)
-│   ├── molecules/   # Simple combinations (Card, NavItem, FormField)
-│   ├── organisms/   # Complex components (Hero, Person, Head, CookieBanner, PageSection)
-│   │   └── Resource/  # Resource card components (ResourceItem, ResourceItems)
-│   ├── sections/    # Page sections (Hero, Card, RichText, ArticlesRoll, ResourcesRoll, etc.)
+│   ├── atoms/       # Basic elements (Button, Link, Tag as .tsx; Image, DevOnly, Banner)
+│   ├── molecules/   # Simple combinations (Card, ArticleCard, Breadcrumbs, SectionHeader, ShareButtons, SocialLinks)
+│   ├── organisms/   # Complex components (Hero, Head, Navigation, RichSearch, TOC, ContentSidebar, FilterableContent)
+│   │   └── Resource/  # Resource components (ResourceItem, ResourcesFilteredGrid)
+│   ├── sections/    # Page sections (Hero, Card, RichText, CallToAction, Testimonials, LogoWall, etc.)
 │   └── landing/     # Landing page components (ArticlesLanding, PeopleLanding, ResourcesLanding)
 ├── content/
 │   ├── articles/    # Blog posts (Markdown)
@@ -305,17 +387,21 @@ src/
 │   ├── partners/    # Partner organizations (JSON)
 │   ├── people/      # Team members (JSON)
 │   ├── resources/   # Publications and guides (JSON)
-│   └── site/        # Global configuration (JSON)
+│   └── site/        # Global configuration and redirects (JSON)
 ├── content.config.ts  # Content collection schemas (Content Layer API + Zod)
 ├── layouts/
 │   ├── BaseLayout.astro     # Document wrapper
 │   ├── PageLayout.astro     # Page structure with header/footer
 │   └── SectionLayout.astro  # Section wrapper with dev labels
 ├── lib/
-│   └── config.ts          # Site configuration helper
+│   ├── config.ts            # Site configuration helper
+│   ├── markdown-plugins.ts  # Shared remark/rehype options for both markdown pipelines
+│   ├── redirects.ts         # CMS redirects → Astro redirects config
+│   └── remark-embed-link.ts # EmbedLink syntax
 ├── pages/
 │   ├── api/
-│   │   └── [collection].json.ts  # Dynamic API endpoints
+│   │   ├── [collection].json.ts  # Dynamic API endpoints
+│   │   └── search.json.ts        # Search index
 │   ├── articles/
 │   │   ├── index.astro    # Articles list with filtering
 │   │   └── [id].astro     # Individual articles
@@ -328,7 +414,14 @@ src/
 │   ├── [...slug].astro    # Dynamic page renderer
 │   └── index.astro
 ├── utils/
-│   ├── dev.ts             # Development & preview utilities
+│   ├── dev.ts             # Development, preview & production flags
+│   ├── backgrounds.ts     # Section background palette
+│   ├── buttons.ts         # Button variants, sizes, icons, link resolution
+│   ├── social.ts          # Social platforms and link helpers
+│   ├── share.ts           # Share link builders
+│   ├── search.ts          # Search index builder
+│   ├── images.ts          # Pre-optimised card images for React islands
+│   ├── excerpt.ts         # Excerpts from markdown bodies
 │   ├── content.ts         # Content visibility (status filtering)
 │   ├── slugify.ts         # URL slug generation
 │   ├── renderMarkdown.ts  # Markdown rendering pipeline
@@ -344,7 +437,8 @@ src/
     ├── global.css         # Base imports
     ├── typography.css     # Text utilities
     ├── colors.css         # Color definitions
-    └── breakpoints.css    # Responsive breakpoints
+    ├── breakpoints.css    # Responsive breakpoints
+    └── scaffold.css       # Styles for Scaffold components (template-owned, don't edit)
 ```
 
 ## Icons
@@ -360,14 +454,14 @@ import MagnifyingGlassIcon from '~icons/heroicons/magnifying-glass-20-solid';
 export default function MyComponent() {
   return (
     <div>
-      <IconGithub class="w-6 h-6" />
-      <MagnifyingGlassIcon class="w-5 h-5 text-gray-500" />
+      <IconGithub className="w-6 h-6" />
+      <MagnifyingGlassIcon className="w-5 h-5 text-gray-500" />
     </div>
   );
 }
 ```
 
-**Note:** Icons use `class` (not `className`) in both Astro and React components.
+**Note:** Icons compile to React components, so pass `className` (not `class`) — in both Astro and React files.
 
 ### Usage in Astro Components
 
@@ -378,8 +472,8 @@ import MagnifyingGlassIcon from '~icons/heroicons/magnifying-glass-20-solid';
 ---
 
 <div>
-  <IconGithub class="w-6 h-6" />
-  <MagnifyingGlassIcon class="w-5 h-5 text-gray-500" />
+  <IconGithub className="w-6 h-6" />
+  <MagnifyingGlassIcon className="w-5 h-5 text-gray-500" />
 </div>
 ```
 

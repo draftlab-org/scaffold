@@ -1,0 +1,226 @@
+/*
+  Scaffold component styles
+  -------------------------
+
+  Styles that Scaffold's own components depend on (dark sections, section
+  headings, logo wall, TOC, heading anchors). Imported by BaseLayout after
+  global.css.
+
+  They live here, not in components.css / typography.css, because those files
+  are yours: `src/styles/**` is `merge=ours`, so edits Scaffold makes to them
+  never reach a derived site. Leave this file untouched and override in your
+  own stylesheets instead, and `npm run update-from-scaffold` keeps it current.
+*/
+@reference './global.css';
+
+/* Ghost and outline buttons have no fill of their own, so on a dark section
+   (`.section-dark`, set by SectionLayout) they would stay dark-on-dark */
+.section-dark .button-ghost {
+  @apply text-white hover:bg-white/15 hover:text-white focus-visible:ring-white;
+}
+
+/*
+  -------------
+  Text tones
+  -------------
+
+  Use `.text-muted` for secondary prose (section descriptions, captions,
+  affiliations) and `.text-faint` for metadata a reader skims past (dates,
+  labels). Both lift automatically on dark sections, which a fixed gray
+  cannot do.
+*/
+.text-muted {
+  @apply text-gray-600;
+}
+
+.section-dark .text-muted {
+  @apply text-white/80;
+}
+
+.text-faint {
+  @apply text-gray-500;
+}
+
+.section-dark .text-faint {
+  @apply text-white/60;
+}
+
+/* Cards stay light surfaces on dark sections, so undo the inherited light
+   text, muted tones and link colours inside them */
+.section-dark :is(.card-default, .card-bordered, .card-elevated) {
+  @apply text-gray-900;
+}
+.section-dark :is(.card-default, .card-bordered, .card-elevated) .text-muted {
+  @apply text-gray-600;
+}
+.section-dark :is(.card-default, .card-bordered, .card-elevated) .text-faint {
+  @apply text-gray-500;
+}
+.section-dark
+  :is(.card-default, .card-bordered, .card-elevated)
+  a:not([data-component]) {
+  color: inherit;
+}
+
+/*
+  -------------
+  Section heading
+  -------------
+
+  `style: highlight` on a section heading paints a marker stroke behind the
+  lower half of the text, in the highlight colour.
+*/
+.heading-highlight {
+  @apply inline decoration-clone;
+  background-image: linear-gradient(
+    transparent 55%,
+    var(--color-highlight-200) 55%,
+    var(--color-highlight-200) 90%,
+    transparent 90%
+  );
+}
+
+.section-dark .heading-highlight {
+  background-image: linear-gradient(
+    transparent 55%,
+    var(--color-highlight-700) 55%,
+    var(--color-highlight-700) 90%,
+    transparent 90%
+  );
+}
+
+/*
+  -------------
+  Logo wall (scrolling layout)
+  -------------
+
+  The track holds the logo list twice and slides by half its width, so the
+  loop is seamless. It pauses on hover, on keyboard focus and via the pause
+  button, and without motion (prefers-reduced-motion) it becomes a plain
+  horizontally scrollable row.
+*/
+.logo-marquee-track {
+  animation: logo-marquee var(--logo-marquee-duration, 40s) linear infinite;
+}
+
+.logo-marquee:hover .logo-marquee-track,
+.logo-marquee:focus-within .logo-marquee-track,
+.logo-marquee[data-paused] .logo-marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes logo-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-marquee {
+    @apply overflow-x-auto;
+  }
+  .logo-marquee-track {
+    animation: none;
+  }
+  .logo-marquee-duplicate,
+  .logo-marquee-toggle {
+    @apply hidden;
+  }
+}
+
+/* Logos are drawn for light backgrounds, so give them a light tile on dark
+   sections */
+.section-dark .logo-wall-item {
+  @apply rounded-md bg-white p-3;
+}
+
+/*
+  Table of contents (organisms/TOC.tsx). Links carry data-component, so the
+  generic dark-section link rule doesn't apply; these handle both surfaces.
+*/
+.toc-title {
+  @apply text-gray-900;
+}
+
+.toc-link {
+  @apply text-gray-600 no-underline hover:text-gray-900;
+}
+
+.toc-link[aria-current='location'] {
+  @apply font-medium text-primary-600;
+}
+
+.section-dark .toc-title {
+  @apply text-white;
+}
+
+.section-dark .toc-link {
+  @apply text-white/75 hover:text-white;
+}
+
+.section-dark .toc-link[aria-current='location'] {
+  @apply text-white underline decoration-2 underline-offset-4;
+}
+
+/* Heading `#` anchors (rehype-autolink-headings, see @lib/markdown-plugins).
+   Unlayered, so it wins over the typography plugin's `.prose a` styles.
+   Shown on hover so any section can be linked to; drawn with CSS so the
+   character never becomes part of the heading's text. */
+.heading-anchor {
+  @apply ml-2 font-normal text-primary-600 no-underline opacity-0 transition-opacity;
+}
+
+.heading-anchor::before {
+  content: '#';
+}
+
+.section-dark .heading-anchor {
+  @apply text-white;
+}
+
+.heading-anchor-group:hover .heading-anchor {
+  @apply opacity-60;
+}
+
+.heading-anchor:hover {
+  @apply opacity-100;
+}
+
+@media (hover: none) {
+  .heading-anchor {
+    @apply hidden;
+  }
+}
+
+/* Markdown images narrower than the prose column (layout: 'constrained'
+   never upscales) sit centred rather than hugging the left edge. */
+.prose img {
+  @apply mx-auto;
+}
+
+/* Back-to-back code blocks otherwise touch: Expressive Code resets margins */
+.prose .expressive-code + .expressive-code {
+  @apply mt-6;
+}
+
+@layer base {
+  /* `.section-dark` is added by SectionLayout for any background marked dark
+     in @utils/backgrounds, lifting links and inline code to readable contrast
+     on any dark hue. Prose sets its own colours via `prose-invert`. */
+  .section-dark a:not([data-component]) {
+    @apply text-white;
+    text-decoration-color: color-mix(in oklab, white 60%, transparent);
+  }
+
+  .section-dark a:not([data-component]):hover {
+    @apply text-white;
+    text-decoration-color: white;
+  }
+
+  .section-dark :not(pre) > code {
+    @apply border-white/20 bg-white/10 text-white;
+  }
+}

@@ -1,7 +1,13 @@
 import { getImage } from 'astro:assets';
-import remarkEmbedLink from '@lib/remark-embed-link';
+import {
+  autolinkHeadingsOptions,
+  expressiveCodeOptions,
+  externalLinksOptions,
+} from '@lib/markdown-plugins';
 import rehypeTableAlign from '@lib/rehype-table-align';
+import remarkEmbedLink from '@lib/remark-embed-link';
 import rehypeExtractToc from '@stefanprobst/rehype-extract-toc';
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeExpressiveCode from 'rehype-expressive-code';
 import rehypeExternalLinks from 'rehype-external-links';
 import rehypeRaw from 'rehype-raw';
@@ -21,6 +27,39 @@ export interface TocEntry {
   children?: TocEntry[];
 }
 
+// Build nested TOC entries (h2 with h3 children) from the headings returned
+// by Astro's render() — for content rendered natively rather than via
+// renderMarkdown
+export function getTocEntries(
+  headings: { depth: number; slug: string; text: string }[]
+): TocEntry[] {
+  const entries: TocEntry[] = [];
+  for (const heading of headings) {
+    if (heading.depth !== 2 && heading.depth !== 3) continue;
+    const entry: TocEntry = {
+      id: heading.slug,
+      value: heading.text,
+      depth: heading.depth,
+    };
+    const parent = entries[entries.length - 1];
+    if (heading.depth === 3 && parent) {
+      parent.children ??= [];
+      parent.children.push(entry);
+    } else {
+      entries.push(entry);
+    }
+  }
+  return entries;
+}
+
+// Count entries including nested children
+export function countTocEntries(entries: TocEntry[]): number {
+  return entries.reduce(
+    (total, entry) => total + 1 + countTocEntries(entry.children ?? []),
+    0
+  );
+}
+
 // Result type for markdown rendering with TOC
 export interface RenderResult {
   html: string;
@@ -35,6 +74,14 @@ const images: Record<string, ImageMetadata> = import.meta.glob(
     import: 'default',
   }
 );
+
+const safeDecodeURI = (value: string) => {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+};
 
 const processImageNodes = () => async (tree: any) => {
   // Find all image nodes in the tree
@@ -60,8 +107,12 @@ const processImageNodes = () => async (tree: any) => {
       return;
     }
 
-    // Get the imported image from our glob map
-    const importedImage = images[src];
+    // Get the imported image from our glob map. Pages CMS percent-encodes
+    // filenames (spaces become %20), so fall back to the decoded path. Paths
+    // written relative to a content file (../../assets/x.png, the "Body
+    // Images" media output) map onto the same /src/assets keys.
+    const key = String(src).replace(/^(?:\.\.\/)+assets\//, '/src/assets/');
+    const importedImage = images[key] ?? images[safeDecodeURI(key)];
 
     if (!importedImage) {
       console.warn(`Image not found in /src/assets: ${src}`);
@@ -107,12 +158,7 @@ const createMarkdownProcessor = (withTOC = false, idPrefix?: string): any => {
     .use(remarkGfm) // Enable GFM tables with alignment
     .use(remarkEmbedLink) // Transform [EmbedLink](url) → embed HTML
     .use(remarkRehype, { allowDangerousHtml: true })
-    .use(rehypeSlug)
-    .use(rehypeTableAlign) // Apply alignment classes to table cells
-    .use(rehypeExternalLinks, {
-      target: '_blank',
-      rel: ['noopener', 'noreferrer'],
-    });
+    .use(rehypeSlug);
 
   // Add ID prefix if provided
   if (idPrefix) {
@@ -125,16 +171,13 @@ const createMarkdownProcessor = (withTOC = false, idPrefix?: string): any => {
   }
 
   return processor
+    // After the id prefix, so anchors point at the final ids
+    .use(rehypeAutolinkHeadings, autolinkHeadingsOptions)
     .use(rehypeRaw)
-    .use(rehypeExpressiveCode, {
-      themes: ['catppuccin-frappe'],
-      defaultProps: {
-        wrap: true,
-        overridesByLang: {
-          'bash,ps,sh': { preserveIndent: false },
-        },
-      },
-    })
+    // After rehypeRaw, so tables and links written as raw HTML are covered too
+    .use(rehypeTableAlign) // Apply alignment classes to table cells
+    .use(rehypeExternalLinks, externalLinksOptions)
+    .use(rehypeExpressiveCode, expressiveCodeOptions)
     .use(rehypeStringify);
 };
 

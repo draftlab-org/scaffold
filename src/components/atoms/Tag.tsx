@@ -4,7 +4,10 @@ export interface TagProps {
 	variant?: 'primary' | 'secondary' | 'highlight' | 'gray';
 	size?: 'sm' | 'md' | 'lg';
 	className?: string;
+	// Alias so Astro call sites can keep using `class`
+	class?: string;
 	children?: ReactNode;
+	[key: string]: unknown;
 }
 
 const baseStyles = 'tag-base';
@@ -25,10 +28,16 @@ const sizes = {
 export default function Tag({
 	variant = 'primary',
 	size = 'sm',
-	className = '',
+	className,
+	class: classAlias,
 	children,
+	...props
 }: TagProps) {
-	const classes = `${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`;
+	const classes = `${baseStyles} ${variants[variant]} ${sizes[size]} ${className ?? classAlias ?? ''}`.trim();
 
-	return <span className={classes}>{children}</span>;
+	return (
+		<span className={classes} {...props}>
+			{children}
+		</span>
+	);
 }

@@ -12,7 +12,7 @@ description: Designing meaningful consent flows that respect user autonomy.
 
 Most consent implementations reduce to a single "I agree" checkbox — a legal formality that informs no one. Building meaningful consent requires rethinking the entire flow.
 
-![Sample background](/src/assets/backgrounds/anna-magenta-vKhd5bnnolg-unsplash.jpg)
+![Sample background](../../assets/backgrounds/anna-magenta-vKhd5bnnolg-unsplash.jpg)
 
 ## What Meaningful Consent Looks Like
 

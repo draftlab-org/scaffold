@@ -1,0 +1,41 @@
+---
+import ArticleCard from '@components/molecules/ArticleCard.astro';
+import SectionHeader from '@components/molecules/SectionHeader.astro';
+import type { SectionHeading } from '@content-config';
+import { getArticlesByPermalinks } from '@utils/articles';
+
+export interface Props {
+  title?: SectionHeading;
+  // Markdown
+  description?: string;
+  // Article permalinks, in display order
+  articles?: string[];
+}
+
+const MAX_ARTICLES = 6;
+
+const { title, description, articles: permalinks = [] } = Astro.props;
+
+// Hand-picked, in the order the editor chose (drafts drop out automatically).
+// Extra picks beyond the cap are ignored rather than failing the build.
+const articles = (await getArticlesByPermalinks(permalinks)).slice(
+  0,
+  MAX_ARTICLES
+);
+---
+
+<div class="py-8 md:py-12">
+	<SectionHeader title={title} subtitle={description} align="left" />
+
+	{
+		articles.length === 0 ? (
+			<p class="py-12 text-center text-lg text-muted">No articles selected yet.</p>
+		) : (
+			<div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+				{articles.map((article) => (
+					<ArticleCard article={article} />
+				))}
+			</div>
+		)
+	}
+</div>

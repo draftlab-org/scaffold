@@ -3,7 +3,9 @@
   "name": "Openroot Foundation",
   "affiliation": "Open Source Funder",
   "url": "https://openroot.example.org",
-  "category": "sponsor",
+  "category": [
+    "sponsor"
+  ],
   "image": "/src/assets/partners/rings-1.png",
   "order": 2,
   "status": "published"

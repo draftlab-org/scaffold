@@ -1,0 +1,32 @@
+---
+import type { SectionHeading } from '@content-config';
+import { renderMarkdown } from '@utils/renderMarkdown';
+
+export interface Props {
+  title?: SectionHeading;
+  // Markdown
+  subtitle?: string;
+  align?: 'left' | 'center';
+  class?: string;
+}
+
+const { title, subtitle, align = 'center', class: className = '' } = Astro.props;
+
+const subtitleHtml = subtitle ? (await renderMarkdown(subtitle)).html : '';
+const alignClass = align === 'center' ? 'mx-auto text-center' : 'text-left';
+const titleClass = title?.style === 'highlight' ? 'heading-highlight' : '';
+---
+
+{
+	(title?.text || subtitleHtml) && (
+		<div class={`mb-10 max-w-3xl ${alignClass} ${className}`}>
+			{title?.text && <h2 class={`mb-4 ${titleClass}`}>{title.text}</h2>}
+			{subtitleHtml && (
+				<div
+					class={`section-subtitle text-lg text-muted md:text-xl ${align === 'center' ? 'mx-auto' : ''}`}
+					set:html={subtitleHtml}
+				/>
+			)}
+		</div>
+	)
+}

@@ -7,6 +7,8 @@ export interface Props {
   width?: number;
   height?: number;
   loading?: 'lazy' | 'eager';
+  /** Hint for above-the-fold images (e.g. a hero): 'high' */
+  fetchpriority?: 'high' | 'low' | 'auto';
   class?: string;
   [key: string]: any;
 }
@@ -17,6 +19,7 @@ const {
   width,
   height,
   loading = 'lazy',
+  fetchpriority,
   class: className = '',
   ...props
 } = Astro.props;
@@ -33,6 +36,7 @@ const isExternal = typeof src === 'string';
 			width={width}
 			height={height}
 			loading={loading}
+			fetchpriority={fetchpriority}
 			class={className}
 			{...props}
 		/>
@@ -43,6 +47,7 @@ const isExternal = typeof src === 'string';
 			width={width}
 			height={height}
 			loading={loading}
+			fetchpriority={fetchpriority}
 			class={className}
 			{...props}
 		/>

@@ -16,39 +16,56 @@
       "label": "Collections Demo",
       "children": [
         {
-          "label": "Articles",
-          "link": {
-            "type": "internal",
-            "pageRef": "/articles"
-          }
+          "type": "dropdown",
+          "label": "Publishing",
+          "children": [
+            {
+              "type": "link",
+              "label": "Articles",
+              "link": {
+                "type": "internal",
+                "pageRef": "/articles"
+              }
+            },
+            {
+              "type": "link",
+              "label": "Resources",
+              "link": {
+                "type": "internal",
+                "pageRef": "/resources"
+              }
+            },
+            {
+              "type": "link",
+              "label": "Docs",
+              "link": {
+                "type": "internal",
+                "pageRef": "/docs"
+              }
+            }
+          ]
         },
         {
-          "label": "People",
-          "link": {
-            "type": "internal",
-            "pageRef": "/people"
-          }
-        },
-        {
-          "label": "Resources",
-          "link": {
-            "type": "internal",
-            "pageRef": "/resources"
-          }
-        },
-        {
-          "label": "Partners",
-          "link": {
-            "type": "internal",
-            "pageRef": "/partners"
-          }
-        },
-        {
-          "label": "Docs",
-          "link": {
-            "type": "internal",
-            "pageRef": "/docs"
-          }
+          "type": "dropdown",
+          "label": "Community",
+          "children": [
+            {
+              "type": "link",
+              "label": "People",
+              "link": {
+                "type": "internal",
+                "pageRef": "/people"
+              }
+            },
+            {
+              "type": "link",
+              "label": "Partners",
+              "link": {
+                "type": "internal",
+                "pageRef": "/partners"
+              }
+            }
+          ]
         }
       ]
     },

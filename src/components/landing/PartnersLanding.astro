@@ -1,5 +1,6 @@
 ---
 import PartnersFilteredGrid from '@components/organisms/PartnersFilteredGrid';
+import { getCardImage } from '@utils/images';
 import { getAllCategories, getAllPartners } from '@utils/partners';
 
 // Get all visible partners, sorted by order
@@ -9,14 +10,15 @@ const partners = await getAllPartners();
 const categories = await getAllCategories();
 
 // Serialize for the React component
-const serializedPartners = partners.map((partner) => ({
+const serializedPartners = await Promise.all(partners.map(async (partner) => ({
   id: partner.id,
   name: partner.name,
   affiliation: partner.affiliation,
   url: partner.url,
   category: partner.category,
-  image: partner.image?.src,
-}));
+  // Logos render at most ~200px wide; 400 covers 2× screens
+  image: await getCardImage(partner.image, 400),
+})));
 ---
 
 <section class="py-16">

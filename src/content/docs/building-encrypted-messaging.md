@@ -33,7 +33,7 @@ def ratchet_step(state):
 
 Extended Triple Diffie-Hellman establishes a shared secret between two parties, even when one is offline. It combines identity keys, signed pre-keys, and one-time pre-keys.
 
-![Sample background](/src/assets/backgrounds/anna-magenta-XUCfqIEudBU-unsplash.jpg)
+![Sample background](../../assets/backgrounds/anna-magenta-XUCfqIEudBU-unsplash.jpg)
 
 ## Metadata Protection
 

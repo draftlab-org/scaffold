@@ -1,0 +1,97 @@
+---
+import Image from '@components/atoms/Image.astro';
+import SectionHeader from '@components/molecules/SectionHeader.astro';
+import type { SectionHeading } from '@content-config';
+import { getVisibleEntries } from '@utils/content';
+import { renderMarkdown } from '@utils/renderMarkdown';
+import type { ImageMetadata } from 'astro';
+
+export interface TestimonialType {
+  // Markdown
+  quote: string;
+  name?: string;
+  role?: string;
+  image?: ImageMetadata;
+  // Person ID; fills in name, role and photo when those are left empty
+  person?: string;
+}
+
+export interface Props {
+  title?: SectionHeading;
+  // Markdown
+  description?: string;
+  testimonials?: TestimonialType[];
+}
+
+const { title, description, testimonials = [] } = Astro.props;
+
+const people = await getVisibleEntries('people');
+
+const items = await Promise.all(
+  testimonials.map(async (testimonial) => {
+    const person = testimonial.person
+      ? people.find((p) => p.data.id === testimonial.person)?.data
+      : undefined;
+    const role =
+      testimonial.role ??
+      [person?.title, person?.affiliation].filter(Boolean).join(', ');
+    return {
+      quoteHtml: (await renderMarkdown(testimonial.quote)).html,
+      name: testimonial.name ?? person?.name,
+      role: role || undefined,
+      image: testimonial.image ?? person?.headshot,
+      personUrl: person ? `/people/${person.id}` : undefined,
+    };
+  })
+);
+
+// One quote reads best as a single wide pull quote; several go in a grid
+const gridClass =
+  items.length === 1
+    ? 'mx-auto max-w-3xl'
+    : `grid gap-6 md:grid-cols-2 ${items.length >= 3 ? 'lg:grid-cols-3' : ''}`;
+---
+
+<div class="py-8 md:py-12">
+	<SectionHeader title={title} subtitle={description} />
+
+	{
+		items.length > 0 && (
+			<div class={gridClass}>
+				{items.map((item) => (
+					<figure class="card-default flex h-full flex-col">
+						<blockquote
+							class={`prose grow ${items.length === 1 ? 'prose-xl' : ''}`}
+							set:html={item.quoteHtml}
+						/>
+						{(item.name || item.role) && (
+							<figcaption class="mt-6 flex items-center gap-4">
+								{item.image && (
+									<Image
+										src={item.image}
+										alt=""
+										width={48}
+										height={48}
+										class="h-12 w-12 shrink-0 rounded-full object-cover"
+									/>
+								)}
+								<div class="text-sm">
+									{item.name && (
+										<div class="font-semibold">
+											{item.personUrl ? (
+												<a href={item.personUrl}>{item.name}</a>
+											) : (
+												item.name
+											)}
+										</div>
+									)}
+									{item.role && <div class="text-muted">{item.role}</div>}
+								</div>
+							</figcaption>
+						)}
+					</figure>
+				))}
+			</div>
+		)
+	}
+</div>

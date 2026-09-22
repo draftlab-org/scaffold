@@ -19,7 +19,7 @@ interface AccordionProps {
 function ChevronIcon({ open }: { open: boolean }) {
   return (
     <IconChevronDown
-      class={`h-5 w-5 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+      className={`h-5 w-5 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
       aria-hidden="true"
     />
   );
@@ -69,6 +69,7 @@ export default function Accordion({
     <div className={`divide-y divide-gray-200 ${className}`}>
       {items.map((item, index) => (
         <AccordionItemComponent
+          // biome-ignore lint/suspicious/noArrayIndexKey: static list from content; titles may repeat
           key={`${item.title}:${index}`}
           item={item}
           defaultOpen={index === 0 && !allowMultiple}

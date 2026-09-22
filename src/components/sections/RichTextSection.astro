@@ -6,14 +6,18 @@ export interface Props {
   content: string;
   withTOC?: boolean;
   id?: string;
+  // Set when the section background is dark, so prose colours invert
+  dark?: boolean;
 }
 
-const { content, withTOC = false, id } = Astro.props;
+const { content, withTOC = false, id = 'richtext', dark = false } = Astro.props;
+const proseClass = dark ? 'prose prose-invert' : 'prose';
 
-// Generate a unique ID for heading prefixes if not provided
-const sectionId = id || `richtext-${Math.random().toString(36)}`;
+// Deterministic prefix (passed from Sections.astro) keeps heading ids stable
+// between builds and unique across multiple rich text sections on a page
+const sectionId = id;
 
-const { html, toc } = await renderMarkdownWithImages(content, withTOC, withTOC ? sectionId : undefined);
+const { html, toc } = await renderMarkdownWithImages(content, withTOC, sectionId);
 
 const hasTOC = withTOC && toc && toc.length > 0;
 ---
@@ -22,16 +26,16 @@ const hasTOC = withTOC && toc && toc.length > 0;
 	hasTOC ? (
 		<div class="mx-auto max-w-6xl">
 			<div class="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_250px]">
-				<div class="prose max-w-3xl">
+				<div class={`${proseClass} max-w-3xl`}>
 					<Fragment set:html={html} />
 				</div>
 				<aside class="hidden lg:block">
-					<TOC client:load entries={toc!} />
+					<TOC client:visible entries={toc!} />
 				</aside>
 			</div>
 		</div>
 	) : (
-		<div class="mx-auto prose max-w-3xl">
+		<div class={`mx-auto ${proseClass} max-w-3xl`}>
 			<Fragment set:html={html} />
 		</div>
 	)

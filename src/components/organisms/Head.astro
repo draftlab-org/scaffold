@@ -2,11 +2,10 @@
 import { Font } from 'astro:assets';
 import { getEntry } from 'astro:content';
 import { ClientRouter } from "astro:transitions";
+import { isProduction } from '@utils/dev';
 
 // Fetch site config from content collection
 const siteConfigEntry = await getEntry('site', 'config');
-
-const isProd = import.meta.env.PROD;
 
 
 if (!siteConfigEntry) {
@@ -14,6 +13,10 @@ if (!siteConfigEntry) {
 }
 
 const siteConfig = siteConfigEntry.data;
+
+// Umami is opt-in: only emitted on production builds when both fields are set
+const umami = siteConfig.analytics?.umami;
+const umamiEnabled = isProduction && !!umami?.src && !!umami?.websiteId;
 
 
 export interface Props {
@@ -70,16 +73,16 @@ if (image) {
 <meta property="twitter:image" content={imageURL} />
 
 {
-	isProd && (
+	umamiEnabled && (
 		<>
-			{/* Privacy-preserving analytics by self-hosted Umami */}
+			{/* Privacy-preserving analytics by Umami (configured in site config) */}
 			<script
 				is:inline
 				defer
-				src="https://umami.draftlab.dev/script.js"
+				src={umami?.src}
 				data-performance="true"
 				data-do-not-track="true"
-				data-website-id="16c41e6d-a63d-45d0-9fca-ddcc9d6a279b"
+				data-website-id={umami?.websiteId}
 				transition:persist
 			/>
 			{/* Auto-tag outbound links for Umami. Sweep on DOM ready + each
@@ -110,9 +113,11 @@ if (image) {
 }
 
 <!-- Local Font Declaration (variables defined in fonts.config.mjs) -->
-<Font cssVariable="--font-serif" preload />
-<Font cssVariable="--font-sans" preload />
-<Font cssVariable="--font-mono" preload />
+<!-- Preload only what first paint needs: body text (sans 400) and headings
+     (serif 700). Other weights/styles still load on demand when used. -->
+<Font cssVariable="--font-serif" preload={[{ weight: 700, style: 'normal' }]} />
+<Font cssVariable="--font-sans" preload={[{ weight: 400, style: 'normal' }]} />
+<Font cssVariable="--font-mono" />
 
 <ClientRouter />
 

@@ -1,45 +1,45 @@
 {
   "slug": "footer-2",
-  "title": "Footer Nav 2",
+  "title": "Get Started",
   "items": [
     {
       "type": "link",
-      "label": "Menu Item",
+      "label": "How to Use",
       "link": {
         "type": "internal",
-        "pageRef": "/about"
+        "pageRef": "/how-to-use"
       }
     },
     {
       "type": "link",
-      "label": "Menu Item",
+      "label": "Feature Showcase",
       "link": {
         "type": "internal",
-        "pageRef": "/about"
+        "pageRef": "/feature-showcase"
       }
     },
     {
       "type": "link",
-      "label": "Menu Item",
+      "label": "Source on GitHub",
       "link": {
-        "type": "internal",
-        "pageRef": "/about"
+        "type": "external",
+        "url": "https://github.com/draftlab-org/scaffold"
       }
     },
     {
       "type": "link",
-      "label": "Menu Item",
+      "label": "Pages CMS",
       "link": {
-        "type": "internal",
-        "pageRef": "/about"
+        "type": "external",
+        "url": "https://pagescms.org"
       }
     },
     {
       "type": "link",
-      "label": "Menu Item",
+      "label": "Astro Docs",
       "link": {
-        "type": "internal",
-        "pageRef": "/about"
+        "type": "external",
+        "url": "https://docs.astro.build"
       }
     }
   ]

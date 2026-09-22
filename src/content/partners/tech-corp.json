@@ -3,7 +3,10 @@
   "name": "Clearview Fund",
   "affiliation": "Transparency Funder",
   "url": "https://clearviewfund.example.org",
-  "category": "sponsor",
+  "category": [
+    "sponsor",
+    "infrastructure"
+  ],
   "image": "/src/assets/partners/rings-0.png",
   "order": 1,
   "status": "published"

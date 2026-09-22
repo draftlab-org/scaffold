@@ -1,15 +1,17 @@
 ---
-import { getCollection } from 'astro:content';
-import Button from '@components/atoms/Button.astro';
+import Button from '@components/atoms/Button';
 import Heading from '@components/atoms/Heading.astro';
 import Image from '@components/atoms/Image.astro';
 import Card from '@components/molecules/Card.astro';
-import type { ImageMetadata } from 'astro';
+import { getVisibleEntries } from '@utils/content';
+import { fitLogo, formatPartnerCategories } from '@utils/partners';
+import { renderMarkdown } from '@utils/renderMarkdown';
 import IconArrowRight from '~icons/heroicons/arrow-right-20-solid';
 import IconExternalLink from '~icons/heroicons/arrow-top-right-on-square-20-solid';
 
 export interface Props {
   title?: string;
+  // Markdown
   description?: string;
   partners?: string[]; // Specific partner IDs to display
   limit?: number;
@@ -27,23 +29,29 @@ const {
 } = Astro.props;
 
 // Query partners collection
-const allPartners = await getCollection('partners');
+const allPartners = await getVisibleEntries('partners');
+
+const hasPickedPartners = Boolean(partnerIds?.length);
 
 // Get specific partners by ID if provided, or filter by featured flag
-let selectedPartners = partnerIds
-  ? allPartners.filter((p) => partnerIds.includes(p.data.id))
-  : allPartners.filter((p) => (p.data as any).featured === true);
+let selectedPartners = hasPickedPartners
+  ? allPartners.filter((p) => partnerIds?.includes(p.data.id))
+  : allPartners.filter((p) => p.data.featured === true);
 
 // If no featured partners found and no specific IDs, get first N partners
-if (selectedPartners.length === 0 && !partnerIds) {
+if (selectedPartners.length === 0 && !hasPickedPartners) {
   selectedPartners = allPartners.slice(0, limit);
 }
 
 // Sort by order and limit
 const featuredPartners = selectedPartners
-  .sort((a, b) => (a.data.order || 999) - (b.data.order || 999))
+  .sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999))
   .slice(0, limit)
   .map((entry) => entry.data);
+
+const descriptionHtml = description
+  ? (await renderMarkdown(description)).html
+  : '';
 ---
 
 <div class={className}>
@@ -51,7 +59,9 @@ const featuredPartners = selectedPartners
 	<div class="mb-8 flex items-end justify-between">
 		<div>
 			<Heading level={2} class="text-3xl">{title}</Heading>
-			{description && <p class="mt-2 text-lg">{description}</p>}
+			{descriptionHtml && (
+				<div class="prose mt-2 max-w-none text-lg text-muted" set:html={descriptionHtml} />
+			)}
 		</div>
 		{
 			showViewAll && (
@@ -82,8 +92,7 @@ const featuredPartners = selectedPartners
 										<Image
 											src={partner.image}
 											alt={partner.name}
-											width={200}
-											height={150}
+											{...fitLogo(partner.image!, { width: 200, height: 150 })}
 											class="max-h-24 max-w-full object-contain"
 										/>
 									</a>
@@ -91,8 +100,7 @@ const featuredPartners = selectedPartners
 									<Image
 										src={partner.image}
 										alt={partner.name}
-										width={200}
-										height={150}
+										{...fitLogo(partner.image!, { width: 200, height: 150 })}
 										class="max-h-24 max-w-full object-contain"
 									/>
 								)}
@@ -120,7 +128,7 @@ const featuredPartners = selectedPartners
 
 							{partner.affiliation && <p class="mb-3">{partner.affiliation}</p>}
 
-							<p class="text-sm text-gray-500 capitalize">{partner.category}</p>
+							<p class="text-sm text-gray-500">{formatPartnerCategories(partner)}</p>
 
 							{partner.url && (
 								<a

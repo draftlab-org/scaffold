@@ -2,6 +2,12 @@
 import { Image } from 'astro:assets';
 import Highlight from '@assets/highlight.svg'
 import DevOnly from '@components/atoms/DevOnly.astro';
+import {
+  backgroundClass,
+  type SectionBackground,
+  type SectionBackgroundType,
+  textClass as textClasses,
+} from '@utils/backgrounds';
 import { devClass } from '@utils/dev';
 import type { ImageMetadata } from 'astro';
 
@@ -11,8 +17,8 @@ export interface Props {
   maxWidth?: 'full' | '7xl' | '6xl' | '5xl' | '4xl';
   padding?: boolean;
   class?: string;
-  bgColor?: string;
-  bgType?: string;
+  bgColor?: SectionBackground;
+  bgType?: SectionBackgroundType;
   bgImage?: ImageMetadata;
 	sectionLabel?: string
 }
@@ -39,15 +45,12 @@ const maxWidths = {
 const containerClass = containerized ? `mx-auto ${maxWidths[maxWidth]}` : '';
 const paddingClass = padding ? 'px-4 sm:px-6 lg:px-8 py-8' : '';
 
-const backgrounds = {
-  white: 'bg-white',
-  gray: 'bg-gray-50',
-  gradient: 'bg-gradient-to-br from-blue-50 to-indigo-100',
-};
-
-const bgClass = backgrounds[bgColor as keyof typeof backgrounds] || "";
-const sectionBgClass = bgType === 'full' ? bgClass : '';
-const containerBgClass = bgType === 'contained' ? bgClass : '';
+// Background and text classes both come from @utils/backgrounds, so a new
+// background never has to be registered in more than one place. The text
+// class follows the element that paints the background.
+const colorClasses = `${backgroundClass(bgColor)} ${textClasses(bgColor)}`.trim();
+const sectionBgClass = bgType === 'full' ? colorClasses : '';
+const containerBgClass = bgType === 'contained' ? colorClasses : '';
 ---
 
 <section
@@ -64,6 +67,8 @@ const containerBgClass = bgType === 'contained' ? bgClass : '';
 			<Image
 				src={bgImage}
 				alt=""
+				widths={[640, 1024, 1536, 1920]}
+				sizes="100vw"
 				class="absolute inset-0 -z-10 h-full w-full object-cover"
 				loading="eager"
 			/>

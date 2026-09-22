@@ -3,7 +3,9 @@
   "name": "Shadowpath Labs",
   "affiliation": "Anonymity Tools Provider",
   "url": "https://shadowpath.example.org",
-  "category": "technology",
+  "category": [
+    "technology"
+  ],
   "image": "/src/assets/partners/rings-5.png",
   "order": 6,
   "status": "published"

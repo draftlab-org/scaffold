@@ -9,7 +9,6 @@ export const siteConfig = {
   url: configData.url,
   favicon: configData.favicon,
   defaultOgImage: configData.defaultOgImage,
-  social: configData.social,
 } as const;
 
 // Export type for use in components

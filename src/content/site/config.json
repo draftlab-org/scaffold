@@ -7,14 +7,19 @@
   "defaultLogoLight": "/src/assets/scaffold-logo.svg",
   "defaultLogoDark": "/src/assets/scaffold-logo-dark.svg",
   "defaultLogoSquare": "/src/assets/draftlab-logo-square.svg",
-  "social": {
-    "bluesky": "https://bsky.app/yourhandle",
-    "mastodon": "https://mastodon.social/@yourhandle",
-    "github": "https://github.com/draftlab-org/scaffold",
-    "linkedin": "https://linkedin.com/company/yourcompany",
-    "x": "https://x.com/yourhandle"
-  },
+  "social": [
+    { "platform": "bluesky", "url": "https://bsky.app/profile/yourhandle.bsky.social" },
+    { "platform": "mastodon", "url": "https://mastodon.social/@yourhandle" },
+    { "platform": "github", "url": "https://github.com/draftlab-org/scaffold" },
+    { "platform": "linkedin", "url": "https://linkedin.com/company/yourcompany" }
+  ],
   "footer": {
     "bottom": "Released under the [MIT license](https://github.com/draftlab-org/scaffold/blob/main/LICENSE). Background images by [Anna Magenta](https://unsplash.com/@annamagenta82) (Unsplash). People images by [OpenPeeps](https://openpeeps.com/) via [DiceBear](https://www.dicebear.com/). Privacy-preserving analytics provided by self-hosted [Umami](https://umami.is/). This site is powered by [Netlify](https://www.netlify.com/)."
+  },
+  "analytics": {
+    "umami": {
+      "src": "https://umami.draftlab.dev/script.js",
+      "websiteId": "16c41e6d-a63d-45d0-9fca-ddcc9d6a279b"
+    }
   }
 }

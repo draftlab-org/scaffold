@@ -1,6 +1,8 @@
 ---
-import { getCollection, type InferEntrySchema } from 'astro:content';
+import type { InferEntrySchema } from 'astro:content';
 import Image from '@components/atoms/Image.astro';
+import { getVisibleEntries } from '@utils/content';
+import { fitLogo } from '@utils/partners';
 
 export type Partner = InferEntrySchema<'partners'>;
 
@@ -14,16 +16,16 @@ export interface Props {
 const { title, category, class: className = '', sectionLabel = 'Partners' } = Astro.props;
 
 // Query partners collection
-const allPartners = await getCollection('partners');
+const allPartners = await getVisibleEntries('partners');
 
 // Filter by category if specified, otherwise show all
 const filteredPartners = category
-  ? allPartners.filter(p => p.data.category === category)
+  ? allPartners.filter(p => p.data.category.includes(category))
   : allPartners;
 
 // Sort by order field
 const partners = filteredPartners
-  .sort((a, b) => (a.data.order || 999) - (b.data.order || 999))
+  .sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999))
   .map(entry => entry.data);
 ---
 
@@ -48,14 +50,13 @@ const partners = filteredPartners
 								<Image
 									src={partner.image}
 									alt={partner.name}
-									width={200}
-									height={128}
+									{...fitLogo(partner.image)}
 									class="max-h-full max-w-full object-contain"
 								/>
 							</div>
 						)}
 						<h4 class="mb-2">{partner.name}</h4>
-						{partner.affiliation && <p class="">{partner.affiliation}</p>}
+						{partner.affiliation && <p class="text-muted">{partner.affiliation}</p>}
 					</a>
 				</div>
 			))

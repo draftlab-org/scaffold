@@ -1,23 +1,37 @@
 ---
 import ArticlesRollSection from '@components/sections/ArticlesRollSection.astro';
 import ButtonSection from '@components/sections/ButtonSection.astro';
+import CallToActionSection from '@components/sections/CallToActionSection.astro';
 import CardSection from '@components/sections/CardSection.astro';
+import FeaturedArticlesSection from '@components/sections/FeaturedArticlesSection.astro';
 import FeaturedPartnersSection from '@components/sections/FeaturedPartnersSection.astro';
-import FlexiSection from '@components/sections/FlexiSection.astro';
 import HeroSection from '@components/sections/HeroSection.astro';
+import LogoWallSection from '@components/sections/LogoWallSection.astro';
+import MiniCtaSection from '@components/sections/MiniCtaSection.astro';
 import PartnersSection from '@components/sections/PartnersSection.astro';
 import PeopleSection from '@components/sections/PeopleSection.astro';
 import ResourcesRollSection from '@components/sections/ResourcesRollSection.astro';
 import RichTextSection from '@components/sections/RichTextSection.astro';
+import TestimonialsSection from '@components/sections/TestimonialsSection.astro';
 import SectionLayout from '@layouts/SectionLayout.astro';
+import { isDarkBackground } from '@utils/backgrounds';
 
-const { sectionItems } = Astro.props;
+export interface Props {
+  sectionItems?: any[] | null;
+}
+
+// A page saved with no sections has `sections: null`
+const sectionItems = Astro.props.sectionItems ?? [];
 
 ---
 
 {
-  sectionItems.map((section: any) => {
+  sectionItems.map((section: any, index: number) => {
+    const sectionId = `section-${index}`;
     const sectionLabel = `section > ${section.type}`;
+    const dark = isDarkBackground(section.background?.bgColor);
+    // Full-bleed sections span the viewport and handle their own gutters
+    const fullBleed = section.fullBleed === true;
 
     const content = (() => {
       switch (section.type) {
@@ -28,19 +42,15 @@ const { sectionItems } = Astro.props;
               buttons={section.buttons}
             />
           );
-        case 'flexi':
-          return (
-            <FlexiSection
-              title={section.title}
-              description={section.description}
-              sections={section.sections}
-            />
-          );
         case 'hero':
           return (
             <HeroSection
               title={section.title}
               subtitle={section.subtitle}
+              image={section.image}
+              imageAlt={section.imageAlt}
+              imagePosition={section.imagePosition}
+              align={section.align}
             />
           );
         case 'richText':
@@ -48,6 +58,8 @@ const { sectionItems } = Astro.props;
             <RichTextSection
               content={section.content}
               withTOC={section.withTOC}
+              id={`${sectionId}-text`}
+              dark={dark}
             />
           );
         case 'card':
@@ -100,6 +112,50 @@ const { sectionItems } = Astro.props;
               showViewAll={section.showViewAll}
             />
           );
+        case 'callToAction':
+          return (
+            <CallToActionSection
+              title={section.title}
+              description={section.description}
+              image={section.image}
+              imageAlt={section.imageAlt}
+              imagePosition={section.imagePosition}
+              buttons={section.buttons}
+            />
+          );
+        case 'miniCta':
+          return (
+            <MiniCtaSection
+              text={section.text}
+              button={section.button}
+            />
+          );
+        case 'testimonials':
+          return (
+            <TestimonialsSection
+              title={section.title}
+              description={section.description}
+              testimonials={section.testimonials}
+            />
+          );
+        case 'logoWall':
+          return (
+            <LogoWallSection
+              title={section.title}
+              description={section.description}
+              partners={section.partners}
+              layout={section.layout}
+              fullBleed={section.fullBleed}
+            />
+          );
+        case 'featuredArticles':
+          return (
+            <FeaturedArticlesSection
+              title={section.title}
+              description={section.description}
+              articles={section.articles}
+            />
+          );
         default:
           return null;
       }
@@ -112,6 +168,8 @@ const { sectionItems } = Astro.props;
         bgImage={section.backgroundImage}
         class={section.class}
         sectionLabel={sectionLabel}
+        containerized={!fullBleed}
+        padding={!fullBleed}
       >
         {content}
       </SectionLayout>

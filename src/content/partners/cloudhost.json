@@ -3,7 +3,9 @@
   "name": "Quietline Hosting",
   "affiliation": "Privacy Infrastructure Provider",
   "url": "https://quietline.example.org",
-  "category": "infrastructure",
+  "category": [
+    "infrastructure"
+  ],
   "image": "/src/assets/partners/rings-2.png",
   "order": 3,
   "status": "published"

@@ -1,11 +1,13 @@
 ---
 import { getCollection } from 'astro:content';
 import Image from '@components/atoms/Image.astro';
-import Link from '@components/atoms/Link.astro';
-import Tag from '@components/atoms/Tag.astro';
+import Link from '@components/atoms/Link';
+import Tag from '@components/atoms/Tag';
+import SocialLinks from '@components/molecules/SocialLinks.astro';
 import Hero from '@components/organisms/Hero.astro';
 import PageLayout from '@layouts/PageLayout.astro';
 import SectionLayout from '@layouts/SectionLayout.astro';
+import { siteConfig } from '@lib/config';
 import { isVisible } from '@utils/content';
 import { formatCategory, getResources } from '@utils/resources';
 import type { GetStaticPaths } from 'astro';
@@ -37,6 +39,7 @@ const personResources = allResources.filter(
 
 const formatDate = (date: Date) => {
 	return new Intl.DateTimeFormat('en-US', {
+		timeZone: 'UTC',
 		year: 'numeric',
 		month: 'long',
 		day: 'numeric',
@@ -45,7 +48,8 @@ const formatDate = (date: Date) => {
 ---
 
 <PageLayout
-	title={`${person.name} - Draftlab Scaffold`}
+	title={`${person.name} - ${siteConfig.title}`}
+	breadcrumbTitle={person.name}
 	description={`${person.name}, ${person.title}`}
 	image={person.headshot}
 >
@@ -81,6 +85,19 @@ const formatDate = (date: Date) => {
 				<p class="mb-6">
 					{person.title}
 				</p>
+
+				<!-- Social links -->
+				{
+					person.socialLinks && person.socialLinks.length > 0 && (
+						<SocialLinks
+							links={person.socialLinks}
+							owner={person.name}
+							color="muted"
+							size="lg"
+							class="mb-8 justify-center"
+						/>
+					)
+				}
 
 				<!-- Sections/Departments -->
 				{
@@ -130,9 +147,9 @@ const formatDate = (date: Date) => {
 								)}
 								<div class="flex flex-col gap-3 p-6">
 									<div class="flex flex-wrap gap-2">
-										{article.data.tags.slice(0, 2).map((tag) => (
+										{(article.data.categories ?? []).slice(0, 2).map((category) => (
 											<Tag variant="primary" size="sm">
-												{tag}
+												{category}
 											</Tag>
 										))}
 									</div>

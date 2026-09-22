@@ -5,6 +5,16 @@
   "title": "Development Lead",
   "affiliation": "Freedom Tech Alliance",
   "extraInfo": "Grows sustainable revenue through mission-aligned partnerships",
+  "socialLinks": [
+    {
+      "platform": "linkedin",
+      "url": "https://linkedin.com/in/omarhassan"
+    },
+    {
+      "platform": "email",
+      "url": "omar@freedomtech.example.org"
+    }
+  ],
   "sections": [
     "Sales"
   ],

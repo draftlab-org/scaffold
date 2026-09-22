@@ -17,12 +17,22 @@ sections:
 
       The `hero` section type displays a prominent page header with a title and optional subtitle. It can also include a full-bleed background image.
 
-      **Props:** `title` (required), `subtitle`, `backgroundImage`
+      **Props:** `title` (required), `subtitle`, `backgroundImage`, `image`, `imageAlt`, `imagePosition` (left/right), `align` (center/left)
 
   - type: hero
     title: Privacy is a Human Right
     subtitle: Building technology that respects the people who use it.
     backgroundImage: /src/assets/backgrounds/anna-magenta-XUCfqIEudBU-unsplash.jpg
+
+  - type: richText
+    content: |-
+      A hero can also carry a side `image` — an illustration or photo beside the text rather than behind it. The text left-aligns automatically, and `imagePosition` picks the column.
+
+  - type: hero
+    title: Data Stays With Its Community
+    subtitle: Local storage, local governance, and no silent copies in someone else's cloud.
+    image: /src/assets/backgrounds/anna-magenta-ljSku2TzkrI-unsplash.jpg
+    imagePosition: right
 
   # ============================================================
   # RICH TEXT SECTIONS
@@ -124,7 +134,7 @@ sections:
     content: |-
       ### Gradient Background
 
-      Rich text sections can use a gradient background by setting `bgColor: gradient`. This creates a subtle blue-to-indigo gradient that works well for callouts or featured content blocks.
+      Rich text sections can use a gradient background by setting `bgColor: gradient`. This creates a subtle primary-to-highlight gradient that works well for callouts or featured content blocks.
 
       This variation is useful for drawing attention to key messages without using a full hero section.
 
@@ -135,6 +145,43 @@ sections:
       ### Highlight Background
 
       Setting `bgType: highlight` renders the decorative highlight SVG as an absolute-positioned background. This creates a distinctive, branded visual treatment for special content sections.
+
+  - type: richText
+    background:
+      bgColor: dark
+      bgType: full
+    content: |-
+      ### Dark Backgrounds
+
+      Backgrounds come from a single palette in `src/utils/backgrounds.ts`: `white`, `gray`, `gradient`, `primary-light`, `secondary-light`, `highlight-light`, `dark` and `highlight-dark`. Each one is marked light or dark, and dark ones invert the content automatically — body text, [links](/how-to-use), `inline code` and ghost buttons all stay readable without any per-section styling.
+
+      To add a colour, add one entry to the palette and the matching option to `background_select` in `.pages.yml`.
+
+  - type: button
+    title: Buttons on a Dark Background
+    background:
+      bgColor: highlight-dark
+      bgType: full
+    buttons:
+      - variant: primary
+        size: md
+        text: Primary
+        icon: arrow-right
+        link:
+          type: internal
+          pageRef: /how-to-use
+      - variant: outline
+        size: md
+        text: Outline
+        link:
+          type: internal
+          pageRef: /articles
+      - variant: ghost
+        size: md
+        text: Ghost
+        link:
+          type: internal
+          pageRef: /people
 
   # ============================================================
   # BUTTON SECTIONS
@@ -147,9 +194,11 @@ sections:
     content: |-
       ## Button Sections
 
-      The `button` section displays a row of call-to-action buttons. Each button has a `variant` (primary, secondary, outline, ghost) and a `size` (sm, md, lg).
+      The `button` section displays a row of call-to-action buttons. Each button has a `variant` (primary, secondary, outline, ghost), a `size` (sm, md, lg, xl) and an optional `icon`.
 
-      **Props:** `title`, `buttons[]` with `variant`, `size`, `href`, `text`
+      A button's destination is a `link`: either an internal page picked from a list in the CMS, or an external URL. External links open in a new tab. For anything else — an anchor like `#section` or a `mailto:` link — use the `href` field instead; `link` wins when both are set.
+
+      **Props:** `title`, `buttons[]` with `text`, `link`, `href`, `variant`, `size`, `icon`
 
   - type: button
     title: All Four Variants (medium)
@@ -157,19 +206,27 @@ sections:
       - variant: primary
         size: md
         text: Primary Action
-        href: '#'
+        link:
+          type: internal
+          pageRef: /how-to-use
       - variant: secondary
         size: md
         text: Secondary Action
-        href: '#'
+        link:
+          type: internal
+          pageRef: /articles
       - variant: outline
         size: md
         text: Outline Action
-        href: '#'
+        link:
+          type: internal
+          pageRef: /people
       - variant: ghost
         size: md
         text: Ghost Action
-        href: '#'
+        link:
+          type: internal
+          pageRef: /partners
 
   - type: button
     title: All Three Sizes (primary)
@@ -177,15 +234,51 @@ sections:
       - variant: primary
         size: sm
         text: Small Button
-        href: '#'
+        link:
+          type: internal
+          pageRef: /how-to-use
       - variant: primary
         size: md
         text: Medium Button
-        href: '#'
+        link:
+          type: internal
+          pageRef: /how-to-use
       - variant: primary
         size: lg
         text: Large Button
-        href: '#'
+        link:
+          type: internal
+          pageRef: /how-to-use
+
+  - type: button
+    title: Icons, External Links and Custom URLs
+    buttons:
+      - variant: primary
+        size: md
+        text: Read the Guide
+        icon: arrow-right
+        link:
+          type: internal
+          pageRef: /how-to-use
+      - variant: secondary
+        size: md
+        text: Download
+        icon: download
+        link:
+          type: internal
+          pageRef: /resources
+      - variant: outline
+        size: md
+        text: Source Code
+        icon: external
+        link:
+          type: external
+          url: https://github.com/draftlab-org/scaffold
+      - variant: ghost
+        size: md
+        text: Email Us
+        icon: email
+        href: mailto:hello@example.org
 
   # ============================================================
   # CARD SECTIONS
@@ -213,7 +306,9 @@ sections:
           variant: primary
           size: sm
           text: Learn More
-          href: '#'
+          link:
+            type: internal
+            pageRef: /articles
       - title: Secondary Color
         content: Uses a cool secondary tint with a matching border. Useful for complementary content that supports the primary message.
         color: secondary
@@ -221,7 +316,9 @@ sections:
           variant: secondary
           size: sm
           text: Explore
-          href: '#'
+          link:
+            type: internal
+            pageRef: /resources
       - title: Highlight Color
         content: Uses the decorative highlight SVG as a background, matching the section-level highlight treatment. Eye-catching for featured cards.
         color: highlight
@@ -229,7 +326,9 @@ sections:
           variant: outline
           size: sm
           text: View Details
-          href: '#'
+          link:
+            type: internal
+            pageRef: /partners
       - title: Neutral Color
         content: Uses a subtle gray tint with a gray border. Best for supplementary information that should not compete visually with colored cards.
         color: neutral
@@ -237,16 +336,22 @@ sections:
           variant: ghost
           size: sm
           text: Read More
-          href: '#'
+          link:
+            type: internal
+            pageRef: /people
     buttons:
       - variant: primary
         size: md
         text: View All Programs
-        href: '#'
+        link:
+          type: internal
+          pageRef: /resources
       - variant: outline
         size: md
         text: Get Involved
-        href: '#'
+        link:
+          type: internal
+          pageRef: /people
 
   - type: card
     title: Default Cards (No Color)
@@ -265,7 +370,9 @@ sections:
       - variant: primary
         size: md
         text: Explore Tools
-        href: '#'
+        link:
+          type: internal
+          pageRef: /resources
 
   # ============================================================
   # PEOPLE SECTIONS
@@ -332,6 +439,28 @@ sections:
     showViewAll: true
 
   # ============================================================
+  # FEATURED ARTICLES SECTION
+  # ============================================================
+
+  - type: richText
+    content: |-
+      ## Featured Articles Section
+
+      The `featuredArticles` section shows articles an editor picks by hand, in the order they were picked. Use it for reading lists and "start here" collections; use `articlesRoll` when you want the latest articles automatically.
+
+      **Props:** `title` (heading), `description`, `articles[]` (permalinks, up to 6)
+
+  - type: featuredArticles
+    title:
+      text: Start Here
+      style: highlight
+    description: Three pieces we point every new collaborator to.
+    articles:
+      - modern-css-techniques
+      - getting-started-with-astro
+      - building-scalable-apis
+
+  # ============================================================
   # FEATURED PARTNERS SECTION
   # ============================================================
 
@@ -361,6 +490,47 @@ sections:
       bgType: full
 
   # ============================================================
+  # LOGO WALL SECTION
+  # ============================================================
+
+  - type: richText
+    content: |-
+      ## Logo Wall Section
+
+      The `logoWall` section shows partner logos only — no cards, no text. Pick partners in the order you want them, or leave the list empty to show every featured partner. The `scroll` layout loops the logos in a row that pauses on hover, on keyboard focus and with its pause button, and stays still for visitors who prefer reduced motion. `fullBleed` lets the row run edge to edge.
+
+      **Props:** `title` (heading), `description`, `partners[]` (IDs), `layout` (grid/scroll), `fullBleed`
+
+  - type: logoWall
+    title:
+      text: Funded by People Who Care About the Open Web
+    partners:
+      - open-source-foundation
+      - tech-corp
+      - secure-cloud
+      - devtools-inc
+      - data-systems
+      - cloudhost
+
+  - type: logoWall
+    background:
+      bgColor: gray
+      bgType: full
+    layout: scroll
+    fullBleed: true
+    partners:
+      - open-source-foundation
+      - tech-corp
+      - secure-cloud
+      - devtools-inc
+      - data-systems
+      - cloudhost
+      - quantum-labs
+      - code-academy
+      - api-gateway
+      - tech-podcast
+
+  # ============================================================
   # RESOURCES ROLL SECTION
   # ============================================================
 
@@ -379,7 +549,109 @@ sections:
     showViewAll: true
 
   # ============================================================
-  # FLEXI SECTION
+  # CALL TO ACTION SECTIONS
+  # ============================================================
+
+  - type: richText
+    content: |-
+      ## Call to Action Sections
+
+      The `callToAction` section pairs a heading and short pitch with one or more buttons. Add an `image` and it becomes a two-column layout. Section titles on the newer sections can use `style: highlight` for a marker stroke behind the text.
+
+      **Props:** `title` (heading), `description` (markdown), `buttons[]`, `image`, `imageAlt`, `imagePosition` (left/right)
+
+  - type: callToAction
+    background:
+      bgColor: highlight-dark
+      bgType: full
+    title:
+      text: Audit Your Data Flows
+      style: highlight
+    description: Our open workbook walks your team through mapping **what you collect, where it goes and who can see it** — in an afternoon.
+    buttons:
+      - variant: primary
+        size: lg
+        text: Get the Workbook
+        icon: download
+        link:
+          type: internal
+          pageRef: /resources
+      - variant: ghost
+        size: lg
+        text: Talk to Us
+        icon: chat
+        href: mailto:hello@example.org
+
+  - type: callToAction
+    title:
+      text: Design With, Not For
+    description: Community-centred design starts by paying the people whose lives the product will shape. Read how we run co-design sessions with partner organisations.
+    image: /src/assets/backgrounds/anna-magenta-oT639KoYTKM-unsplash.jpg
+    imagePosition: left
+    buttons:
+      - variant: outline
+        size: md
+        text: Read the Method
+        icon: arrow-right
+        link:
+          type: internal
+          pageRef: /articles
+
+  - type: richText
+    content: |-
+      The `miniCta` section is a single line and one button — a light nudge between longer sections.
+
+      **Props:** `text` (markdown), `button`
+
+  - type: miniCta
+    background:
+      bgColor: primary-light
+      bgType: contained
+    text: Running an encrypted messaging rollout? **Our field guide covers the first 90 days.**
+    button:
+      variant: primary
+      size: md
+      text: Read the Guide
+      link:
+        type: internal
+        pageRef: /docs
+
+  # ============================================================
+  # TESTIMONIALS SECTION
+  # ============================================================
+
+  - type: richText
+    content: |-
+      ## Testimonials Section
+
+      The `testimonials` section shows quotes. One quote renders as a large pull quote; several form a grid. Each testimonial takes a `name` and `role`, or links a `person` from the People collection to pull in their name, title and photo.
+
+      **Props:** `title` (heading), `description`, `testimonials[]` (`quote`, `name`, `role`, `image`, `person`)
+
+  - type: testimonials
+    background:
+      bgColor: gray
+      bgType: full
+    title:
+      text: What Partners Say
+    testimonials:
+      - quote: They helped us move our case files off a commercial cloud and onto infrastructure we govern ourselves — without losing a single week of casework.
+        name: Amara Okafor
+        role: Director, Tenant Rights Legal Clinic
+      - quote: The consent flows they designed with our members are the first ones people have actually *read*.
+        name: Lucía Fernández
+        role: Coordinator, Community Health Cooperative
+      - quote: Accessibility wasn't a final audit item — it shaped the product from the first sketch.
+        person: sarah-chen
+
+  - type: testimonials
+    testimonials:
+      - quote: Surveillance is not a side effect of technology. It is a design choice — and so is its absence.
+        name: Omar Hassan
+        role: Security Researcher
+
+  # ============================================================
+  # COMPOSING SECTIONS
   # ============================================================
 
   - type: richText
@@ -387,39 +659,39 @@ sections:
       bgColor: gray
       bgType: full
     content: |-
-      ## Flexi Section
+      ## Composing Sections
 
-      The `flexi` section is a container that wraps other section types, allowing you to compose multiple sections under a shared title and description. Any non-flexi section type can be nested inside.
+      Sections stack in the order they appear in the page's `sections` array. To build a richer block — say, an introduction followed by a card grid and a call to action — place the section types one after another and give them the same background so they read as one unit.
 
-      **Props:** `title` (required), `description`, `sections[]` (array of section objects)
+  - type: richText
+    content: |-
+      ### Digital Rights Toolkit
 
-  - type: flexi
-    title: Digital Rights Toolkit
-    description: A composed section demonstrating nested content — rich text, cards, and buttons living together.
-    sections:
-      - type: richText
-        content: |-
-          ### Why Digital Rights Matter
+      The tools we build shape the freedoms people can exercise. When technology is designed without regard for human rights, it becomes a mechanism of control rather than empowerment.
 
-          The tools we build shape the freedoms people can exercise. When technology is designed without regard for human rights, it becomes a mechanism of control rather than empowerment.
+      Every design decision is a values decision. Choosing end-to-end encryption is choosing privacy. Choosing open protocols is choosing interoperability. Choosing accessible interfaces is choosing inclusion.
 
-          Every design decision is a values decision. Choosing end-to-end encryption is choosing privacy. Choosing open protocols is choosing interoperability. Choosing accessible interfaces is choosing inclusion.
-      - type: card
-        title: Key Principles
-        cards:
-          - title: Transparency
-            content: Users deserve to understand how their data is collected, processed, and shared.
-          - title: Consent
-            content: Meaningful consent requires clear choices, not dark patterns buried in terms of service.
-          - title: Minimization
-            content: Collect only the data you need. Retain it only as long as necessary. Delete it when done.
-      - type: button
-        buttons:
-          - variant: primary
-            size: md
-            text: Download the Toolkit
-            href: '#'
-          - variant: outline
-            size: md
-            text: Contribute on GitHub
-            href: '#'
+  - type: card
+    title: Key Principles
+    cards:
+      - title: Transparency
+        content: Users deserve to understand how their data is collected, processed, and shared.
+      - title: Consent
+        content: Meaningful consent requires clear choices, not dark patterns buried in terms of service.
+      - title: Minimization
+        content: Collect only the data you need. Retain it only as long as necessary. Delete it when done.
+
+  - type: button
+    buttons:
+      - variant: primary
+        size: md
+        text: Download the Toolkit
+        link:
+          type: internal
+          pageRef: /resources
+      - variant: outline
+        size: md
+        text: Contribute on GitHub
+        link:
+          type: external
+          url: https://github.com/draftlab-org/scaffold

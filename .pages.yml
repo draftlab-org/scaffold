@@ -7,10 +7,18 @@
 # MEDIA
 # ============================================================================
 media:
+  # Default: absolute /src/assets paths, resolved by the site's own image
+  # pipeline (image fields, and rich-text inside page sections/YAML/JSON).
   - name: images
     label: All Images
     input: src/assets
     output: /src/assets
+  # Markdown bodies of articles and docs are rendered by Astro, which resolves
+  # image paths relative to the .md file (src/content/<collection>/).
+  - name: body-images
+    label: Body Images
+    input: src/assets
+    output: ../../assets
 
 # ============================================================================
 # REUSABLE COMPONENTS
@@ -23,6 +31,19 @@ components:
   button:
     type: object
     fields:
+      - name: text
+        label: Text
+        type: string
+        required: true
+        description: The text displayed on the button
+      - name: link
+        label: Link
+        component: flexible_link
+        description: Pick a page on this site, or enter an external URL. A button with no Link and no Custom URL is not shown.
+      - name: href
+        label: Custom URL
+        type: string
+        description: 'Only used when Link is empty — for anchors (#section), mailto: links and the like'
       - name: variant
         label: Variant
         type: select
@@ -38,6 +59,7 @@ components:
               value: ghost
         required: true
         default: primary
+        description: Primary for the main action, outline or ghost for secondary actions
       - name: size
         label: Size
         type: select
@@ -49,18 +71,34 @@ components:
               value: md
             - label: Large
               value: lg
+            - label: Extra large
+              value: xl
         required: true
         default: md
-      - name: text
-        label: Text
-        type: string
-        required: true
-        description: The text displayed on the button
-      - name: href
-        label: Link URL
-        type: string
-        required: true
-        description: The URL this button links to
+      - name: icon
+        label: Icon
+        type: select
+        options:
+          values:
+            - label: Arrow (after text)
+              value: arrow-right
+            - label: External link (after text)
+              value: external
+            - label: Download
+              value: download
+            - label: Email
+              value: email
+            - label: Calendar
+              value: calendar
+            - label: Document
+              value: document
+            - label: Chat
+              value: chat
+            - label: Heart
+              value: heart
+            - label: Play
+              value: play
+        description: Optional. Leave empty for a text-only button.
 
   card:
     type: object
@@ -94,6 +132,65 @@ components:
       - name: button
         label: Button
         component: button
+
+  social_link:
+    type: object
+    fields:
+      - name: platform
+        label: Platform
+        type: select
+        required: true
+        options:
+          values:
+            - label: Website
+              value: website
+            - label: Email
+              value: email
+            - label: Newsletter
+              value: newsletter
+            - label: RSS feed
+              value: rss
+            - label: Bluesky
+              value: bluesky
+            - label: Mastodon
+              value: mastodon
+            - label: Threads
+              value: threads
+            - label: X
+              value: x
+            - label: LinkedIn
+              value: linkedin
+            - label: Instagram
+              value: instagram
+            - label: Facebook
+              value: facebook
+            - label: YouTube
+              value: youtube
+            - label: PeerTube
+              value: peertube
+            - label: GitHub
+              value: github
+            - label: GitLab
+              value: gitlab
+            - label: Codeberg
+              value: codeberg
+            - label: Medium
+              value: medium
+            - label: Substack
+              value: substack
+            - label: Signal
+              value: signal
+            - label: Matrix
+              value: matrix
+            - label: Discord
+              value: discord
+            - label: ORCID
+              value: orcid
+      - name: url
+        label: URL
+        type: string
+        required: true
+        description: 'Full URL (https://…). For Email, the address on its own is fine.'
 
   # --------------------------------------------------------------------------
   # Navigation
@@ -129,6 +226,46 @@ components:
               message: 'Must be a valid URL starting with http:// or https://'
               regex: '^https?://.+'
 
+  nav_link_item:
+    type: object
+    fields:
+      - name: label
+        label: Link Label
+        type: string
+        required: true
+        description: Text displayed for the link
+      - name: link
+        label: Link
+        component: flexible_link
+        required: true
+      - name: description
+        label: Description
+        type: string
+        description: Optional description for accessibility
+
+  navigation_menu_item_child:
+    type: block
+    blockKey: type
+    description: Second-level item — a single link, or a group of links (third level)
+    blocks:
+      - name: link
+        label: Single Link
+        component: nav_link_item
+      - name: dropdown
+        label: Link Group
+        fields:
+          - name: label
+            label: Group Label
+            type: string
+            required: true
+            description: Heading shown above the grouped links
+          - name: children
+            label: Group Links
+            component: nav_link_item
+            list: true
+            required: true
+            description: Links shown under this group heading
+
   navigation_menu_item:
     type: block
     blockKey: type
@@ -136,22 +273,7 @@ components:
     blocks:
       - name: link
         label: Single Link
-        fields:
-          - name: label
-            label: Link Label
-            type: string
-            required: true
-            description: Text displayed for the link
-          - name: link
-            label: Link
-            component: flexible_link
-            required: true
-            description: A single navigation link
-          - name: description
-            label: Description
-            type: string
-            description: Optional description for accessibility
-
+        component: nav_link_item
       - name: dropdown
         label: Dropdown Menu
         fields:
@@ -161,24 +283,57 @@ components:
             required: true
             description: Text displayed for the dropdown menu
           - name: children
-            label: Menu Links
-            type: object
+            label: Menu Items
+            component: navigation_menu_item_child
             list: true
             required: true
-            description: List of links in the dropdown menu
-            fields:
-              - name: label
-                label: Link Label
-                type: string
-                required: true
-              - name: link
-                label: Link
-                component: flexible_link
-                required: true
-              - name: description
-                label: Description
-                type: string
-                description: Optional description for accessibility
+            description: Links or link groups in the dropdown menu
+
+  section_heading:
+    type: object
+    fields:
+      - name: text
+        label: Title
+        type: string
+      - name: style
+        label: Style
+        type: select
+        default: plain
+        options:
+          values:
+            - label: Plain
+              value: plain
+            - label: Highlighted
+              value: highlight
+        description: Highlighted draws a marker stroke behind the title
+
+  testimonial:
+    type: object
+    fields:
+      - name: quote
+        label: Quote
+        type: rich-text
+        required: true
+      - name: person
+        label: Person
+        type: reference
+        options:
+          collection: people
+          value: '{id}'
+          label: '{fields.name}'
+        description: Optional. Fills in the name, role and photo from the People collection when those are left empty.
+      - name: name
+        label: Name
+        type: string
+        description: Who said it. Required unless a person is picked.
+      - name: role
+        label: Role / Affiliation
+        type: string
+        description: e.g. "Organiser, Community Mesh Network"
+      - name: image
+        label: Photo
+        type: image
+        description: Optional small portrait
 
   # --------------------------------------------------------------------------
   # Layout
@@ -187,6 +342,7 @@ components:
   background_select:
     type: object
     fields:
+      # Keep in sync with sectionBackgrounds in src/utils/backgrounds.ts
       - name: bgColor
         label: Color
         type: select
@@ -198,8 +354,18 @@ components:
               value: gray
             - label: Gradient
               value: gradient
+            - label: Primary (light)
+              value: primary-light
+            - label: Secondary (light)
+              value: secondary-light
+            - label: Highlight (light)
+              value: highlight-light
+            - label: Dark
+              value: dark
+            - label: Highlight (dark)
+              value: highlight-dark
         default: white
-        description: Select a section background for this section
+        description: Section background. Dark backgrounds switch the text to light colours automatically.
       - name: bgType
         label: Type
         type: select
@@ -209,8 +375,10 @@ components:
               value: full
             - label: Contained
               value: contained
+            - label: Highlight shape
+              value: highlight
         default: full
-        description: Select the background type for this section
+        description: Full-width fills the whole row, Contained only fills behind the content, Highlight shape adds the decorative highlight instead of a colour
 
   # --------------------------------------------------------------------------
   # Section components
@@ -230,6 +398,35 @@ components:
         label: Background Image
         type: image
         description: Optional hero background image
+      - name: image
+        label: Side Image
+        type: image
+        description: Optional illustration or photo shown beside the text
+      - name: imageAlt
+        label: Side Image Alt Text
+        type: string
+        description: Describe the image for screen readers. Leave empty if it is purely decorative.
+      - name: imagePosition
+        label: Side Image Position
+        type: select
+        default: right
+        options:
+          values:
+            - label: Right
+              value: right
+            - label: Left
+              value: left
+      - name: align
+        label: Text Alignment
+        type: select
+        default: center
+        options:
+          values:
+            - label: Centered
+              value: center
+            - label: Left
+              value: left
+        description: With a side image the text is always left-aligned
 
   richtext_section:
     type: object
@@ -286,41 +483,6 @@ components:
         list: true
         description: Buttons at the bottom of the section
 
-  flexi_section:
-    type: object
-    fields:
-      - name: background
-        label: Section Background
-        component: background_select
-      - name: title
-        label: Title
-        type: string
-        required: true
-      - name: description
-        label: Description
-        type: rich-text
-      - name: sections
-        label: Nested Sections
-        component: section
-        list: true
-        description: Nested sections within this flexi section
-
-  # Subset of section types allowed inside flexi sections
-  section:
-    type: block
-    blockKey: type
-    description: Add and arrange page sections in any order
-    blocks:
-      - name: richText
-        label: Rich Text Section
-        component: richtext_section
-      - name: button
-        label: Button Section
-        component: button_section
-      - name: card
-        label: Card Section
-        component: card_section
-
   people_section:
     type: object
     fields:
@@ -329,8 +491,20 @@ components:
         component: background_select
       - name: category
         label: Category
-        type: string
-        description: Filter people by section/department (e.g. "Engineering", "Leadership"). Leave empty to show all people.
+        type: select
+        description: Only show people in this section/department. Leave empty to show all people.
+        options:
+          # pages-cms:category-sync start people
+          values:
+            - Leadership
+            - Engineering
+            - Product
+            - Design
+            - Marketing
+            - Sales
+            - Operations
+            - Community
+          # pages-cms:category-sync end
 
   partners_section:
     type: object
@@ -344,8 +518,17 @@ components:
         required: true
       - name: category
         label: Category
-        type: string
-        description: Filter partners by category (e.g. "sponsor", "technology"). Leave empty to show all partners.
+        type: select
+        description: Only show partners in this category. Leave empty to show all partners.
+        options:
+          # pages-cms:category-sync start partners
+          values:
+            - sponsor
+            - infrastructure
+            - community
+            - technology
+            - media
+          # pages-cms:category-sync end
 
   articles_roll_section:
     type: object
@@ -364,8 +547,21 @@ components:
         description: How many articles to show (1-12)
       - name: category
         label: Category Filter
-        type: string
+        type: select
         description: Only show articles from this category. Leave empty to show all.
+        options:
+          # pages-cms:category-sync start articles
+          values:
+            - Privacy
+            - Security
+            - Accessibility
+            - Civic Tech
+            - Design
+            - Technology
+            - Tutorial
+            - News
+            - Opinion
+          # pages-cms:category-sync end
       - name: showViewAll
         label: Show "View All" Button
         type: boolean
@@ -423,6 +619,135 @@ components:
         default: false
         description: Display a link to the full resources page
 
+  call_to_action_section:
+    type: object
+    fields:
+      - name: background
+        label: Section Background
+        component: background_select
+      - name: title
+        label: Title
+        component: section_heading
+      - name: description
+        label: Description
+        type: rich-text
+      - name: buttons
+        label: Buttons
+        component: button
+        list: true
+      - name: image
+        label: Image
+        type: image
+        description: Optional. With an image the section becomes two columns.
+      - name: imageAlt
+        label: Image Alt Text
+        type: string
+        description: Describe the image for screen readers. Leave empty if it is purely decorative.
+      - name: imagePosition
+        label: Image Position
+        type: select
+        default: right
+        options:
+          values:
+            - label: Right
+              value: right
+            - label: Left
+              value: left
+
+  mini_cta_section:
+    type: object
+    fields:
+      - name: background
+        label: Section Background
+        component: background_select
+      - name: text
+        label: Text
+        type: string
+        required: true
+        description: One short line. Markdown links and emphasis work.
+      - name: button
+        label: Button
+        component: button
+
+  testimonials_section:
+    type: object
+    fields:
+      - name: background
+        label: Section Background
+        component: background_select
+      - name: title
+        label: Title
+        component: section_heading
+      - name: description
+        label: Description
+        type: rich-text
+      - name: testimonials
+        label: Testimonials
+        component: testimonial
+        list: true
+        description: One quote shows as a large pull quote, several as a grid
+
+  logo_wall_section:
+    type: object
+    fields:
+      - name: background
+        label: Section Background
+        component: background_select
+      - name: title
+        label: Title
+        component: section_heading
+      - name: description
+        label: Description
+        type: rich-text
+      - name: partners
+        label: Partners
+        type: reference
+        options:
+          collection: partners
+          multiple: true
+          value: '{id}'
+          label: '{fields.name}'
+        description: Logos in the order shown. Leave empty to show featured partners.
+      - name: layout
+        label: Layout
+        type: select
+        default: grid
+        options:
+          values:
+            - label: Grid
+              value: grid
+            - label: Scrolling row
+              value: scroll
+        description: The scrolling row pauses on hover and has a pause button; it stays still for visitors who prefer reduced motion
+      - name: fullBleed
+        label: Full width
+        type: boolean
+        default: false
+        description: Let the logos run edge to edge instead of inside the page width
+
+  featured_articles_section:
+    type: object
+    fields:
+      - name: background
+        label: Section Background
+        component: background_select
+      - name: title
+        label: Title
+        component: section_heading
+      - name: description
+        label: Description
+        type: rich-text
+      - name: articles
+        label: Articles
+        type: reference
+        options:
+          collection: articles
+          multiple: true
+          value: '{permalink}'
+          label: '{title}'
+          image: '{fields.heroImage}'
+        description: Hand-pick up to 6 articles, shown in this order (any beyond 6 are ignored). For the latest articles automatically, use the Articles Roll section instead.
+
 # ============================================================================
 # CONTENT COLLECTIONS
 # ============================================================================
@@ -476,6 +801,20 @@ content:
         label: Page Description
         type: rich-text
         description: SEO meta description
+
+      - name: breadcrumbs
+        label: Breadcrumbs
+        type: select
+        default: auto
+        options:
+          values:
+            - label: Automatic (show when the page sits two or more levels deep in the menu)
+              value: auto
+            - label: Always show
+              value: show
+            - label: Hide
+              value: hide
+        description: Breadcrumb trail shown above the page content. Can be turned off site-wide in Site Configuration.
 
       - name: heroImage
         label: Hero Image
@@ -542,9 +881,25 @@ content:
             label: Resources Roll Section
             component: resources_roll_section
 
-          - name: flexi
-            label: Flexi Section
-            component: flexi_section
+          - name: featuredArticles
+            label: Featured Articles Section
+            component: featured_articles_section
+
+          - name: callToAction
+            label: Call to Action Section
+            component: call_to_action_section
+
+          - name: miniCta
+            label: Mini Call to Action
+            component: mini_cta_section
+
+          - name: testimonials
+            label: Testimonials Section
+            component: testimonials_section
+
+          - name: logoWall
+            label: Logo Wall Section
+            component: logo_wall_section
 
   # --------------------------------------------------------------------------
   # Articles
@@ -608,13 +963,6 @@ content:
               value: archived
         description: Draft content is only visible in development/preview. New content defaults to Draft.
 
-      - name: tags
-        label: Tags
-        type: string
-        list: true
-        required: true
-        description: Article tags/categories
-
       - name: publishedDate
         label: Published Date
         type: date
@@ -631,7 +979,7 @@ content:
       - name: relatedArticles
         label: Related Articles
         type: reference
-        description: Select up to 3 related articles
+        description: Select up to 3 related articles (any beyond 3 are ignored; empty slots are filled with articles sharing a category)
         options:
           collection: articles
           multiple: true
@@ -639,20 +987,39 @@ content:
           label: "{title}"
           image: "{fields.heroImage}"
 
+      - name: relatedResources
+        label: Related Resources
+        type: reference
+        description: Resources shown alongside this article
+        options:
+          collection: resources
+          multiple: true
+          value: '{id}'
+          label: '{fields.title}'
+
       - name: categories
         label: Categories
         type: select
         options:
           multiple: true
-          fetch:
-            url: https://scaffold.draftlab.org/api/categories.json
-            results: articles.categories
-            value: "{name}"
-            label: "{name}"
+          # pages-cms:category-sync start articles
+          values:
+            - Privacy
+            - Security
+            - Accessibility
+            - Civic Tech
+            - Design
+            - Technology
+            - Tutorial
+            - News
+            - Opinion
+          # pages-cms:category-sync end
 
       - name: body
         label: Body
         type: rich-text
+        options:
+          media: body-images
 
   # --------------------------------------------------------------------------
   # Docs
@@ -724,6 +1091,8 @@ content:
       - name: body
         label: Body
         type: rich-text
+        options:
+          media: body-images
 
   # --------------------------------------------------------------------------
   # People
@@ -788,17 +1157,29 @@ content:
         type: string
         description: Optional external link
 
+      - name: socialLinks
+        label: Social Links
+        component: social_link
+        list: true
+        description: Profiles shown on this person's page
+
       - name: sections
         label: Sections/Departments
         type: select
         required: true
         options:
           multiple: true
-          fetch:
-            url: https://scaffold.draftlab.org/api/categories.json
-            results: people.categories
-            value: "{name}"
-            label: "{name}"
+          # pages-cms:category-sync start people
+          values:
+            - Leadership
+            - Engineering
+            - Product
+            - Design
+            - Marketing
+            - Sales
+            - Operations
+            - Community
+          # pages-cms:category-sync end
 
   # --------------------------------------------------------------------------
   # Partners
@@ -856,13 +1237,17 @@ content:
         label: Category
         type: select
         required: true
+        description: One or more categories this partner belongs to
         options:
-          multiple: false
-          fetch:
-            url: https://scaffold.draftlab.org/api/categories.json
-            results: partners.categories
-            value: "{name}"
-            label: "{name}"
+          multiple: true
+          # pages-cms:category-sync start partners
+          values:
+            - sponsor
+            - infrastructure
+            - community
+            - technology
+            - media
+          # pages-cms:category-sync end
 
       - name: image
         label: Logo
@@ -956,11 +1341,13 @@ content:
         required: true
         options:
           multiple: false
-          fetch:
-            url: https://scaffold.draftlab.org/api/categories.json
-            results: resources.categories
-            value: "{name}"
-            label: "{name}"
+          # pages-cms:category-sync start resources
+          values:
+            - report
+            - whitepaper
+            - case-study
+            - guide
+          # pages-cms:category-sync end
 
       - name: externalLinks
         label: External Links
@@ -976,6 +1363,16 @@ content:
             type: string
             required: true
             description: Full URL (e.g. https://example.com/paper.pdf)
+
+      - name: relatedResources
+        label: Related Resources
+        type: reference
+        description: Other resources shown on this resource's page
+        options:
+          collection: resources
+          multiple: true
+          value: '{id}'
+          label: '{fields.title}'
 
       - name: publishedDate
         label: Published Date
@@ -1075,40 +1472,9 @@ content:
 
       - name: social
         label: Social Media Links
-        type: object
-        fields:
-          - name: bluesky
-            label: BlueSky URL
-            type: string
-            description: Full URL to your Bluesky profile
-          - name: mastodon
-            label: Mastodon URL
-            type: string
-            description: Full URL to your Mastodon profile
-          - name: github
-            label: GitHub URL
-            type: string
-            description: Full URL to your GitHub profile or organization
-          - name: linkedin
-            label: LinkedIn URL
-            type: string
-            description: Full URL to your LinkedIn profile or company page
-          - name: x
-            label: X URL
-            type: string
-            description: Full URL to your X profile
-          - name: facebook
-            label: Facebook URL
-            type: string
-            description: Full URL to your Facebook page
-          - name: instagram
-            label: Instagram URL
-            type: string
-            description: Full URL to your Instagram profile
-          - name: youtube
-            label: YouTube URL
-            type: string
-            description: Full URL to your YouTube channel
+        component: social_link
+        list: true
+        description: Shown in the footer, in this order
 
       - name: footer
         label: Footer
@@ -1164,6 +1530,93 @@ content:
             label: Google Analytics Measurement ID
             type: string
             description: "GA4 Measurement ID (e.g. G-XXXXXXXXXX). Leave empty to disable analytics."
+
+      - name: showBreadcrumbs
+        label: Show Breadcrumbs
+        type: boolean
+        default: true
+        description: Show a breadcrumb trail on nested pages and detail pages (articles, people, etc.). Individual pages can override this.
+
+      - name: share
+        label: Share Links
+        type: object
+        description: Share links shown on article and resource pages. They're plain links to each network's share page, so no third-party scripts are loaded.
+        fields:
+          - name: enabled
+            label: Show Share Links
+            type: boolean
+            default: true
+          - name: platforms
+            label: Platforms
+            type: select
+            description: Leave empty for the default set (Bluesky, Mastodon, LinkedIn, Email). Copy link is always included when the browser supports it.
+            options:
+              multiple: true
+              values:
+                - label: Bluesky
+                  value: bluesky
+                - label: Mastodon
+                  value: mastodon
+                - label: LinkedIn
+                  value: linkedin
+                - label: Reddit
+                  value: reddit
+                - label: Email
+                  value: email
+
+      - name: analytics
+        label: Analytics
+        type: object
+        description: Cookieless, privacy-preserving analytics. Only loaded on production builds (not in dev or preview). Leave empty to disable.
+        fields:
+          - name: umami
+            label: Umami
+            type: object
+            fields:
+              - name: src
+                label: Script URL
+                type: string
+                description: "URL of your Umami tracker script (e.g. https://umami.example.org/script.js)"
+              - name: websiteId
+                label: Website ID
+                type: string
+                description: The website ID from your Umami dashboard
+
+  # --------------------------------------------------------------------------
+  # Redirects (applied at build time via astro.config.mjs)
+  # --------------------------------------------------------------------------
+  - name: redirects
+    label: Redirects
+    type: file
+    path: src/content/site/_redirects.json
+    fields:
+      - name: redirects
+        label: Redirects
+        type: object
+        list: true
+        description: Send visitors from old URLs to new ones. Changes apply on the next deploy.
+        fields:
+          - name: from
+            label: From Path
+            type: string
+            required: true
+            description: 'Old path, e.g. old-page or blog/old-post (leading slash optional)'
+          - name: to
+            label: To Path or URL
+            type: string
+            required: true
+            description: 'New path (e.g. new-page) or a full external URL (https://...)'
+          - name: status
+            label: Status Code
+            type: select
+            default: 301
+            options:
+              values:
+                - label: '301 - Permanent Redirect'
+                  value: 301
+                - label: '302 - Temporary Redirect'
+                  value: 302
+            description: '301 for permanent moves, 302 for temporary redirects'
 
   # --------------------------------------------------------------------------
   # Navigation Menus

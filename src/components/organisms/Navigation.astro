@@ -1,11 +1,12 @@
 ---
-import Button from '@components/atoms/Button.astro';
-import Link from '@components/atoms/Link.astro';
+import Button from '@components/atoms/Button';
+import Link from '@components/atoms/Link';
 import NavItem from '@components/molecules/NavItem.astro';
 import MobileMenu from '@components/organisms/MobileMenu';
 import RichSearch from '@components/organisms/RichSearch';
+import { siteConfig } from '@lib/config';
 import type { NavItem as NavItemType } from '@utils/navigation';
-import { resolveFlexibleLink } from '@utils/navigation';
+import { isItemActive } from '@utils/navigation';
 import Image from 'astro/components/Image.astro';
 import MagnifyingGlassIcon from '~icons/heroicons/magnifying-glass-20-solid';
 
@@ -20,24 +21,12 @@ export interface Props {
 const {
   items,
   currentPath = Astro.url.pathname,
-  siteName = 'Draftlab Scaffold',
+  siteName = siteConfig.title,
   class: className = '',
 	logo,
 } = Astro.props;
 
-const isActive = (item: NavItemType) => {
-  if (item.type === 'dropdown') {
-    // Check if any child is active
-    return item.children.some((child) => {
-      const href = resolveFlexibleLink(child.link);
-      if (href === '/') return currentPath === '/';
-      return currentPath.startsWith(href);
-    });
-  }
-  const href = resolveFlexibleLink(item.link);
-  if (href === '/') return currentPath === '/';
-  return currentPath.startsWith(href);
-};
+const isActive = (item: NavItemType) => isItemActive(item, currentPath);
 ---
 
 <nav
@@ -53,7 +42,7 @@ const isActive = (item: NavItemType) => {
 				class="font-serif text-2xl font-bold text-gray-900 underline decoration-primary-300 decoration-dotted decoration-4 underline-offset-8"
 				>{
 					logo ? (
-						<Image src={logo} alt={siteName} class="w-45" />
+						<Image src={logo} alt={siteName} class="w-45" loading="eager" />
 					) : (
 						<span>{siteName}</span>
 					)
@@ -75,7 +64,7 @@ const isActive = (item: NavItemType) => {
 			size="square"
 			type="button"
 			id="search-button"
-			aria-label="Open Menu"
+			aria-label="Search"
 		>
 			<MagnifyingGlassIcon />
 		</Button>
@@ -84,23 +73,34 @@ const isActive = (item: NavItemType) => {
 		<slot name="actions" />
 
 		<!-- Mobile Menu -->
+		<!-- Only hydrated below the md breakpoint (48rem), where it's visible -->
 		<div class="md:hidden">
-			<MobileMenu client:load items={items} currentPath={currentPath} />
+			<MobileMenu
+				client:media="(max-width: 47.99rem)"
+				items={items}
+				currentPath={currentPath}
+				siteName={siteName}
+			/>
 		</div>
 	</div>
 </nav>
 
-<!-- Rich Search Modal -->
-<RichSearch client:load />
+<!-- Rich Search Modal. Hydrated when the browser is idle; an open request made
+     before then is queued via data-search-pending and picked up on mount. -->
+<RichSearch client:idle />
 
 <script>
+	function openSearch() {
+		// Queue the request in case RichSearch hasn't hydrated yet
+		document.documentElement.dataset.searchPending = 'true';
+		window.dispatchEvent(new CustomEvent('open-search'));
+	}
+
 	function setupSearchButton() {
 		const searchButton = document.getElementById('search-button');
 
 		if (searchButton) {
-			searchButton.addEventListener('click', () => {
-				window.dispatchEvent(new CustomEvent('open-search'));
-			});
+			searchButton.addEventListener('click', openSearch);
 		}
 	}
 
@@ -114,7 +114,7 @@ const isActive = (item: NavItemType) => {
 		document.addEventListener('keydown', (e) => {
 			if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
 				e.preventDefault();
-				window.dispatchEvent(new CustomEvent('open-search'));
+				openSearch();
 			}
 		});
 	}

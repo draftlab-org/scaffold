@@ -1,23 +1,17 @@
 ---
-import Button from '@components/atoms/Button.astro';
+import Button from '@components/atoms/Button';
 import Image from '@components/atoms/Image.astro';
 import Card from '@components/molecules/Card.astro';
+import type { ButtonData } from '@content-config';
 import SectionLayout from '@layouts/SectionLayout.astro';
 import { renderMarkdown } from '@utils/renderMarkdown';
 import type { ImageMetadata } from 'astro';
-
-export interface ButtonType {
-  variant: string;
-  size: string;
-  href: string;
-	text: string
-}
 
 export interface CardType {
   title: string;
   content?: string;
   image?: ImageMetadata;
-  button?: ButtonType;
+  button?: ButtonData;
   color?: string;
 }
 
@@ -25,7 +19,7 @@ export interface Props {
   title: string;
   description?: string;
   cards?: CardType[];
-  buttons?: ButtonType[];
+  buttons?: ButtonData[];
   class?: string;
 }
 
@@ -84,11 +78,11 @@ const cardsWithHtml = await Promise.all(
 							)}
 							{card.button && (
 								<Button
-									type="button"
-									as="a"
-									variant={card.button.variant as any}
-									size={card.button.size as any}
+									variant={card.button.variant}
+									size={card.button.size}
+									link={card.button.link}
 									href={card.button.href}
+									icon={card.button.icon}
 								>
 									{card.button.text}
 								</Button>
@@ -105,11 +99,11 @@ const cardsWithHtml = await Promise.all(
 				<div class="flex flex-wrap justify-center gap-4">
 					{buttons.map((button) => (
 						<Button
-							type="button"
-							as="a"
-							variant={button.variant as any}
-							size={button.size as any}
+							variant={button.variant}
+							size={button.size}
+							link={button.link}
 							href={button.href}
+							icon={button.icon}
 						>
 							{button.text}
 						</Button>

@@ -1,11 +1,11 @@
 ---
 import { getCollection } from 'astro:content';
 import Image from '@components/atoms/Image.astro';
-import Tag from '@components/atoms/Tag.astro';
+import Tag from '@components/atoms/Tag';
 import Hero from '@components/organisms/Hero.astro';
 import PageLayout from '@layouts/PageLayout.astro';
-import SectionLayout from '@layouts/SectionLayout.astro';
 import { isVisible } from '@utils/content';
+import { fitLogo } from '@utils/partners';
 import type { GetStaticPaths } from 'astro';
 import IconExternalLink from '~icons/heroicons/arrow-top-right-on-square-20-solid';
 
@@ -45,18 +45,19 @@ const { partner } = Astro.props;
 						<Image
 							src={partner.image}
 							alt={partner.name}
-							width={300}
-							height={192}
+							{...fitLogo(partner.image, { width: 300, height: 192 })}
 							class="max-h-full max-w-full object-contain"
 						/>
 					</div>
 				)}
 
 				<!-- Category -->
-				<div class="mb-6">
-					<Tag variant="primary" size="md">
-						{partner.category.charAt(0).toUpperCase() + partner.category.slice(1)}
-					</Tag>
+				<div class="mb-6 flex flex-wrap justify-center gap-2">
+					{partner.category.map((category) => (
+						<Tag variant="primary" size="md">
+							{category.charAt(0).toUpperCase() + category.slice(1)}
+						</Tag>
+					))}
 				</div>
 
 				<!-- Affiliation -->

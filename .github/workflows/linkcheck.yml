@@ -1,0 +1,384 @@
+# .github/workflows/linkcheck.yml
+
+# Checks every link in the built site with Lychee (config: lychee.toml) and keeps
+# a single rolling GitHub issue (label: linkcheck) up to date with the results.
+#
+# Two modes:
+#   [linkcheck]       internal links only (no network, fast)
+#   [linkcheck-full]  internal + external links (slower)
+# Trigger by putting either tag in a commit message pushed to main, or run it
+# manually from the Actions tab.
+#
+# Absolute links to the site's own domain (site URL read from
+# src/content/site/config.json) are checked against the local build, so they
+# work in internal-only mode and catch pages that aren't deployed yet.
+name: Link check
+
+on:
+  workflow_dispatch:
+    inputs:
+      offline:
+        description: "Internal links only (skip network)"
+        type: boolean
+        default: true
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  linkcheck:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      contains(github.event.head_commit.message, '[linkcheck]') ||
+      contains(github.event.head_commit.message, '[linkcheck-full]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Determine mode
+        id: mode
+        env:
+          # Passed via env, never interpolated into the script, so a commit
+          # message can't inject shell commands
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+          OFFLINE_INPUT: ${{ inputs.offline }}
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            [ "$OFFLINE_INPUT" = "false" ] && offline=false || offline=true
+          elif [[ "$COMMIT_MESSAGE" == *"[linkcheck-full]"* ]]; then
+            offline=false
+          else
+            offline=true
+          fi
+          echo "offline=$offline" >> "$GITHUB_OUTPUT"
+          [ "$offline" = "true" ] && echo "flag=--offline" >> "$GITHUB_OUTPUT" || echo "flag=" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+
+      # Map https://<site-domain>/... onto the local build so the site's own
+      # absolute URLs (canonical, og:url, hardcoded links) are checked as files
+      - name: Resolve site domain
+        id: site
+        run: |
+          host=$(node -p "new URL(require('./src/content/site/config.json').url).host.replace(/^www\\./, '')" 2>/dev/null || true)
+          if [ -n "$host" ]; then
+            pattern="^https?://(www\\.)?$(printf '%s' "$host" | sed 's/\./\\./g')"
+            echo "remap=--remap '${pattern} file://${GITHUB_WORKSPACE}/dist'" >> "$GITHUB_OUTPUT"
+          else
+            echo "remap=" >> "$GITHUB_OUTPUT"
+          fi
+
+      # We use Lychee for link checking
+      - name: Restore lychee cache
+        uses: actions/cache@v4
+        with:
+          path: .lycheecache
+          key: cache-lychee-${{ github.sha }}
+          restore-keys: cache-lychee-
+
+      - name: Check links
+        id: lychee
+        uses: lycheeverse/lychee-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          fail: false
+          args: >-
+            --no-progress
+            --root-dir ${{ github.workspace }}/dist
+            ${{ steps.mode.outputs.flag }}
+            ${{ steps.site.outputs.remap }}
+            'dist/**/*.html'
+
+      # The issue is located before the report is built, so the previous run's
+      # counts are available to compute the delta line in the header.
+      - name: Find existing report issue
+        id: existing
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          number=$(gh issue list \
+            --label linkcheck --state open --limit 1 \
+            --json number --jq '.[0].number // empty')
+          echo "number=$number" >> "$GITHUB_OUTPUT"
+
+      # Counts from the previous run, read back out of the marker its report left in
+      # the issue body. Absent on issues written before that marker existed, and on a
+      # freshly opened issue - the delta is simply omitted in those cases.
+      - name: Read previous counts
+        id: prev
+        if: steps.existing.outputs.number != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          gh issue view ${{ steps.existing.outputs.number }} \
+            --json body --jq .body > prev-body.md
+
+          line=$(grep -o '<!--counts [^>]*-->' prev-body.md | head -1 || true)
+
+          if [ -z "$line" ]; then
+            echo "No counts marker on issue #${{ steps.existing.outputs.number }} - delta skipped."
+            exit 0
+          fi
+
+          echo "Previous: $line"
+          # The issue body is editable by anyone with triage access, so only
+          # accept the known keys with plain values
+          for kv in $(printf '%s' "$line" | sed -e 's/<!--counts //' -e 's/-->//'); do
+            if printf '%s' "$kv" | grep -qE '^internal=[0-9]+$|^external=([0-9]+|na)$|^checked=(internal|both)$'; then
+              printf '%s\n' "$kv" >> "$GITHUB_OUTPUT"
+            else
+              echo "Ignoring unexpected counts entry: $kv"
+            fi
+          done
+
+      # We add some metadata to Lychee's report, like time of last run,
+      # and clean it up a bit
+      - name: Build report
+        env:
+          OFFLINE: ${{ steps.mode.outputs.offline }}
+          PREV_INTERNAL: ${{ steps.prev.outputs.internal }}
+          PREV_EXTERNAL: ${{ steps.prev.outputs.external }}
+          PREV_CHECKED: ${{ steps.prev.outputs.checked }}
+        run: |
+          set -euo pipefail
+
+          if [ "$OFFLINE" = "true" ]; then
+            mode="internal only"
+          else
+            mode="internal + external"
+          fi
+
+          # Strip the runner's absolute path prefix
+          sed -e "s#file://${GITHUB_WORKSPACE}/dist##g" \
+              -e "s#${GITHUB_WORKSPACE}/##g" \
+              ./lychee/out.md > cleaned.md
+
+          internal=$(grep -cE '^\* \[[^]]+\] <(file://|/)' ./lychee/out.md || true)
+          external=$(grep -cE '^\* \[[^]]+\] <https?://' ./lychee/out.md || true)
+
+          if [ "$OFFLINE" = "true" ]; then
+            checked=internal
+          else
+            checked=both
+          fi
+
+          # Delta against the previous run
+          prev_internal="$PREV_INTERNAL"
+          prev_external="$PREV_EXTERNAL"
+          prev_checked="$PREV_CHECKED"
+
+          # "**12 fewer**" / "**3 more**" / "**No net change** in"
+          headline() {
+            if [ "$1" -lt 0 ]; then printf '**%d fewer**' "$(( -$1 ))"
+            elif [ "$1" -gt 0 ]; then printf '**%d more**' "$1"
+            else printf '**No net change** in'
+            fi
+          }
+
+          # "12 fewer" / "3 more" / "unchanged"
+          part() {
+            if [ "$1" -lt 0 ]; then printf '%d fewer' "$(( -$1 ))"
+            elif [ "$1" -gt 0 ]; then printf '%d more' "$1"
+            else printf 'unchanged'
+            fi
+          }
+
+          delta=""
+          if [ -n "$prev_internal" ]; then
+            di=$(( internal - prev_internal ))
+            if [ "$checked" = "both" ] && [ "$prev_checked" = "both" ]; then
+              de=$(( external - prev_external ))
+              if [ "$di" -eq 0 ] && [ "$de" -eq 0 ]; then
+                delta="No change since the last run."
+              else
+                delta="$(headline $(( di + de ))) broken links since the last run"
+                delta="${delta} - internal: $(part "$di"), external: $(part "$de")."
+              fi
+            elif [ "$di" -eq 0 ]; then
+              delta="No change in broken internal links since the last run."
+            else
+              delta="$(headline "$di") broken internal links since the last run."
+            fi
+
+            if [ "$checked" = "both" ] && [ "$prev_checked" != "both" ]; then
+              delta="${delta} _(External not compared - the previous run skipped it.)_"
+            fi
+          fi
+
+          notice=""
+          if [ "$OFFLINE" = "true" ]; then
+            counts="**${internal} internal** · external: not checked"
+            notice=$(printf '%s\n' \
+              '> [!NOTE]' \
+              '> This run checked **internal links only**. To include external links' \
+              '> push a commit tagged `[linkcheck-full]`.')
+          else
+            counts="**${internal} internal** · **${external} external**"
+          fi
+
+          # Regroup Lychee's per-file sections under two top-level headings, so the
+          # team can work one class of breakage at a time. A file with both kinds of
+          # broken link is listed under both headings.
+          awk '
+            # http(s) is external; </path> and <file://...> are internal
+            function bucket(line) {
+              if (line ~ /^\* \[[^]]*\] <https?:\/\//) return "ext"
+              return "int"
+            }
+
+            function add(b, f, line,   key) {
+              key = b SUBSEP f
+              if (!(key in seen)) { seen[key] = 1; order[b, ++cnt[b]] = f }
+              body[key] = body[key] line "\n"
+              n[key]++
+              tot[b]++
+            }
+
+            # Collapse each per-file section, with its issue count in the summary
+            function emit(b,   i, f, key) {
+              for (i = 1; i <= cnt[b]; i++) {
+                f = order[b, i]
+                key = b SUBSEP f
+                printf "<details><summary><code>%s</code> — %d issue%s</summary>\n\n", f, n[key], (n[key] == 1 ? "" : "s")
+                printf "%s\n", body[key]
+                printf "</details>\n\n"
+              }
+            }
+
+            # Lychees own groupings are dropped in favour of the split below
+            /^## Errors per input/   { phase = 1; kind = "err"; next }
+            /^## Timeouts per input/ { phase = 1; kind = "to";  next }
+
+            phase == 0 { print; next }
+
+            /^### / {
+              file = substr($0, 5)
+              sub(/^Errors in /, "", file)
+              sub(/^Timeouts in /, "", file)
+              insec = 1
+              next
+            }
+
+            insec && /^\* / { add((kind == "to") ? "to" : bucket($0), file, $0); next }
+            insec && /^[ \t]*$/ { next }
+
+            # Once the sections have started, anything else is trailing prose
+            { insec = 0; tail = tail $0 "\n" }
+
+            END {
+              if (cnt["int"]) {
+                printf "## Internal links — %d issue%s\n\n", tot["int"], (tot["int"] == 1 ? "" : "s")
+                emit("int")
+              }
+              ext = tot["ext"] + tot["to"]
+              if (ext) {
+                printf "## External links — %d issue%s\n\n", ext, (ext == 1 ? "" : "s")
+                emit("ext")
+                if (cnt["to"]) {
+                  printf "### Timeouts — %d\n\n", tot["to"]
+                  emit("to")
+                }
+              }
+              sub(/\n+$/, "", tail)
+              if (tail != "") printf "%s\n", tail
+            }
+          ' cleaned.md > sections.md
+
+          # Kept unheadered for the archive comparison in the next run
+          cp sections.md ./lychee/sections-only.md
+
+
+          if [ "$checked" = "both" ]; then
+            marker="<!--counts internal=${internal} external=${external} checked=both-->"
+          else
+            marker="<!--counts internal=${internal} external=na checked=internal-->"
+          fi
+
+          {
+            echo "${counts} · mode: ${mode}"
+            echo
+            if [ -n "$delta" ]; then
+              echo "$delta"
+              echo
+            fi
+            echo "_Last run: $(date -u '+%Y-%m-%d %H:%M UTC') · commit \`${GITHUB_SHA:0:7}\` · [run log](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})_"
+            echo
+            if [ -n "$notice" ]; then
+              echo "$notice"
+              echo
+            fi
+            echo "$marker"
+            echo "<!--report-start-->"
+            cat sections.md
+          } > ./lychee/report.md
+
+          # Issue bodies cap at 65,536 characters; the API rejects rather than truncates
+          if [ "$(wc -c < ./lychee/report.md)" -gt 60000 ]; then
+            head -c 60000 ./lychee/report.md > truncated.md
+            printf '\n\n_Report truncated — see the run log for the full output._\n' >> truncated.md
+            mv truncated.md ./lychee/report.md
+          fi
+
+      # We update the current issue with the new run,
+      # and copy the old run in comments
+      - name: Archive previous report
+        if: steps.lychee.outputs.exit_code != 0 && steps.existing.outputs.number != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          gh issue view ${{ steps.existing.outputs.number }} \
+            --json body --jq .body > previous.md
+
+          # Everything after the marker, so the header's fresh timestamp is ignored
+          sed -n '/<!--report-start-->/,$p' previous.md | tail -n +2 > previous-sections.md
+
+          if diff -q previous-sections.md ./lychee/sections-only.md >/dev/null 2>&1; then
+            echo "Report unchanged — skipping archive."
+            exit 0
+          fi
+
+          {
+            echo "**Previous report** — archived $(date -u '+%Y-%m-%d %H:%M UTC')"
+            echo
+            sed 's/^\( *\)- \[[ x]\] /\1- /' previous.md
+          } > archive.md
+
+          gh issue comment ${{ steps.existing.outputs.number }} --body-file archive.md
+
+      - name: Update or open report issue
+        if: steps.lychee.outputs.exit_code != 0
+        uses: peter-evans/create-issue-from-file@v5
+        with:
+          title: Broken links report
+          content-filepath: ./lychee/report.md
+          issue-number: ${{ steps.existing.outputs.number }}
+          labels: linkcheck, automated
+
+      - name: Close report issue when clean
+        if: steps.lychee.outputs.exit_code == 0 && steps.existing.outputs.number != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          if [ "${{ steps.mode.outputs.offline }}" = "true" ]; then
+            comment="All **internal** links passing as of ${{ github.sha }}. External links were not checked in this run."
+          else
+            comment="All links passing as of ${{ github.sha }}."
+          fi
+
+          gh issue close ${{ steps.existing.outputs.number }} --comment "$comment"

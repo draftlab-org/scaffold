@@ -6,16 +6,14 @@ authors:
   - priya-sharma
   - emily-rodriguez
 status: draft
-tags:
-  - api
-  - security
-  - civic-tech
 publishedDate: 2024-03-10
 heroImage: /src/assets/backgrounds/anna-magenta-XUCfqIEudBU-unsplash.jpg
 relatedArticles:
   - getting-started-with-astro
   - modern-css-techniques
 categories:
+  - Security
+  - Civic Tech
   - Technology
 ---
 

@@ -28,3 +28,7 @@ pnpm-debug.log*
 
 # Local configuration
 .localconfig/
+
+# Link checker (lychee) output and cache
+lychee/
+.lycheecache

@@ -3,7 +3,9 @@
   "name": "Whisperline Protocol",
   "affiliation": "Encrypted Communications",
   "url": "https://whisperline.example.org",
-  "category": "technology",
+  "category": [
+    "technology"
+  ],
   "image": "/src/assets/partners/rings-10.png",
   "order": 11,
   "status": "published"

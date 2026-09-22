@@ -21,7 +21,7 @@ WCAG organizes accessibility into four principles:
 - **Understandable** — Content and operation must be comprehensible
 - **Robust** — Content reliably interpreted by assistive technologies
 
-![Sample background](/src/assets/backgrounds/anna-magenta-YELG0ZVK5yw-unsplash.jpg)
+![Sample background](../../assets/backgrounds/anna-magenta-YELG0ZVK5yw-unsplash.jpg)
 
 ## Semantic HTML First
 

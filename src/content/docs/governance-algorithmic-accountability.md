@@ -21,7 +21,7 @@ Before deploying an automated system, conduct a structured assessment:
 3. **Disparate impact analysis** — Are there significant differences across demographic groups?
 4. **Redress mechanisms** — Can affected individuals challenge a decision?
 
-![Sample background](/src/assets/backgrounds/anna-magenta-DJ7FzM_WZXs-unsplash.jpg)
+![Sample background](../../assets/backgrounds/anna-magenta-DJ7FzM_WZXs-unsplash.jpg)
 
 ## Fairness Metrics
 

@@ -1,4 +1,16 @@
 import { defineCollection, type ImageFunction } from 'astro:content';
+import {
+  sectionBackgroundNames,
+  sectionBackgroundTypes,
+} from '@utils/backgrounds';
+import {
+  BUTTON_ICONS,
+  BUTTON_SIZES,
+  BUTTON_VARIANTS,
+  resolveButtonLink,
+} from '@utils/buttons';
+import { SHARE_PLATFORMS } from '@utils/share';
+import { normalizeSocialLinks, SOCIAL_PLATFORMS } from '@utils/social';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 import articleCategories from './content/categories/articles.json';
@@ -10,6 +22,112 @@ const statusSchema = z
   .enum(['draft', 'published', 'archived'])
   .default('draft');
 
+// Category-bound select for a section filter. Pages CMS writes '' (or null)
+// when the select is cleared, so treat those as "no filter".
+const optionalCategory = (categories: string[]) =>
+  z.preprocess(
+    (value) => (value === '' || value === null ? undefined : value),
+    z.enum(categories as [string, ...string[]]).optional()
+  );
+
+// Pages CMS writes '' (or null) for cleared optional fields
+const emptyToUndefined = (value: unknown) =>
+  value === '' || value === null ? undefined : value;
+
+// Optional reference list: '' / null / [] all mean "nothing picked"
+const optionalIdList = z.preprocess(
+  (value) =>
+    Array.isArray(value) && value.length === 0
+      ? undefined
+      : emptyToUndefined(value),
+  z.array(z.string()).optional()
+);
+
+const flexibleLinkSchema = z.discriminatedUnion('type', [
+  z.object({
+    type: z.literal('internal'),
+    pageRef: z.string(),
+  }),
+  z.object({
+    type: z.literal('external'),
+    url: z.url(),
+  }),
+]);
+
+const socialLinkSchema = z.object({
+  platform: z.enum(SOCIAL_PLATFORMS),
+  url: z.string().min(1),
+});
+
+// Accepts the list form and the older `{ platform: url }` object form
+const socialLinksSchema = z.preprocess(
+  normalizeSocialLinks,
+  z.array(socialLinkSchema)
+);
+
+// A button points at a picked `link` (internal page or external URL) or, as a
+// fallback, a free-text `href` (anchors, mailto:, and content written before
+// `link` existed). `link` wins when both are set. A button with neither is
+// valid content but is not rendered.
+const buttonSchema = z
+  .object({
+    variant: z.enum(BUTTON_VARIANTS).default('primary'),
+    size: z.enum(BUTTON_SIZES).default('md'),
+    text: z.string(),
+    link: z.preprocess(emptyToUndefined, flexibleLinkSchema.optional()),
+    href: z.preprocess(emptyToUndefined, z.string().optional()),
+    icon: z.preprocess(emptyToUndefined, z.enum(BUTTON_ICONS).optional()),
+  });
+
+export type ButtonData = z.infer<typeof buttonSchema>;
+
+const hasButtonLink = (button: ButtonData) =>
+  Boolean(resolveButtonLink(button).href);
+
+// Buttons saved without a link are dropped rather than failing the build
+const buttonListSchema = z
+  .array(buttonSchema)
+  .transform((buttons) => buttons.filter(hasButtonLink))
+  .optional();
+
+// A Pages CMS object field is written even when left empty, so an optional
+// button without text is treated as "no button"
+const optionalButtonSchema = z.preprocess(
+  (value) =>
+    value && typeof value === 'object' && !(value as { text?: string }).text
+      ? undefined
+      : emptyToUndefined(value),
+  buttonSchema
+    .optional()
+    .transform((button) =>
+      button && hasButtonLink(button) ? button : undefined
+    )
+);
+
+// Section title with an optional marker-highlight style. A plain string is
+// accepted too. `text` is optional because Pages CMS writes the `style`
+// default even when the title is left blank.
+const sectionHeadingSchema = z.preprocess(
+  (value) =>
+    typeof value === 'string' ? { text: value } : emptyToUndefined(value),
+  z
+    .object({
+      text: z.preprocess(emptyToUndefined, z.string().optional()),
+      style: z.preprocess(
+        emptyToUndefined,
+        z.enum(['plain', 'highlight']).default('plain')
+      ),
+    })
+    .optional()
+);
+
+export type SectionHeading = NonNullable<z.infer<typeof sectionHeadingSchema>>;
+
+const imagePositionSchema = z.preprocess(
+  emptyToUndefined,
+  z.enum(['left', 'right']).default('right')
+);
+
 const colorPaletteSchema = z.enum([
   'primary',
   'secondary',
@@ -18,18 +136,11 @@ const colorPaletteSchema = z.enum([
 ]);
 
 const createSchemas = (image: ImageFunction) => {
-  const buttonSchema = z.object({
-    variant: z.string(),
-    size: z.string(),
-    href: z.string(),
-    text: z.string(),
-  });
-
   const cardSchema = z.object({
     title: z.string(),
     content: z.string().optional(),
     image: image().optional(),
-    button: buttonSchema.optional(),
+    button: optionalButtonSchema,
     color: colorPaletteSchema.optional(),
   });
 
@@ -41,6 +152,10 @@ const createSchemas = (image: ImageFunction) => {
     affiliation: z.string().optional(),
     extraInfo: z.string().optional(),
     url: z.string().optional(),
+    socialLinks: z.preprocess(
+      emptyToUndefined,
+      socialLinksSchema.optional()
+    ),
     sections: z.array(
       z.enum(peopleCategories.categories as [string, ...string[]])
     ),
@@ -51,12 +166,18 @@ const createSchemas = (image: ImageFunction) => {
     name: z.string(),
     affiliation: z.string().optional(),
     url: z.string().optional(),
-    category: z.enum(partnerCategories.categories as [string, ...string[]]),
+    // A single string is accepted for content written before partners could
+    // belong to several categories
+    category: z.preprocess(
+      (value) => (typeof value === 'string' ? [value] : value),
+      z
+        .array(z.enum(partnerCategories.categories as [string, ...string[]]))
+        .min(1)
+    ),
     image: image().optional(),
   });
 
   return {
-    buttonSchema,
     cardSchema,
     personSchema,
     partnerSchema,
@@ -66,13 +187,19 @@ const createSchemas = (image: ImageFunction) => {
 const pagesCollection = defineCollection({
   loader: glob({ pattern: '**/*.yaml', base: './src/content/pages' }),
   schema: ({ image }) => {
-    const { buttonSchema, cardSchema } = createSchemas(image);
+    const { cardSchema } = createSchemas(image);
 
     const SectionCommonSchema = z.object({
       background: z
         .object({
-          bgColor: z.string().optional(),
-          bgType: z.string().optional(),
+          bgColor: z.preprocess(
+            emptyToUndefined,
+            z.enum(sectionBackgroundNames).optional()
+          ),
+          bgType: z.preprocess(
+            emptyToUndefined,
+            z.enum(sectionBackgroundTypes).optional()
+          ),
         })
         .optional(),
     });
@@ -83,6 +210,13 @@ const pagesCollection = defineCollection({
         title: z.string(),
         subtitle: z.string().optional(),
         backgroundImage: image().optional(),
+        image: image().optional(),
+        imageAlt: z.string().optional(),
+        imagePosition: imagePositionSchema,
+        align: z.preprocess(
+          emptyToUndefined,
+          z.enum(['left', 'center']).default('center')
+        ),
       }),
       SectionCommonSchema.extend({
         type: z.literal('richText'),
@@ -92,36 +226,36 @@ const pagesCollection = defineCollection({
       SectionCommonSchema.extend({
         type: z.literal('button'),
         title: z.string().optional(),
-        buttons: z.array(buttonSchema).optional(),
+        buttons: buttonListSchema,
       }),
       SectionCommonSchema.extend({
         type: z.literal('card'),
         title: z.string(),
         description: z.string().optional(),
         cards: z.array(cardSchema).optional(),
-        buttons: z.array(buttonSchema).optional(),
+        buttons: buttonListSchema,
       }),
       SectionCommonSchema.extend({
         type: z.literal('people'),
-        category: z.string().optional(),
+        category: optionalCategory(peopleCategories.categories),
       }),
       SectionCommonSchema.extend({
         type: z.literal('partners'),
         title: z.string(),
-        category: z.string().optional(),
+        category: optionalCategory(partnerCategories.categories),
       }),
       SectionCommonSchema.extend({
         type: z.literal('articlesRoll'),
         title: z.string().optional(),
         limit: z.number().optional().default(3),
-        category: z.string().optional(),
+        category: optionalCategory(articleCategories.categories),
         showViewAll: z.boolean().optional().default(true),
       }),
       SectionCommonSchema.extend({
         type: z.literal('featuredPartners'),
         title: z.string().optional(),
         description: z.string().optional(),
-        partners: z.array(z.string()).optional(),
+        partners: optionalIdList,
         limit: z.number().optional().default(4),
         showViewAll: z.boolean().optional().default(false),
       }),
@@ -132,14 +266,58 @@ const pagesCollection = defineCollection({
         limit: z.number().min(1).max(12).default(3),
         showViewAll: z.boolean().default(false),
       }),
+      SectionCommonSchema.extend({
+        type: z.literal('callToAction'),
+        title: sectionHeadingSchema,
+        description: z.string().optional(),
+        image: image().optional(),
+        imageAlt: z.string().optional(),
+        imagePosition: imagePositionSchema,
+        buttons: buttonListSchema,
+      }),
+      SectionCommonSchema.extend({
+        type: z.literal('miniCta'),
+        text: z.string(),
+        button: optionalButtonSchema,
+      }),
+      SectionCommonSchema.extend({
+        type: z.literal('testimonials'),
+        title: sectionHeadingSchema,
+        description: z.string().optional(),
+        testimonials: z
+          .array(
+            z
+              .object({
+                quote: z.string(),
+                name: z.preprocess(emptyToUndefined, z.string().optional()),
+                role: z.preprocess(emptyToUndefined, z.string().optional()),
+                image: image().optional(),
+                // Person ID; fills in name, role and photo when left empty
+                person: z.preprocess(emptyToUndefined, z.string().optional()),
+              })
+          )
+          .optional(),
+      }),
+      SectionCommonSchema.extend({
+        type: z.literal('logoWall'),
+        title: sectionHeadingSchema,
+        description: z.string().optional(),
+        // Partner IDs in display order; empty shows featured partners
+        partners: optionalIdList,
+        layout: z.preprocess(
+          emptyToUndefined,
+          z.enum(['grid', 'scroll']).default('grid')
+        ),
+        fullBleed: z.boolean().optional().default(false),
+      }),
+      SectionCommonSchema.extend({
+        type: z.literal('featuredArticles'),
+        title: sectionHeadingSchema,
+        description: z.string().optional(),
+        // Article permalinks in display order
+        articles: optionalIdList,
+      }),
     ]);
-
-    const flexiSectionSchema = SectionCommonSchema.extend({
-      type: z.literal('flexi'),
-      title: z.string(),
-      description: z.string().optional(),
-      sections: z.array(sectionsSchema),
-    });
 
     return z.object({
       title: z.string(),
@@ -151,10 +329,14 @@ const pagesCollection = defineCollection({
         .optional(),
       permalink: z.string().optional(),
       status: statusSchema,
-      sections: z
-        .union([...sectionsSchema.options, flexiSectionSchema])
+      breadcrumbs: z.preprocess(
+        emptyToUndefined,
+        z.enum(['auto', 'show', 'hide']).default('auto')
+      ),
+      sections: sectionsSchema
         .array()
-        .optional(),
+        // A page saved with no sections writes a bare `sections:` (null)
+        .nullish(),
     });
   },
 });
@@ -186,18 +368,20 @@ const articlesCollection = defineCollection({
       excerpt: z.string().optional(),
       authors: z.array(z.string()),
       status: statusSchema,
-      tags: z.array(z.string()),
       categories: z
         .array(z.enum(articleCategories.categories as [string, ...string[]]))
         .optional(),
       publishedDate: z.date(),
       heroImage: image().optional(),
-      relatedArticles: z.array(z.string()).max(3).optional(),
+      relatedArticles: optionalIdList,
+      // Resource IDs
+      relatedResources: optionalIdList,
     }),
 });
 
 const siteCollection = defineCollection({
-  loader: glob({ pattern: '**/*.json', base: './src/content/site' }),
+  // `_`-prefixed files (e.g. _redirects.json) are build config, not site entries
+  loader: glob({ pattern: '**/[^_]*.json', base: './src/content/site' }),
   schema: ({ image }) =>
     z.object({
       title: z.string(),
@@ -208,18 +392,7 @@ const siteCollection = defineCollection({
       defaultLogoLight: image().optional(),
       defaultLogoDark: image().optional(),
       defaultLogoSquare: image().optional(),
-      social: z
-        .object({
-          bluesky: z.string().optional(),
-          github: z.string().optional(),
-          mastodon: z.string().optional(),
-          linkedin: z.string().optional(),
-          x: z.string().optional(),
-          facebook: z.string().optional(),
-          instagram: z.string().optional(),
-          youtube: z.string().optional(),
-        })
-        .optional(),
+      social: z.preprocess(emptyToUndefined, socialLinksSchema.optional()),
       footer: z.object({
         description: z.string().optional(),
         bottom: z.string(),
@@ -236,37 +409,63 @@ const siteCollection = defineCollection({
           googleAnalyticsId: z.string().optional(),
         })
         .optional(),
+      // Site-wide switch for breadcrumbs (pages can still hide them individually)
+      showBreadcrumbs: z.boolean().optional().default(true),
+      // Share links on articles and resources; empty platforms → defaults
+      share: z
+        .object({
+          enabled: z.boolean().optional().default(true),
+          platforms: z.array(z.enum(SHARE_PLATFORMS)).nullish(),
+        })
+        .optional(),
+      analytics: z
+        .object({
+          umami: z
+            .object({
+              src: z.string().optional(),
+              websiteId: z.string().optional(),
+            })
+            .optional(),
+        })
+        .optional(),
     }),
 });
 
-const flexibleLinkSchema = z.discriminatedUnion('type', [
-  z.object({
-    type: z.literal('internal'),
-    pageRef: z.string(),
-  }),
-  z.object({
-    type: z.literal('external'),
-    url: z.url(),
-  }),
-]);
-
-const navItemLinkSchema = z.object({
-  type: z.literal('link'),
+const navLinkFields = {
   label: z.string(),
   link: flexibleLinkSchema,
   description: z.string().optional(),
+};
+
+const navItemLinkSchema = z.object({
+  type: z.literal('link'),
+  ...navLinkFields,
 });
+
+// Children of a dropdown written before nested menus existed have no `type`,
+// so default it to 'link' to keep two-level menus valid.
+const withDefaultLinkType = (value: unknown) =>
+  value && typeof value === 'object' && !('type' in value)
+    ? { ...value, type: 'link' }
+    : value;
+
+// Second level: a link, or a group (dropdown) of links — the third level
+const navItemChildSchema = z.preprocess(
+  withDefaultLinkType,
+  z.discriminatedUnion('type', [
+    navItemLinkSchema,
+    z.object({
+      type: z.literal('dropdown'),
+      label: z.string(),
+      children: z.array(z.preprocess(withDefaultLinkType, navItemLinkSchema)),
+    }),
+  ])
+);
 
 const navItemDropdownSchema = z.object({
   type: z.literal('dropdown'),
   label: z.string(),
-  children: z.array(
-    z.object({
-      label: z.string(),
-      link: flexibleLinkSchema,
-      description: z.string().optional(),
-    })
-  ),
+  children: z.array(navItemChildSchema),
 });
 
 const navigationItemSchema = z.discriminatedUnion('type', [
@@ -313,6 +512,8 @@ const resourcesCollection = defineCollection({
       .optional(),
     publishedDate: z.coerce.date().optional(),
     tags: z.array(z.string()).optional(),
+    // Resource IDs
+    relatedResources: z.array(z.string()).nullish(),
   }),
 });
 

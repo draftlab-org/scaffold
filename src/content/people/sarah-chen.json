@@ -5,6 +5,20 @@
   "title": "Executive Director",
   "affiliation": "Open Internet Project",
   "extraInfo": "Leads coalition efforts to protect internet freedom worldwide",
+  "socialLinks": [
+    {
+      "platform": "website",
+      "url": "https://openinternet.example.org"
+    },
+    {
+      "platform": "mastodon",
+      "url": "https://mastodon.social/@sarahchen"
+    },
+    {
+      "platform": "orcid",
+      "url": "https://orcid.org/0000-0002-1825-0097"
+    }
+  ],
   "sections": [
     "Leadership",
     "Community"

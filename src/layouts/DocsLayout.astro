@@ -50,7 +50,7 @@ const { title, description, chapters, currentPermalink, toc, prev, next } =
 
 			{/* Right sidebar: TOC */}
 			<aside class="hidden xl:block">
-				{toc && toc.length > 0 && <TOC client:load entries={toc} />}
+				{toc && toc.length > 0 && <TOC client:visible entries={toc} />}
 			</aside>
 		</div>
 	</div>
